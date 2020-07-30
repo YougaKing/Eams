@@ -8,5 +8,5 @@ package com.alibaba.ha.protocol;
 public interface AliHaPlugin {
     String getName();
 
-    void start(AliHaParam var1);
+    void start(AliHaParam aliHaParam);
 }

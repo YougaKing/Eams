@@ -13,9 +13,9 @@ public class APMService {
     public APMService() {
     }
 
-    public static void openDebug(Boolean var0) {
+    public static void openDebug(Boolean debug) {
         if (isValid) {
-            SimpleApmInitiator.setDebug(var0);
+            SimpleApmInitiator.setDebug(debug);
         }
     }
 

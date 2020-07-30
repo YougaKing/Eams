@@ -10,7 +10,9 @@ import android.app.Application;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
+
 import com.alibaba.motu.tbrest.SendService;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -33,7 +35,7 @@ public class Event1010Handler implements AppStatusCallbacks {
     private long mToForegroundTimestamp = 0L;
     private List<Long> mHistoryEvents;
     private Map<String, String> mExtMap;
-    private Object mLockObj = new Object();
+    private final Object mLockObj = new Object();
     private AsyncThreadPool asyncTaskThread = new AsyncThreadPool();
     private static Event1010Handler s_instance = null;
 
@@ -48,34 +50,34 @@ public class Event1010Handler implements AppStatusCallbacks {
         return s_instance;
     }
 
-    public void init(Application var1, Map<String, String> var2) {
-        this.mApplication = var1;
-        this.mExtMap = var2;
-        Runnable var3 = new Runnable() {
+    public void init(Application application, Map<String, String> extMap) {
+        this.mApplication = application;
+        this.mExtMap = extMap;
+        Runnable runnable = new Runnable() {
             public void run() {
-                synchronized(Event1010Handler.this.mLockObj) {
-                    List var2 = Event1010Handler.this.readFileData();
-                    if (var2 != null) {
-                        Event1010Handler.this.mHistoryEvents = new ArrayList(var2);
+                synchronized (Event1010Handler.this.mLockObj) {
+                    List<Long>  data = Event1010Handler.this.readFileData();
+                    if (data != null) {
+                        Event1010Handler.this.mHistoryEvents = new ArrayList<>(data);
                     } else {
                         Event1010Handler.this.mHistoryEvents = null;
                     }
 
-                    if (Event1010Handler.this.mHistoryEvents != null && Event1010Handler.this.mHistoryEvents.size() > 0 && Event1010Handler.this.sendEvent("", Event1010Handler.this.makeTimestampExtData((Long)null))) {
+                    if (Event1010Handler.this.mHistoryEvents != null && Event1010Handler.this.mHistoryEvents.size() > 0 && Event1010Handler.this.sendEvent("", Event1010Handler.this.makeTimestampExtData((Long) null))) {
                         Event1010Handler.this.clearHistory();
                     }
 
                 }
             }
         };
-        this.asyncTaskThread.start(var3);
+        this.asyncTaskThread.start(runnable);
     }
 
     private void _send1010Hit(final long var1) {
         if (var1 > 0L) {
             Runnable var3 = new Runnable() {
                 public void run() {
-                    synchronized(Event1010Handler.this.mLockObj) {
+                    synchronized (Event1010Handler.this.mLockObj) {
                         long var2 = (new Date()).getTime();
                         if (Event1010Handler.this.sendEvent("" + var1, Event1010Handler.this.makeTimestampExtData(var2))) {
                             Event1010Handler.this.clearHistory();
@@ -98,8 +100,8 @@ public class Event1010Handler implements AppStatusCallbacks {
             StringBuffer var4 = new StringBuffer();
             Iterator var5 = this.mHistoryEvents.iterator();
 
-            while(var5.hasNext()) {
-                Long var6 = (Long)var5.next();
+            while (var5.hasNext()) {
+                Long var6 = (Long) var5.next();
                 var4.append(var6);
                 var4.append("_");
             }
@@ -143,7 +145,7 @@ public class Event1010Handler implements AppStatusCallbacks {
             var3.putAll(var2);
         }
 
-        return SendService.getInstance().sendRequest((String)null, System.currentTimeMillis(), "-", 1010, var1, (Object)null, (Object)null, var3);
+        return SendService.getInstance().sendRequest((String) null, System.currentTimeMillis(), "-", 1010, var1, (Object) null, (Object) null, var3);
     }
 
     public void onSwitchBackground() {
@@ -211,35 +213,32 @@ public class Event1010Handler implements AppStatusCallbacks {
     }
 
     private List<Long> readFileData() {
-        List var1 = null;
-        ObjectInputStream var2 = null;
+        List<Long> data;
+        ObjectInputStream objectInputStream = null;
 
-        Long[] var5;
+        Long[] resultArray;
         try {
-            FileInputStream var3 = this.mApplication.openFileInput("aliha-appstatus1010.adt");
-            int var4 = var3.available();
-            if (var4 != 0 && var4 <= 40960) {
-                var2 = new ObjectInputStream(var3);
-                var5 = (Long[])((Long[])var2.readObject());
-                var1 = Arrays.asList(var5);
-                return var1;
+            FileInputStream fileInputStream = this.mApplication.openFileInput("aliha-appstatus1010.adt");
+            int length = fileInputStream.available();
+            if (length != 0 && length <= 40960) {
+                objectInputStream = new ObjectInputStream(fileInputStream);
+                resultArray = (Long[]) objectInputStream.readObject();
+                data = Arrays.asList(resultArray);
+                return data;
             }
 
-            var5 = null;
-        } catch (Throwable var16) {
-            Log.w(TAG, var16.getMessage());
-            return var1;
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
         } finally {
-            if (var2 != null) {
+            if (objectInputStream != null) {
                 try {
-                    var2.close();
-                } catch (Exception var15) {
-                    Log.w(TAG, var15.getMessage());
+                    objectInputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
 
         }
-
-        return var5;
+        return null;
     }
 }

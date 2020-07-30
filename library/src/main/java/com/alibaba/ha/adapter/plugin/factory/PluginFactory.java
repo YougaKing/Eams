@@ -6,15 +6,9 @@
 package com.alibaba.ha.adapter.plugin.factory;
 
 import android.util.Log;
+
 import com.alibaba.ha.adapter.Plugin;
 import com.alibaba.ha.adapter.plugin.APMPlugin;
-import com.alibaba.ha.adapter.plugin.BizErrorPlugin;
-import com.alibaba.ha.adapter.plugin.CrashReporterPlugin;
-import com.alibaba.ha.adapter.plugin.OnLineMonitorPlugin;
-import com.alibaba.ha.adapter.plugin.TLogPlugin;
-import com.alibaba.ha.adapter.plugin.TelescopePlugin;
-import com.alibaba.ha.adapter.plugin.UtPlugin;
-import com.alibaba.ha.adapter.plugin.WatchPlugin;
 import com.alibaba.ha.protocol.AliHaPlugin;
 
 public class PluginFactory {
@@ -22,36 +16,36 @@ public class PluginFactory {
     }
 
     public static AliHaPlugin createPlugin(Plugin var0) {
-        Object var1 = null;
-        switch(var0) {
+        AliHaPlugin aliHaPlugin = null;
+        switch (var0) {
             case ut:
-                var1 = new UtPlugin();
+//                aliHaPlugin = new UtPlugin();
                 break;
             case tlog:
-                var1 = new TLogPlugin();
+//                aliHaPlugin = new TLogPlugin();
                 break;
             case bizErrorReporter:
-                var1 = new BizErrorPlugin();
+//                aliHaPlugin = new BizErrorPlugin();
                 break;
             case watch:
-                var1 = new WatchPlugin();
+//                aliHaPlugin = new WatchPlugin();
                 break;
             case telescope:
-                var1 = new TelescopePlugin();
+//                aliHaPlugin = new TelescopePlugin();
                 break;
             case onlineMonitor:
-                var1 = new OnLineMonitorPlugin();
+//                aliHaPlugin = new OnLineMonitorPlugin();
                 break;
             case crashreporter:
-                var1 = new CrashReporterPlugin();
+//                aliHaPlugin = new CrashReporterPlugin();
                 break;
             case apm:
-                var1 = new APMPlugin();
+                aliHaPlugin = new APMPlugin();
                 break;
             default:
                 Log.w("AliHaAdapter", "plugin not exist! ");
         }
 
-        return (AliHaPlugin)var1;
+        return aliHaPlugin;
     }
 }

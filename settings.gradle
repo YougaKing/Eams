@@ -1,0 +1,3 @@
+rootProject.name='Eams'
+include ':app'
+include ':library'

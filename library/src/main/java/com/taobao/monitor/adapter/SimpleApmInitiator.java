@@ -11,14 +11,17 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.WebView;
+
 import com.ali.alihadeviceevaluator.AliHAHardware;
 import com.ali.ha.datahub.BizSubscriber;
 import com.ali.ha.datahub.DataHub;
 import com.ali.ha.fulltrace.FulltraceGlobal;
 import com.ali.ha.fulltrace.FulltraceLauncher;
 import com.taobao.monitor.APMLauncher;
+import com.taobao.monitor.ProcedureGlobal;
 import com.taobao.monitor.adapter.a.a;
 import com.taobao.monitor.adapter.b.c;
+import com.taobao.monitor.adapter.constans.TBAPMConstants;
 import com.taobao.monitor.d.b;
 import com.taobao.monitor.impl.common.Global;
 import com.taobao.monitor.impl.data.AbsWebView;
@@ -34,6 +37,8 @@ import com.taobao.monitor.procedure.IProcedure;
 import com.taobao.monitor.procedure.ProcedureConfig;
 import com.taobao.monitor.procedure.ProcedureFactoryProxy;
 import com.taobao.monitor.procedure.ProcedureConfig.Builder;
+import com.taobao.monitor.util.ThreadUtils;
+
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -45,43 +50,43 @@ public class SimpleApmInitiator implements Serializable {
     public SimpleApmInitiator() {
     }
 
-    public void init(Application var1, HashMap<String, Object> var2) {
-        if (!a.a) {
-            Logger.i("TBAPMAdapterLaunchers", new Object[]{"init start"});
-            a.open = true;
-            this.initAPMFunction(var1, var2);
-            this.initDeviceEvaluation(var1);
-            Logger.i("TBAPMAdapterLaunchers", new Object[]{"init end"});
-            a.a = true;
+    public void init(Application application, HashMap<String, Object> map) {
+        if (!TBAPMConstants.init) {
+            Logger.i("TBAPMAdapterLaunchers", "init start");
+            TBAPMConstants.open = true;
+            this.initAPMFunction(application, map);
+            this.initDeviceEvaluation(application);
+            Logger.i("TBAPMAdapterLaunchers", "init end");
+            TBAPMConstants.init = true;
         }
 
-        Logger.i("TBAPMAdapterLaunchers", new Object[]{"apmStartTime:", TimeUtils.currentTimeMillis() - this.apmStartTime});
+        Logger.i("TBAPMAdapterLaunchers", "apmStartTime:", TimeUtils.currentTimeMillis() - this.apmStartTime);
     }
 
-    public static void setDebug(boolean var0) {
-        Logger.setDebug(var0);
+    public static void setDebug(boolean debug) {
+        Logger.setDebug(debug);
     }
 
-    private void initDeviceEvaluation(Application var1) {
-        AliHAHardware.getInstance().setUp(var1, FulltraceGlobal.instance().dumpHandler());
-        com.taobao.monitor.a.a.start(new Runnable() {
+    private void initDeviceEvaluation(Application application) {
+        AliHAHardware.getInstance().setUp(application, FulltraceGlobal.instance().dumpHandler());
+        ThreadUtils.start(new Runnable() {
             public void run() {
                 AliHAHardware.getInstance().getOutlineInfo();
             }
         });
     }
 
-    private void initAPMFunction(Application var1, HashMap<String, Object> var2) {
-        Global.instance().setHandler(com.taobao.monitor.a.a().handler());
-        this.initAPMLauncher(var1, var2);
-        this.initTbRest(var1);
-        this.initFulltrace(var1);
+    private void initAPMFunction(Application application, HashMap<String, Object> map) {
+        Global.instance().setHandler(ProcedureGlobal.instance().handler());
+        this.initAPMLauncher(application, map);
+        this.initTbRest(application);
+        this.initFulltrace(application);
         this.initDataHub();
         this.initLauncherProcedure();
         this.initWebView();
     }
 
-    private void initTbRest(Application var1) {
+    private void initTbRest(Application application) {
         b.a().a(new c());
     }
 
@@ -168,20 +173,20 @@ public class SimpleApmInitiator implements Serializable {
             }
 
             public int getProgress(View var1) {
-                WebView var2 = (WebView)var1;
+                WebView var2 = (WebView) var1;
                 String var3 = var2.getUrl();
                 if (!TextUtils.equals(this.c, var3)) {
                     this.c = var3;
                     return 0;
                 } else {
-                    return ((WebView)var1).getProgress();
+                    return ((WebView) var1).getProgress();
                 }
             }
         });
     }
 
     private void initLauncherProcedure() {
-        ProcedureConfig var1 = (new Builder()).setIndependent(false).setUpload(true).setParentNeedStats(false).setParent((IProcedure)null).build();
+        ProcedureConfig var1 = (new Builder()).setIndependent(false).setUpload(true).setParentNeedStats(false).setParent((IProcedure) null).build();
         IProcedure var2 = ProcedureFactoryProxy.PROXY.createProcedure(TopicUtils.getFullTopic("/startup"), var1);
         var2.begin();
         com.taobao.monitor.a.a.setLauncherProcedure(var2);

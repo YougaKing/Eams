@@ -39,7 +39,6 @@ import com.taobao.monitor.impl.trace.ApplicationLowMemoryDispatcher;
 import com.taobao.monitor.impl.trace.FPSDispatcher;
 import com.taobao.monitor.impl.trace.FragmentFunctionDispatcher;
 import com.taobao.monitor.impl.trace.FragmentFunctionListener;
-import com.taobao.monitor.impl.trace.FragmentLifecycleDispatcher;
 import com.taobao.monitor.impl.trace.IDispatcher;
 import com.taobao.monitor.impl.trace.ImageStageDispatcher;
 import com.taobao.monitor.impl.trace.NetworkStageDispatcher;

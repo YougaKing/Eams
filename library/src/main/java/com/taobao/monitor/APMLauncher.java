@@ -19,16 +19,16 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 
 import com.ali.alihadeviceevaluator.AliHAHardware;
+import com.taobao.application.common.ApmHelper;
 import com.taobao.application.common.data.AppLaunchHelper;
 import com.taobao.application.common.data.DeviceHelper;
 import com.taobao.application.common.data.c;
 import com.taobao.application.common.data.c.a;
 import com.taobao.monitor.impl.common.ActivityManagerHook;
-import com.taobao.monitor.impl.common.DynamicConstants;
 import com.taobao.monitor.impl.common.Global;
-import com.taobao.monitor.impl.data.AbstractDataCollector;
 import com.taobao.monitor.impl.data.GlobalStats;
 import com.taobao.monitor.impl.data.collector.ActivityLifecycle;
+import com.taobao.monitor.impl.data.detector.GCCollector;
 import com.taobao.monitor.impl.processor.launcher.LauncherProcessor;
 import com.taobao.monitor.impl.processor.launcher.b;
 import com.taobao.monitor.impl.trace.f;
@@ -38,11 +38,11 @@ import com.taobao.monitor.impl.trace.l;
 import com.taobao.monitor.impl.trace.m;
 import com.taobao.monitor.impl.trace.n;
 import com.taobao.monitor.impl.trace.o;
+import com.taobao.monitor.impl.util.ProcessUtils;
 import com.taobao.monitor.impl.util.SafeUtils;
 import com.taobao.monitor.impl.util.TimeUtils;
 import com.taobao.monitor.impl.util.d;
 import com.taobao.monitor.impl.util.e;
-import com.taobao.monitor.performance.APMAdapterFactoryProxy;
 import com.taobao.network.lifecycle.MtopLifecycleManager;
 import com.taobao.network.lifecycle.NetworkLifecycleManager;
 import com.taobao.phenix.lifecycle.PhenixLifeCycleManager;
@@ -186,10 +186,10 @@ public class APMLauncher {
     private static void initProcessStartTime() {
         if (VERSION.SDK_INT >= 24) {
             GlobalStats.processStartTime = TimeUtils.currentTimeMillis() + Process.getStartUptimeMillis() - SystemClock.uptimeMillis();
-            launchHelper.b(System.currentTimeMillis() - (SystemClock.uptimeMillis() - GlobalStats.processStartTime));
+            launchHelper.startProcessSystemTime(System.currentTimeMillis() - (SystemClock.uptimeMillis() - GlobalStats.processStartTime));
         } else {
-            long var0 = d.b();
-            launchHelper.b(var0);
+            long var0 = ProcessUtils.processSystemTime();
+            launchHelper.startProcessSystemTime(var0);
             if (var0 != -1L) {
                 GlobalStats.processStartTime = TimeUtils.currentTimeMillis() - (System.currentTimeMillis() - var0);
             } else {
@@ -197,7 +197,7 @@ public class APMLauncher {
             }
         }
 
-        launchHelper.c(GlobalStats.processStartTime);
+        launchHelper.startProcessSystemClockTime(GlobalStats.processStartTime);
     }
 
     private static void initOppoCPUResource() {
@@ -244,11 +244,11 @@ public class APMLauncher {
     }
 
     private static void initExecutor() {
-        com.taobao.monitor.impl.data.c.a var0 = new com.taobao.monitor.impl.data.c.a();
+        GCCollector var0 = new GCCollector();
         var0.execute();
     }
 
     private static void initApmImpl() {
-        com.taobao.application.common.a.a();
+        ApmHelper.initApmImpl();
     }
 }

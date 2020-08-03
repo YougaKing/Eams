@@ -4,16 +4,16 @@ public class ImageStageDispatcher extends AbsDispatcher<ImageStageDispatcher.Sta
     public ImageStageDispatcher() {
     }
 
-    public void f(final int var1) {
+    public void imageStage(final int var1) {
         this.dispatchRunnable(new AbsDispatcher.DispatcherRunnable<ImageStageDispatcher.StageListener>() {
             @Override
             public void run(StageListener stageListener) {
-                stageListener.d(var1);
+                stageListener.imageStage(var1);
             }
         });
     }
 
     public interface StageListener {
-        void d(int var1);
+        void imageStage(int var1);
     }
 }

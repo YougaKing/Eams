@@ -8,7 +8,6 @@ package com.taobao.monitor.impl.processor.launcher;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -37,6 +36,7 @@ import com.taobao.monitor.impl.trace.ActivityEventDispatcher;
 import com.taobao.monitor.impl.trace.ApplicationBackgroundChangedDispatcher;
 import com.taobao.monitor.impl.trace.ApplicationGCDispatcher;
 import com.taobao.monitor.impl.trace.ApplicationLowMemoryDispatcher;
+import com.taobao.monitor.impl.trace.FPSDispatcher;
 import com.taobao.monitor.impl.trace.FragmentFunctionDispatcher;
 import com.taobao.monitor.impl.trace.FragmentFunctionListener;
 import com.taobao.monitor.impl.trace.FragmentLifecycleDispatcher;
@@ -63,7 +63,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
         ApplicationBackgroundChangedDispatcher.BackgroundChangedListener,
         ApplicationGCDispatcher.GCListener,
         ApplicationLowMemoryDispatcher.LowMemoryListener,
-        FragmentLifecycleDispatcher.LifecycleListener,
+        FPSDispatcher.FPSListener,
         FragmentFunctionListener,
         ImageStageDispatcher.StageListener,
         NetworkStageDispatcher.StageListener {
@@ -82,7 +82,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     private IDispatcher networkStageDispatcher;
     private IDispatcher imageStageDispatcher;
     private List<String> simpleActivityNameList = new ArrayList<>(4);
-    private List<Integer> b = new ArrayList<>();
+    private List<Integer> intList = new ArrayList<>();
     private int jankCount = 0;
     private int gcCount = 0;
     private long launchStartTime;
@@ -96,26 +96,26 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     private int imageSuccessCount;
     private int imageFailedCount;
     private int imageCanceledCount;
-    private int network;
+    private int networkCount;
     private int networkSuccessCount;
     private int networkFailedCount;
     private int networkCanceledCount;
-    private boolean o;
-    private boolean r;
-    private boolean s;
-    private boolean t;
-    private boolean i;
+    private boolean firstInteractive;
+    private boolean appInit;
+    private boolean interactive;
+    private boolean display;
+    private boolean procedure;
 
     public LauncherProcessor() {
         super(false);
         this.launchType = sLaunchType;
         this.v = false;
         this.appLaunchListener = ApmImpl.instance().appLaunchListener();
-        this.o = true;
-        this.r = true;
-        this.s = true;
-        this.t = true;
-        this.i = false;
+        this.firstInteractive = true;
+        this.appInit = true;
+        this.interactive = true;
+        this.display = true;
+        this.procedure = false;
     }
 
     protected void n() {
@@ -181,7 +181,6 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
         this.launcherProcedure.stage("launchStartTime", GlobalStats.launchStartTime);
     }
 
-    @Override
     public void onActivityCreated(Activity activity, Bundle bundle, long var3) {
         String simpleName = ActivityUtils.getSimpleName(activity);
         this.activityName = ActivityUtils.getName(activity);
@@ -258,7 +257,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
         map.put("timestamp", var2);
         map.put("pageName", ActivityUtils.getSimpleName(var1));
         this.launcherProcedure.event("onActivityStopped", map);
-        if (var1 == this.lastTopActivityName) {
+        if (var1 == this.activity) {
             this.addStatistic();
         }
 
@@ -270,8 +269,8 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
         map.put("timestamp", var2);
         map.put("pageName", ActivityUtils.getSimpleName(var1));
         this.launcherProcedure.event("onActivityDestroyed", map);
-        if (var1 == this.lastTopActivityName) {
-            this.r = true;
+        if (var1 == this.activity) {
+            this.appInit = true;
             this.addStatistic();
         }
 
@@ -286,38 +285,36 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
 
     @Override
     public void onMotionEvent(Activity var1, MotionEvent var2, long var3) {
-        if (this.o) {
-            if (PageList.inBlackList(com.taobao.monitor.impl.util.a.a(var1))) {
+        if (this.firstInteractive) {
+            if (PageList.inBlackList(ActivityUtils.getName(var1))) {
                 return;
             }
 
             if (TextUtils.isEmpty(this.lastTopActivityName)) {
-                this.lastTopActivityName = com.taobao.monitor.impl.util.a.a(var1);
+                this.lastTopActivityName = ActivityUtils.getName(var1);
             }
 
-            if (var1 == this.lastTopActivityName) {
+            if (var1 == this.activity) {
                 this.launcherProcedure.stage("firstInteractiveTime", var3);
                 this.launcherProcedure.addProperty("firstInteractiveDuration", var3 - this.launchStartTime);
                 this.launcherProcedure.addProperty("leaveType", "touch");
                 this.launcherProcedure.addProperty("errorCode", 0);
                 FirstInteractionEvent var7 = new FirstInteractionEvent();
                 DumpManager.getInstance().append(var7);
-                this.o = false;
+                this.firstInteractive = false;
             }
         }
-
     }
 
     public void f(Activity var1, long var2) {
-        if (this.r && var1 == this.lastTopActivityName) {
+        if (this.appInit && var1 == this.activity) {
             this.launcherProcedure.addProperty("appInitDuration", var2 - this.launchStartTime);
             this.launcherProcedure.stage("renderStartTime", var2);
             FirstDrawEvent var6 = new FirstDrawEvent();
             DumpManager.getInstance().append(var6);
-            this.r = false;
+            this.appInit = false;
             this.appLaunchListener.onLaunchChanged(this.a(), 0);
         }
-
     }
 
     private int a() {
@@ -325,7 +322,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     }
 
     public void a(Activity var1, float var2, long var3) {
-        if (var1 == this.lastTopActivityName) {
+        if (var1 == this.activity) {
             this.launcherProcedure.addProperty("onRenderPercent", var2);
             this.launcherProcedure.addProperty("drawPercentTime", var3);
         }
@@ -333,8 +330,8 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     }
 
     public void a(Activity var1, int var2, int var3, long var4) {
-        if (this.s) {
-            if (var1 == this.lastTopActivityName && var2 == 2) {
+        if (this.interactive) {
+            if (var1 == this.activity && var2 == 2) {
                 this.launcherProcedure.addProperty("errorCode", 0);
                 this.launcherProcedure.addProperty("interactiveDuration", var4 - this.launchStartTime);
                 this.launcherProcedure.addProperty("launchDuration", var4 - this.launchStartTime);
@@ -344,38 +341,37 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
                 this.launcherProcedure.addProperty("memoryRuntimeLevel", AliHAHardware.getInstance().getMemoryInfo().runtimeLevel);
                 this.launcherProcedure.addProperty("usableChangeType", var3);
                 this.launcherProcedure.stage("interactiveTime", var4);
-                LauncherUsableEvent var8 = new LauncherUsableEvent();
-                var8.duration = (float) (var4 - this.launchStartTime);
-                DumpManager.getInstance().append(var8);
+                LauncherUsableEvent launcherUsableEvent = new LauncherUsableEvent();
+                launcherUsableEvent.duration = (float) (var4 - this.launchStartTime);
+                DumpManager.getInstance().append(launcherUsableEvent);
                 this.appLaunchListener.onLaunchChanged(this.a(), 2);
                 this.q();
-                this.s = false;
+                this.interactive = false;
             }
-
         }
     }
 
     public void a(Activity var1, int var2, long var3) {
-        if (this.t) {
-            if (var2 == 2 && !PageList.inBlackList(this.e) && TextUtils.isEmpty(this.lastTopActivityName)) {
-                this.lastTopActivityName = this.e;
+        if (this.display) {
+            if (var2 == 2 && !PageList.inBlackList(this.activityName) && TextUtils.isEmpty(this.lastTopActivityName)) {
+                this.lastTopActivityName = this.activityName;
             }
 
-            if (var1 == this.lastTopActivityName && var2 == 2) {
+            if (var1 == this.activity && var2 == 2) {
                 this.launcherProcedure.addProperty("displayDuration", var3 - this.launchStartTime);
                 this.launcherProcedure.stage("displayedTime", var3);
                 DisplayedEvent var7 = new DisplayedEvent();
                 DumpManager.getInstance().append(var7);
                 this.appLaunchListener.onLaunchChanged(this.a(), 1);
-                this.t = false;
+                this.display = false;
             }
 
         }
     }
 
     protected void addStatistic() {
-        if (!this.launchStartTime) {
-            this.launchStartTime = true;
+        if (!this.procedure) {
+            this.procedure = true;
             this.q();
             if (!TextUtils.isEmpty(this.lastTopActivityName)) {
                 int index = this.lastTopActivityName.lastIndexOf(".");
@@ -395,8 +391,8 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
             this.launcherProcedure.addStatistic("imageSuccessCount", this.imageSuccessCount);
             this.launcherProcedure.addStatistic("imageFailedCount", this.imageFailedCount);
             this.launcherProcedure.addStatistic("imageCanceledCount", this.imageCanceledCount);
-            this.launcherProcedure.addStatistic("network", this.network);
-            this.launcherProcedure.addStatistic("networkOnRequest", this.network);
+            this.launcherProcedure.addStatistic("network", this.networkCount);
+            this.launcherProcedure.addStatistic("networkOnRequest", this.networkCount);
             this.launcherProcedure.addStatistic("networkSuccessCount", this.networkSuccessCount);
             this.launcherProcedure.addStatistic("networkFailedCount", this.networkFailedCount);
             this.launcherProcedure.addStatistic("networkCanceledCount", this.networkCanceledCount);
@@ -423,13 +419,13 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     }
 
     public void b(int var1) {
-        if (this.appLaunchListener.size() < 200) {
-            this.appLaunchListener.add(var1);
+        if (this.intList.size() < 200) {
+            this.intList.add(var1);
         }
     }
 
-    public void c(int var1) {
-        this.simpleActivityNameList += var1;
+    public void c(int jankCount) {
+        this.jankCount += jankCount;
     }
 
     @Override
@@ -440,9 +436,9 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     @Override
     public void backgroundChanged(int var1, long var2) {
         if (var1 == 1) {
-            HashMap var4 = new HashMap(1);
-            var4.put("timestamp", var2);
-            this.launcherProcedure.event("foreground2Background", var4);
+            Map<String, Object> map = new HashMap<>(1);
+            map.put("timestamp", var2);
+            this.launcherProcedure.event("foreground2Background", map);
             this.addStatistic();
         }
 
@@ -456,73 +452,70 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     }
 
     @Override
-    public void onKeyEvent(Activity var1, KeyEvent var2, long var3) {
-        if (!PageList.inBlackList(com.taobao.monitor.impl.util.a.a(var1))) {
-            if (var1 == this.lastTopActivityName) {
-                int var5 = var2.getAction();
-                int var6 = var2.getKeyCode();
-                if (var5 == 0 && (var6 == 4 || var6 == 3)) {
+    public void onKeyEvent(Activity activity, KeyEvent keyEvent, long var3) {
+        if (!PageList.inBlackList(ActivityUtils.getName(activity))) {
+            if (activity == this.activity) {
+                int action = keyEvent.getAction();
+                int keyCode = keyEvent.getKeyCode();
+                if (action == 0 && (keyCode == 4 || keyCode == 3)) {
                     if (TextUtils.isEmpty(this.lastTopActivityName)) {
-                        this.lastTopActivityName = com.taobao.monitor.impl.util.a.a(var1);
+                        this.lastTopActivityName = ActivityUtils.getName(activity);
                     }
-
-                    if (var6 == 3) {
+                    if (keyCode == 3) {
                         this.launcherProcedure.addProperty("leaveType", "home");
                     } else {
                         this.launcherProcedure.addProperty("leaveType", "back");
                     }
-
-                    HashMap var7 = new HashMap(2);
-                    var7.put("timestamp", var3);
-                    var7.put("key", var2.getKeyCode());
-                    this.launcherProcedure.event("keyEvent", var7);
+                    Map<String, Object> map = new HashMap<>(2);
+                    map.put("timestamp", var3);
+                    map.put("key", keyEvent.getKeyCode());
+                    this.launcherProcedure.event("keyEvent", map);
                 }
             }
 
         }
     }
 
-    public void d(int var1) {
+    @Override
+    public void imageStage(int var1) {
         if (var1 == 0) {
-            ++this.n;
+            ++this.imageCount;
         } else if (var1 == 1) {
-            ++this.o;
+            ++this.imageSuccessCount;
         } else if (var1 == 2) {
-            ++this.p;
+            ++this.imageFailedCount;
         } else if (var1 == 3) {
-            ++this.q;
+            ++this.imageCanceledCount;
         }
-
     }
 
-    public void e(int var1) {
+    @Override
+    public void networkStage(int var1) {
         if (var1 == 0) {
-            ++this.r;
+            ++this.networkCount;
         } else if (var1 == 1) {
-            ++this.s;
+            ++this.networkSuccessCount;
         } else if (var1 == 2) {
-            ++this.t;
+            ++this.networkFailedCount;
         } else if (var1 == 3) {
-            ++this.u;
+            ++this.networkCanceledCount;
         }
-
     }
 
-    public void a(Activity var1, Fragment var2, String var3, long var4) {
-        if (var2 != null) {
-            if (var1 != null) {
-                if (var1 == this.lastTopActivityName) {
-                    String var6 = var2.getClass().getSimpleName();
-                    String var7 = var6 + "_" + var3;
-                    Integer var8 = (Integer) this.appLaunchListener.get(var7);
-                    if (var8 == null) {
-                        var8 = 0;
+    public void a(Activity activity, Fragment fragment, String var3, long time) {
+        if (fragment != null) {
+            if (activity != null) {
+                if (activity == this.activity) {
+                    String simpleName = fragment.getClass().getSimpleName();
+                    String var7 = simpleName + "_" + var3;
+                    Integer fps = this.fpsMap.get(var7);
+                    if (fps == null) {
+                        fps = 0;
                     } else {
-                        var8 = var8 + 1;
+                        fps = fps + 1;
                     }
-
-                    this.appLaunchListener.put(var7, var8);
-                    this.launcherProcedure.stage(var7 + var8, var4);
+                    this.fpsMap.put(var7, fps);
+                    this.launcherProcedure.stage(var7 + fps, time);
                 }
             }
         }

@@ -4,16 +4,16 @@ public class NetworkStageDispatcher extends AbsDispatcher<NetworkStageDispatcher
     public NetworkStageDispatcher() {
     }
 
-    public void g(final int var1) {
+    public void networkStage(final int var1) {
         this.dispatchRunnable(new AbsDispatcher.DispatcherRunnable<NetworkStageDispatcher.StageListener>() {
             @Override
             public void run(StageListener stageListener) {
-                stageListener.e(var1);
+                stageListener.networkStage(var1);
             }
         });
     }
 
     public interface StageListener {
-        void e(int var1);
+        void networkStage(int var1);
     }
 }

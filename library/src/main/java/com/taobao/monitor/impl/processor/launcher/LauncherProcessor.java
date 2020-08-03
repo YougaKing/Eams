@@ -154,8 +154,8 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
         this.applicationBackgroundChangedDispatcher.addListener(this);
         this.networkStageDispatcher.addListener(this);
         this.imageStageDispatcher.addListener(this);
-
         FragmentFunctionDispatcher.FRAGMENT_FUNCTION_DISPATCHER.addListener(this);
+
         this.addProperty();
         StartUpBeginEvent startUpBeginEvent = new StartUpBeginEvent();
         startUpBeginEvent.firstInstall = GlobalStats.isFirstInstall;
@@ -400,6 +400,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
             this.launcherProcedure.addStatistic("totalTx", flowBytes[1] - this.flowBytes[1]);
             this.launcherProcedure.stage("procedureEndTime", TimeUtils.currentTimeMillis());
             GlobalStats.hasSplash = false;
+
             this.applicationLowMemoryDispatcher.removeListener(this);
             this.activityFpsDispatcher.removeListener(this);
             this.applicationGcDispatcher.removeListener(this);
@@ -409,6 +410,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
             this.networkStageDispatcher.removeListener(this);
             this.imageStageDispatcher.removeListener(this);
             FragmentFunctionDispatcher.FRAGMENT_FUNCTION_DISPATCHER.removeListener(this);
+
             this.launcherProcedure.end();
             StartUpEndEvent startUpEndEvent = new StartUpEndEvent();
             DumpManager.getInstance().append(startUpEndEvent);
@@ -417,12 +419,14 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
 
     }
 
+    @Override
     public void b(int var1) {
         if (this.intList.size() < 200) {
             this.intList.add(var1);
         }
     }
 
+    @Override
     public void c(int jankCount) {
         this.jankCount += jankCount;
     }

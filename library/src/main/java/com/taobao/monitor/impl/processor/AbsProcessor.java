@@ -3,9 +3,10 @@ package com.taobao.monitor.impl.processor;
 import com.taobao.monitor.impl.common.APMContext;
 import com.taobao.monitor.impl.trace.IDispatcher;
 
+
 public class AbsProcessor implements IProcessor {
     private APMContext aPMContext = APMContext.instance();
-    private com.taobao.monitor.impl.processor.IProcessor.a a;
+    private IProcessor.a a;
     private volatile boolean d = false;
 
     protected AbsProcessor(boolean var1) {
@@ -16,7 +17,7 @@ public class AbsProcessor implements IProcessor {
         return APMContext.getDispatcher(key);
     }
 
-    public void a(com.taobao.monitor.impl.processor.IProcessor.a var1) {
+    public void a(a var1) {
         this.a = var1;
     }
 

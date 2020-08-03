@@ -144,7 +144,7 @@ public class APMLauncher {
                 Looper.myQueue().addIdleHandler(new IdleHandler() {
                     public boolean queueIdle() {
                         if (GlobalStats.createdPageCount == 0) {
-                            LauncherProcessor.c = "HOT";
+                            LauncherProcessor.sLaunchType = "HOT";
                             LauncherProcessor.isBackgroundLaunch = true;
                             APMLauncher.launchHelper.launchType("HOT");
                         }

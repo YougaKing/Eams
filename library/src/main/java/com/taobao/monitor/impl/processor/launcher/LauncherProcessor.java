@@ -257,7 +257,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
         map.put("pageName", ActivityUtils.getSimpleName(var1));
         this.launcherProcedure.event("onActivityStopped", map);
         if (var1 == this.activity) {
-            this.addStatistic();
+            this.o();
         }
 
     }
@@ -270,7 +270,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
         this.launcherProcedure.event("onActivityDestroyed", map);
         if (var1 == this.activity) {
             this.appInit = true;
-            this.addStatistic();
+            this.o();
         }
 
     }
@@ -368,7 +368,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
         }
     }
 
-    protected void addStatistic() {
+    protected void o() {
         if (!this.procedure) {
             this.procedure = true;
             this.q();
@@ -412,7 +412,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
             this.launcherProcedure.end();
             StartUpEndEvent startUpEndEvent = new StartUpEndEvent();
             DumpManager.getInstance().append(startUpEndEvent);
-            super.addStatistic();
+            super.o();
         }
 
     }
@@ -438,7 +438,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
             Map<String, Object> map = new HashMap<>(1);
             map.put("timestamp", var2);
             this.launcherProcedure.event("foreground2Background", map);
-            this.addStatistic();
+            this.o();
         }
 
     }

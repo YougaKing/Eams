@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+
 import com.ali.alihadeviceevaluator.AliHAHardware;
 import com.ali.ha.fulltrace.dump.DumpManager;
 import com.ali.ha.fulltrace.event.DisplayedEvent;
@@ -35,13 +36,23 @@ import com.taobao.monitor.procedure.IProcedure;
 import com.taobao.monitor.procedure.ProcedureConfig;
 import com.taobao.monitor.procedure.ProcedureFactoryProxy;
 import com.taobao.monitor.procedure.ProcedureConfig.Builder;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 @TargetApi(16)
-public class PageLoadProcessor extends PageLoadPopProcessor implements h<Activity>, com.taobao.monitor.impl.processor.pageload.e.a, com.taobao.monitor.impl.trace.b.a, com.taobao.monitor.impl.trace.d.a, com.taobao.monitor.impl.trace.e.a, com.taobao.monitor.impl.trace.f.a, com.taobao.monitor.impl.trace.i.a, k, com.taobao.monitor.impl.trace.m.a, com.taobao.monitor.impl.trace.n.a {
+public class PageLoadProcessor extends PageLoadPopProcessor implements h<Activity>,
+        com.taobao.monitor.impl.processor.pageload.e.a,
+        com.taobao.monitor.impl.trace.b.a,
+        com.taobao.monitor.impl.trace.d.a,
+        com.taobao.monitor.impl.trace.e.a,
+        com.taobao.monitor.impl.trace.f.a,
+        com.taobao.monitor.impl.trace.i.a,
+        k,
+        com.taobao.monitor.impl.trace.m.a,
+        com.taobao.monitor.impl.trace.n.a {
     private IProcedure a;
     private long f;
     private Activity d = null;
@@ -88,7 +99,7 @@ public class PageLoadProcessor extends PageLoadPopProcessor implements h<Activit
 
     protected void n() {
         super.n();
-        ProcedureConfig var1 = (new Builder()).setIndependent(false).setUpload(true).setParentNeedStats(true).setParent((IProcedure)null).build();
+        ProcedureConfig var1 = (new Builder()).setIndependent(false).setUpload(true).setParentNeedStats(true).setParent((IProcedure) null).build();
         this.a = ProcedureFactoryProxy.PROXY.createProcedure(TopicUtils.getFullTopic("/pageLoad"), var1);
         this.a.begin();
         this.a = this.a("ACTIVITY_EVENT_DISPATCHER");
@@ -216,11 +227,11 @@ public class PageLoadProcessor extends PageLoadPopProcessor implements h<Activit
         if (this.b != null && this.m > this.b.size()) {
             Integer var6 = 0;
 
-            for(int var7 = this.m; var7 < this.b.size(); ++var7) {
-                var6 = var6 + (Integer)this.b.get(var7);
+            for (int var7 = this.m; var7 < this.b.size(); ++var7) {
+                var6 = var6 + (Integer) this.b.get(var7);
             }
 
-            this.a.averageUseFps = (float)(var6 / (this.b.size() - this.m));
+            this.a.averageUseFps = (float) (var6 / (this.b.size() - this.m));
         }
 
         DumpManager.getInstance().append(this.a);
@@ -297,17 +308,17 @@ public class PageLoadProcessor extends PageLoadPopProcessor implements h<Activit
                 this.a.addStatistic("totalTx", this.b[1]);
                 this.s = false;
                 UsableEvent var8 = new UsableEvent();
-                var8.duration = (float)(var4 - this.f);
+                var8.duration = (float) (var4 - this.f);
                 DumpManager.getInstance().append(var8);
                 if (this.b != null && this.b.size() != 0) {
                     Integer var9 = 0;
 
                     Integer var11;
-                    for(Iterator var10 = this.b.iterator(); var10.hasNext(); var9 = var9 + var11) {
-                        var11 = (Integer)var10.next();
+                    for (Iterator var10 = this.b.iterator(); var10.hasNext(); var9 = var9 + var11) {
+                        var11 = (Integer) var10.next();
                     }
 
-                    this.a.averageLoadFps = (float)(var9 / this.b.size());
+                    this.a.averageLoadFps = (float) (var9 / this.b.size());
                     this.m = this.b.size();
                 }
             }
@@ -460,7 +471,7 @@ public class PageLoadProcessor extends PageLoadPopProcessor implements h<Activit
             if (var1 == this.d) {
                 String var6 = var2.getClass().getSimpleName();
                 String var7 = var6 + "_" + var3;
-                Integer var8 = (Integer)this.b.get(var7);
+                Integer var8 = (Integer) this.b.get(var7);
                 if (var8 == null) {
                     var8 = 0;
                 } else {

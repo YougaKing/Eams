@@ -10,20 +10,26 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Build;
+import android.os.Build.VERSION;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.MessageQueue.IdleHandler;
 import android.os.Process;
 import android.os.SystemClock;
-import android.os.Build.VERSION;
-import android.os.MessageQueue.IdleHandler;
 import android.text.TextUtils;
+
 import com.ali.alihadeviceevaluator.AliHAHardware;
+import com.taobao.application.common.data.AppLaunchHelper;
 import com.taobao.application.common.data.DeviceHelper;
 import com.taobao.application.common.data.c;
 import com.taobao.application.common.data.c.a;
+import com.taobao.monitor.impl.common.ActivityManagerHook;
 import com.taobao.monitor.impl.common.DynamicConstants;
 import com.taobao.monitor.impl.common.Global;
+import com.taobao.monitor.impl.data.AbstractDataCollector;
 import com.taobao.monitor.impl.data.GlobalStats;
+import com.taobao.monitor.impl.data.collector.ActivityLifecycle;
+import com.taobao.monitor.impl.processor.launcher.LauncherProcessor;
 import com.taobao.monitor.impl.processor.launcher.b;
 import com.taobao.monitor.impl.trace.f;
 import com.taobao.monitor.impl.trace.g;
@@ -32,6 +38,7 @@ import com.taobao.monitor.impl.trace.l;
 import com.taobao.monitor.impl.trace.m;
 import com.taobao.monitor.impl.trace.n;
 import com.taobao.monitor.impl.trace.o;
+import com.taobao.monitor.impl.util.SafeUtils;
 import com.taobao.monitor.impl.util.TimeUtils;
 import com.taobao.monitor.impl.util.d;
 import com.taobao.monitor.impl.util.e;
@@ -39,13 +46,14 @@ import com.taobao.monitor.performance.APMAdapterFactoryProxy;
 import com.taobao.network.lifecycle.MtopLifecycleManager;
 import com.taobao.network.lifecycle.NetworkLifecycleManager;
 import com.taobao.phenix.lifecycle.PhenixLifeCycleManager;
+
 import java.net.URLEncoder;
 import java.util.Map;
 
 public class APMLauncher {
     private static final String TAG = "APMLauncher";
     private static boolean init = false;
-    private static final c launchHelper = new c();
+    private static final AppLaunchHelper launchHelper = new AppLaunchHelper();
 
     private APMLauncher() {
     }
@@ -66,15 +74,15 @@ public class APMLauncher {
 
     private static void initParams(Application var0, Map<String, Object> var1) {
         GlobalStats.launchStartTime = TimeUtils.currentTimeMillis();
-        launchHelper.a("COLD");
-        launchHelper.e(SystemClock.uptimeMillis());
-        launchHelper.d(System.currentTimeMillis());
+        launchHelper.launchType("COLD");
+        launchHelper.startAppOnCreateSystemClockTime(SystemClock.uptimeMillis());
+        launchHelper.startAppOnCreateSystemTime(System.currentTimeMillis());
         String var2 = "ALI_APM/device-id/monitor/procedure";
         if (var1 != null) {
-            GlobalStats.appVersion = e.a(var1.get("appVersion"), "unknown");
+            GlobalStats.appVersion = SafeUtils.instanceofString(var1.get("appVersion"), "unknown");
             Object var3 = var1.get("deviceId");
             if (var3 instanceof String) {
-                String var4 = (String)var3;
+                String var4 = (String) var3;
 
                 try {
                     var4 = URLEncoder.encode(var4, "UTF-8");
@@ -117,10 +125,10 @@ public class APMLauncher {
             var6.apply();
         }
 
-        GlobalStats.lastProcessStartTime = a.a();
-        launchHelper.b(GlobalStats.isFirstLaunch);
-        launchHelper.a(GlobalStats.isFirstInstall);
-        launchHelper.a(GlobalStats.lastProcessStartTime);
+        GlobalStats.lastProcessStartTime = AppLaunchHelper.AppLaunchHelperHolder.lastStartProcessTime();
+        launchHelper.isFirstLaunch(GlobalStats.isFirstLaunch);
+        launchHelper.isFullNewInstall(GlobalStats.isFirstInstall);
+        launchHelper.lastStartProcessTime(GlobalStats.lastProcessStartTime);
         DeviceHelper var8 = new DeviceHelper();
         var8.setMobileModel(Build.MODEL);
     }
@@ -132,9 +140,9 @@ public class APMLauncher {
                 Looper.myQueue().addIdleHandler(new IdleHandler() {
                     public boolean queueIdle() {
                         if (GlobalStats.createdPageCount == 0) {
-                            b.c = "HOT";
-                            b.isBackgroundLaunch = true;
-                            APMLauncher.launchHelper.a("HOT");
+                            LauncherProcessor.c = "HOT";
+                            LauncherProcessor.isBackgroundLaunch = true;
+                            APMLauncher.launchHelper.launchType("HOT");
                         }
 
                         return false;
@@ -145,21 +153,20 @@ public class APMLauncher {
     }
 
     private static void initLifecycle(Application var0) {
-        var0.registerActivityLifecycleCallbacks(new com.taobao.monitor.impl.data.a.b());
+        var0.registerActivityLifecycleCallbacks(new ActivityLifecycle());
     }
 
     private static void initWeex() {
-        if (DynamicConstants.needWeex) {
-            APMAdapterFactoryProxy.instance().setFactory(new com.taobao.monitor.impl.processor.a.a());
-        }
-
+//        if (DynamicConstants.needWeex) {
+//            APMAdapterFactoryProxy.instance().setFactory(new com.taobao.monitor.impl.processor.a.a());
+//        }
     }
 
     private static void initHookActivityManager() {
         if (VERSION.SDK_INT <= 28) {
             runInMain(new Runnable() {
                 public void run() {
-                    com.taobao.monitor.impl.common.b.start();
+                    ActivityManagerHook.start();
                 }
             });
         }

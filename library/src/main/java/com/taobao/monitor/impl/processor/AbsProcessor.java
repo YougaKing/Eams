@@ -28,7 +28,7 @@ public class AbsProcessor implements IProcessor {
 
     }
 
-    protected void o() {
+    protected void addStatistic() {
         if (!this.d) {
             this.d = true;
             if (this.a != null) {

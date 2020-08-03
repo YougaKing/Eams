@@ -9,7 +9,7 @@ import com.taobao.monitor.impl.processor.IProcessorFactory;
  * @description:
  */
 public class LauncherProcessorFactory implements IProcessorFactory<LauncherProcessor> {
-    LauncherProcessorFactory() {
+    public LauncherProcessorFactory() {
     }
 
     public LauncherProcessor createProcessor() {

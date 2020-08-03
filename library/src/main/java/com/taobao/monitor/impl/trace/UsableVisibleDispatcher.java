@@ -24,11 +24,11 @@ public class UsableVisibleDispatcher extends AbsDispatcher<OnUsableVisibleListen
         });
     }
 
-    public void a(final Object var1, final long var2) {
+    public void onActivityStarted(final Object var1, final long var2) {
         this.dispatchRunnable(new AbsDispatcher.DispatcherRunnable<OnUsableVisibleListener>() {
             @Override
             public void run(OnUsableVisibleListener onUsableVisibleListener) {
-                onUsableVisibleListener.a(var1, var2);
+                onUsableVisibleListener.onActivityStarted(var1, var2);
             }
         });
     }

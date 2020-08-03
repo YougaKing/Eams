@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AbsDispatcher<LISTENER> implements IDispatcher<LISTENER> {
-    private final List<LISTENER> mList = new ArrayList<>();
+    private final List<LISTENER> listeners = new ArrayList<>();
 
     protected AbsDispatcher() {
         Logger.i("AbsDispatcher", this.getClass().getSimpleName(), " init");
@@ -22,8 +22,8 @@ public class AbsDispatcher<LISTENER> implements IDispatcher<LISTENER> {
             if (this.isInstance(var1)) {
                 this.postRunnable(new Runnable() {
                     public void run() {
-                        if (!AbsDispatcher.this.mList.contains(var1)) {
-                            AbsDispatcher.this.mList.add(var1);
+                        if (!AbsDispatcher.this.listeners.contains(var1)) {
+                            AbsDispatcher.this.listeners.add(var1);
                         }
 
                     }
@@ -55,7 +55,7 @@ public class AbsDispatcher<LISTENER> implements IDispatcher<LISTENER> {
         if (!(this instanceof EmptyDispatcher) && var1 != null) {
             this.postRunnable(new Runnable() {
                 public void run() {
-                    AbsDispatcher.this.mList.remove(var1);
+                    AbsDispatcher.this.listeners.remove(var1);
                 }
             });
         }
@@ -65,17 +65,19 @@ public class AbsDispatcher<LISTENER> implements IDispatcher<LISTENER> {
         Global.instance().handler().post(var1);
     }
 
-    protected final void a(final DispatcherCall<LISTENER> var1) {
+    protected final void dispatchRunnable(final DispatcherRunnable<LISTENER> runnable) {
         this.postRunnable(new Runnable() {
+
+            @Override
             public void run() {
-                for (Object var2 : AbsDispatcher.this.mList) {
-                    var1.dispatch((LISTENER) var2);
+                for (Object listener : AbsDispatcher.this.listeners) {
+                    runnable.run((LISTENER) listener);
                 }
             }
         });
     }
 
-    protected interface DispatcherCall<LISTENER> {
-        void dispatch(LISTENER var1);
+    protected interface DispatcherRunnable<LISTENER> {
+        void run(LISTENER listener);
     }
 }

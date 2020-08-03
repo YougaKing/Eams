@@ -20,7 +20,7 @@ class ApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallbackG
     }
 
     public void onActivityCreated(final Activity var1, final Bundle var2) {
-        this.a(new Runnable() {
+        this.postRunnable(new Runnable() {
             public void run() {
                 Iterator var1x = ApplicationCallbackGroup.this.mLifecycleCallbacks.iterator();
 
@@ -34,7 +34,7 @@ class ApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallbackG
     }
 
     public void onActivityStarted(final Activity var1) {
-        this.a(new Runnable() {
+        this.postRunnable(new Runnable() {
             public void run() {
                 Iterator var1x = ApplicationCallbackGroup.this.mLifecycleCallbacks.iterator();
 
@@ -48,7 +48,7 @@ class ApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallbackG
     }
 
     public void onActivityResumed(final Activity var1) {
-        this.a(new Runnable() {
+        this.postRunnable(new Runnable() {
             public void run() {
                 Iterator var1x = ApplicationCallbackGroup.this.mLifecycleCallbacks.iterator();
 
@@ -62,7 +62,7 @@ class ApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallbackG
     }
 
     public void onActivityPaused(final Activity var1) {
-        this.a(new Runnable() {
+        this.postRunnable(new Runnable() {
             public void run() {
                 Iterator var1x = ApplicationCallbackGroup.this.mLifecycleCallbacks.iterator();
 
@@ -76,7 +76,7 @@ class ApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallbackG
     }
 
     public void onActivityStopped(final Activity var1) {
-        this.a(new Runnable() {
+        this.postRunnable(new Runnable() {
             public void run() {
                 Iterator var1x = ApplicationCallbackGroup.this.mLifecycleCallbacks.iterator();
 
@@ -90,7 +90,7 @@ class ApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallbackG
     }
 
     public void onActivitySaveInstanceState(final Activity var1, final Bundle var2) {
-        this.a(new Runnable() {
+        this.postRunnable(new Runnable() {
             public void run() {
                 Iterator var1x = ApplicationCallbackGroup.this.mLifecycleCallbacks.iterator();
 
@@ -104,7 +104,7 @@ class ApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallbackG
     }
 
     public void onActivityDestroyed(final Activity var1) {
-        this.a(new Runnable() {
+        this.postRunnable(new Runnable() {
             public void run() {
                 Iterator var1x = ApplicationCallbackGroup.this.mLifecycleCallbacks.iterator();
 
@@ -121,7 +121,7 @@ class ApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallbackG
         if (var1 == null) {
             throw new IllegalArgumentException();
         } else {
-            this.a(new Runnable() {
+            this.postRunnable(new Runnable() {
                 public void run() {
                     if (!ApplicationCallbackGroup.this.mLifecycleCallbacks.contains(var1)) {
                         ApplicationCallbackGroup.this.mLifecycleCallbacks.add(var1);
@@ -136,7 +136,7 @@ class ApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallbackG
         if (var1 == null) {
             throw new IllegalArgumentException();
         } else {
-            this.a(new Runnable() {
+            this.postRunnable(new Runnable() {
                 public void run() {
                     ApplicationCallbackGroup.this.mLifecycleCallbacks.remove(var1);
                 }
@@ -144,7 +144,7 @@ class ApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallbackG
         }
     }
 
-    private void a(Runnable var1) {
-        ApmImpl.instance().b(var1);
+    private void postRunnable(Runnable var1) {
+        ApmImpl.instance().postRunnable(var1);
     }
 }

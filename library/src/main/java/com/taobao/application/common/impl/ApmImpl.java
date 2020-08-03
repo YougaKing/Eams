@@ -122,7 +122,7 @@ public class ApmImpl implements Apm, IApplicationMonitor {
 
     @Override
     public Handler getAsyncHandler() {
-        return null;
+        return this.handler;
     }
 
     @TargetApi(14)
@@ -151,7 +151,7 @@ public class ApmImpl implements Apm, IApplicationMonitor {
         this.topActivity = var1;
     }
 
-    public void b(Runnable var1) {
+    public void postRunnable(Runnable var1) {
         this.handler.post(var1);
     }
 

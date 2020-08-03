@@ -55,6 +55,6 @@ public class PageListenerGroup implements IPageListener, IListenerGroup<IPageLis
     }
 
     private void a(Runnable var1) {
-        ApmImpl.instance().b(var1);
+        ApmImpl.instance().postRunnable(var1);
     }
 }

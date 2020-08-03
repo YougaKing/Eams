@@ -17,7 +17,7 @@ public class AppLaunchListenerGroup implements IAppLaunchListener, IListenerGrou
         if (var1 == null) {
             throw new IllegalArgumentException();
         } else {
-            this.a(new Runnable() {
+            this.postRunnable(new Runnable() {
                 public void run() {
                     if (!AppLaunchListenerGroup.this.launchListeners.contains(var1)) {
                         AppLaunchListenerGroup.this.launchListeners.add(var1);
@@ -33,7 +33,7 @@ public class AppLaunchListenerGroup implements IAppLaunchListener, IListenerGrou
         if (var1 == null) {
             throw new IllegalArgumentException();
         } else {
-            this.a(new Runnable() {
+            this.postRunnable(new Runnable() {
                 public void run() {
                     AppLaunchListenerGroup.this.launchListeners.remove(var1);
                 }
@@ -42,7 +42,7 @@ public class AppLaunchListenerGroup implements IAppLaunchListener, IListenerGrou
     }
 
     public void onLaunchChanged(final int var1, final int var2) {
-        this.a(new Runnable() {
+        this.postRunnable(new Runnable() {
             public void run() {
                 Iterator var1x = AppLaunchListenerGroup.this.launchListeners.iterator();
 
@@ -55,7 +55,7 @@ public class AppLaunchListenerGroup implements IAppLaunchListener, IListenerGrou
         });
     }
 
-    private void a(Runnable var1) {
-        ApmImpl.instance().b(var1);
+    private void postRunnable(Runnable var1) {
+        ApmImpl.instance().postRunnable(var1);
     }
 }

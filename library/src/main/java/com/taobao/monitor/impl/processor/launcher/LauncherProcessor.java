@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+
 import com.ali.alihadeviceevaluator.AliHAHardware;
 import com.ali.ha.fulltrace.dump.DumpManager;
 import com.ali.ha.fulltrace.event.DisplayedEvent;
@@ -24,24 +25,43 @@ import com.ali.ha.fulltrace.event.StartUpEndEvent;
 import com.taobao.application.common.IAppLaunchListener;
 import com.taobao.application.common.data.c;
 import com.taobao.monitor.impl.data.GlobalStats;
-import com.taobao.monitor.impl.data.h;
+import com.taobao.monitor.impl.data.OnUsableVisibleListener;
+import com.taobao.monitor.impl.processor.AbsProcessor;
 import com.taobao.monitor.impl.processor.a;
+import com.taobao.monitor.impl.processor.pageload.PageModelLifecycle;
 import com.taobao.monitor.impl.processor.pageload.ProcedureManagerSetter;
+import com.taobao.monitor.impl.trace.ActivityEventDispatcher;
+import com.taobao.monitor.impl.trace.ApplicationBackgroundChangedDispatcher;
+import com.taobao.monitor.impl.trace.ApplicationGCDispatcher;
+import com.taobao.monitor.impl.trace.ApplicationLowMemoryDispatcher;
+import com.taobao.monitor.impl.trace.FragmentFunctionListener;
+import com.taobao.monitor.impl.trace.FragmentLifecycleDispatcher;
 import com.taobao.monitor.impl.trace.IDispatcher;
+import com.taobao.monitor.impl.trace.ImageStageDispatcher;
+import com.taobao.monitor.impl.trace.NetworkStageDispatcher;
 import com.taobao.monitor.impl.trace.j;
-import com.taobao.monitor.impl.trace.k;
 import com.taobao.monitor.impl.util.TimeUtils;
 import com.taobao.monitor.impl.util.TopicUtils;
 import com.taobao.monitor.procedure.IProcedure;
 import com.taobao.monitor.procedure.ProcedureConfig;
+import com.taobao.monitor.procedure.ProcedureConfig.Builder;
 import com.taobao.monitor.procedure.ProcedureFactoryProxy;
 import com.taobao.monitor.procedure.ProcedureManagerProxy;
-import com.taobao.monitor.procedure.ProcedureConfig.Builder;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class LauncherProcessor extends a implements h<Activity>, com.taobao.monitor.impl.processor.pageload.e.a, com.taobao.monitor.impl.trace.b.a, com.taobao.monitor.impl.trace.d.a, com.taobao.monitor.impl.trace.e.a, com.taobao.monitor.impl.trace.f.a, com.taobao.monitor.impl.trace.i.a, k, com.taobao.monitor.impl.trace.m.a, com.taobao.monitor.impl.trace.n.a {
+public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleListener<Activity>,
+        PageModelLifecycle.a,
+        ActivityEventDispatcher.EventListener,
+        ApplicationBackgroundChangedDispatcher.BackgroundChangedListener,
+        ApplicationGCDispatcher.GCListener,
+        ApplicationLowMemoryDispatcher.LowMemoryListener,
+        FragmentLifecycleDispatcher.LifecycleListener,
+        FragmentFunctionListener,
+        ImageStageDispatcher.StageListener,
+        NetworkStageDispatcher.StageListener {
     public static volatile String c = "COLD";
     public static boolean isBackgroundLaunch = false;
     private String d;
@@ -66,7 +86,7 @@ public class LauncherProcessor extends a implements h<Activity>, com.taobao.moni
     private HashMap<String, Integer> b = new HashMap();
     private String f;
     private volatile boolean v;
-    IAppLaunchListener b;
+    IAppLaunchListener appLaunchListener;
     private int n;
     private int o;
     private int p;
@@ -85,7 +105,7 @@ public class LauncherProcessor extends a implements h<Activity>, com.taobao.moni
         super(false);
         this.f = c;
         this.v = false;
-        this.b = com.taobao.application.common.impl.b.a().a();
+        this.appLaunchListener = com.taobao.application.common.impl.b.a().a();
         this.o = true;
         this.r = true;
         this.s = true;
@@ -99,7 +119,7 @@ public class LauncherProcessor extends a implements h<Activity>, com.taobao.moni
         (new c()).a(this.f);
         this.a = ProcedureManagerProxy.PROXY.getLauncherProcedure();
         if (this.a == null || !this.a.isAlive()) {
-            ProcedureConfig var1 = (new Builder()).setIndependent(false).setUpload(true).setParentNeedStats(true).setParent((IProcedure)null).build();
+            ProcedureConfig var1 = (new Builder()).setIndependent(false).setUpload(true).setParentNeedStats(true).setParent((IProcedure) null).build();
             this.a = ProcedureFactoryProxy.PROXY.createProcedure(TopicUtils.getFullTopic("/startup"), var1);
             this.a.begin();
             ProcedureManagerSetter.instance().setCurrentLauncherProcedure(this.a);
@@ -108,14 +128,14 @@ public class LauncherProcessor extends a implements h<Activity>, com.taobao.moni
         long var4 = TimeUtils.currentTimeMillis();
         this.a.stage("procedureStartTime", var4);
         this.a = this.a("ACTIVITY_EVENT_DISPATCHER");
-        this.b = this.a("APPLICATION_LOW_MEMORY_DISPATCHER");
+        this.appLaunchListener = this.a("APPLICATION_LOW_MEMORY_DISPATCHER");
         this.e = this.a("ACTIVITY_USABLE_VISIBLE_DISPATCHER");
         this.c = this.a("ACTIVITY_FPS_DISPATCHER");
         this.d = this.a("APPLICATION_GC_DISPATCHER");
         this.f = this.a("APPLICATION_BACKGROUND_CHANGED_DISPATCHER");
         this.g = this.a("NETWORK_STAGE_DISPATCHER");
         this.h = this.a("IMAGE_STAGE_DISPATCHER");
-        this.b.addListener(this);
+        this.appLaunchListener.addListener(this);
         this.c.addListener(this);
         this.d.addListener(this);
         this.a.addListener(this);
@@ -274,7 +294,7 @@ public class LauncherProcessor extends a implements h<Activity>, com.taobao.moni
             FirstDrawEvent var6 = new FirstDrawEvent();
             DumpManager.getInstance().append(var6);
             this.r = false;
-            this.b.onLaunchChanged(this.a(), 0);
+            this.appLaunchListener.onLaunchChanged(this.a(), 0);
         }
 
     }
@@ -304,9 +324,9 @@ public class LauncherProcessor extends a implements h<Activity>, com.taobao.moni
                 this.a.addProperty("usableChangeType", var3);
                 this.a.stage("interactiveTime", var4);
                 LauncherUsableEvent var8 = new LauncherUsableEvent();
-                var8.duration = (float)(var4 - this.i);
+                var8.duration = (float) (var4 - this.i);
                 DumpManager.getInstance().append(var8);
-                this.b.onLaunchChanged(this.a(), 2);
+                this.appLaunchListener.onLaunchChanged(this.a(), 2);
                 this.q();
                 this.s = false;
             }
@@ -325,7 +345,7 @@ public class LauncherProcessor extends a implements h<Activity>, com.taobao.moni
                 this.a.stage("displayedTime", var3);
                 DisplayedEvent var7 = new DisplayedEvent();
                 DumpManager.getInstance().append(var7);
-                this.b.onLaunchChanged(this.a(), 1);
+                this.appLaunchListener.onLaunchChanged(this.a(), 1);
                 this.t = false;
             }
 
@@ -347,7 +367,7 @@ public class LauncherProcessor extends a implements h<Activity>, com.taobao.moni
             this.c.clear();
             this.a.addProperty("hasSplash", GlobalStats.hasSplash);
             this.a.addStatistic("gcCount", this.l);
-            this.a.addStatistic("fps", this.b.toString());
+            this.a.addStatistic("fps", this.appLaunchListener.toString());
             this.a.addStatistic("jankCount", this.c);
             this.a.addStatistic("image", this.n);
             this.a.addStatistic("imageOnRequest", this.n);
@@ -365,7 +385,7 @@ public class LauncherProcessor extends a implements h<Activity>, com.taobao.moni
             this.a.stage("procedureEndTime", TimeUtils.currentTimeMillis());
             GlobalStats.hasSplash = false;
             this.f.removeListener(this);
-            this.b.removeListener(this);
+            this.appLaunchListener.removeListener(this);
             this.d.removeListener(this);
             this.c.removeListener(this);
             this.a.removeListener(this);
@@ -382,8 +402,8 @@ public class LauncherProcessor extends a implements h<Activity>, com.taobao.moni
     }
 
     public void b(int var1) {
-        if (this.b.size() < 200) {
-            this.b.add(var1);
+        if (this.appLaunchListener.size() < 200) {
+            this.appLaunchListener.add(var1);
         }
 
     }
@@ -408,7 +428,7 @@ public class LauncherProcessor extends a implements h<Activity>, com.taobao.moni
 
     private void q() {
         if (!this.v) {
-            this.b.onLaunchChanged(this.f.equals("COLD") ? 0 : 1, 4);
+            this.appLaunchListener.onLaunchChanged(this.f.equals("COLD") ? 0 : 1, 4);
             this.v = true;
         }
 
@@ -472,14 +492,14 @@ public class LauncherProcessor extends a implements h<Activity>, com.taobao.moni
                 if (var1 == this.d) {
                     String var6 = var2.getClass().getSimpleName();
                     String var7 = var6 + "_" + var3;
-                    Integer var8 = (Integer)this.b.get(var7);
+                    Integer var8 = (Integer) this.appLaunchListener.get(var7);
                     if (var8 == null) {
                         var8 = 0;
                     } else {
                         var8 = var8 + 1;
                     }
 
-                    this.b.put(var7, var8);
+                    this.appLaunchListener.put(var7, var8);
                     this.a.stage(var7 + var8, var4);
                 }
             }

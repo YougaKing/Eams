@@ -1,7 +1,8 @@
 package com.taobao.monitor.impl.trace;
 
 import android.app.Activity;
-import android.support.v4.app.Fragment;
+
+import androidx.fragment.app.Fragment;
 
 /* compiled from: FragmentFunctionListener */
 public interface k {

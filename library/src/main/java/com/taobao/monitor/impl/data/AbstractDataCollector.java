@@ -44,7 +44,7 @@ public class AbstractDataCollector<T> implements com.taobao.monitor.impl.data.i.
         }
     };
 
-    protected a(T var1) {
+    protected AbstractDataCollector(T var1) {
         if (!(var1 instanceof Activity) && !(var1 instanceof Fragment)) {
             throw new IllegalArgumentException();
         } else {

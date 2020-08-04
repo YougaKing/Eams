@@ -30,8 +30,8 @@ import com.taobao.monitor.impl.data.detector.GCCollector;
 import com.taobao.monitor.impl.data.network.NetworkLifecycleImpl;
 import com.taobao.monitor.impl.data.phenix.PhenixLifeCycleImpl;
 import com.taobao.monitor.impl.processor.fragmentload.FragmentModelLifecycle;
+import com.taobao.monitor.impl.processor.launcher.LauncherModelLifeCycle;
 import com.taobao.monitor.impl.processor.launcher.LauncherProcessor;
-import com.taobao.monitor.impl.processor.pageload.PageLoadPopProcessor;
 import com.taobao.monitor.impl.processor.pageload.PageModelLifecycle;
 import com.taobao.monitor.impl.trace.ActivityEventDispatcher;
 import com.taobao.monitor.impl.trace.ActivityLifeCycleDispatcher;
@@ -232,7 +232,7 @@ public class APMLauncher {
         DispatcherManager.putDispatcher("ACTIVITY_FPS_DISPATCHER", new FPSDispatcher());
         ActivityLifeCycleDispatcher activityLifeCycleDispatcher = new ActivityLifeCycleDispatcher();
         activityLifeCycleDispatcher.addListener(new PageModelLifecycle());
-        activityLifeCycleDispatcher.addListener(new PageLoadPopProcessor());
+        activityLifeCycleDispatcher.addListener(new LauncherModelLifeCycle());
         DispatcherManager.putDispatcher("ACTIVITY_LIFECYCLE_DISPATCHER", activityLifeCycleDispatcher);
         DispatcherManager.putDispatcher("ACTIVITY_EVENT_DISPATCHER", new ActivityEventDispatcher());
         DispatcherManager.putDispatcher("ACTIVITY_USABLE_VISIBLE_DISPATCHER", new UsableVisibleDispatcher());

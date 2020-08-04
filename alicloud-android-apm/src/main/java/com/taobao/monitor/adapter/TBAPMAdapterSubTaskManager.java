@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /* compiled from: TBAPMAdapterSubTaskManager */
-public class b {
-    private static Map<String, a> a = new HashMap();
+public class TBAPMAdapterSubTaskManager {
+    private static Map<String, Property> propertyMap = new HashMap();
     private static Map<String, IProcedure> b = new HashMap();
     /* access modifiers changed from: private */
 
@@ -20,45 +20,45 @@ public class b {
     public static boolean f6b = true;
 
     /* compiled from: TBAPMAdapterSubTaskManager */
-    private static class a {
+    private static class Property {
         /* access modifiers changed from: private */
-        public long b;
+        public long taskEnd;
         /* access modifiers changed from: private */
-        public long c;
+        public long cpuEndTime;
 
         /* renamed from: c reason: collision with other field name */
-        private boolean f7c;
+        private boolean isMainThread;
         /* access modifiers changed from: private */
         public long cpuStartTime;
-        private String d;
+        private String threadName;
         private long startTime;
 
-        private a() {
+        private Property() {
         }
     }
 
     protected static void a() {
         async(new Runnable() {
             public void run() {
-                Iterator it = b.a().entrySet().iterator();
+                Iterator it = TBAPMAdapterSubTaskManager.propertyMap.entrySet().iterator();
                 while (it.hasNext()) {
                     Entry entry = (Entry) it.next();
                     String str = (String) entry.getKey();
-                    a aVar = (a) entry.getValue();
-                    if (aVar.b != 0) {
+                    Property property = (Property) entry.getValue();
+                    if (property.taskEnd != 0) {
                         IProcedure createProcedure = ProcedureFactoryProxy.PROXY.createProcedure("/" + str, new Builder().setIndependent(false).setUpload(false).setParentNeedStats(false).setParent(ProcedureManagerProxy.PROXY.getLauncherProcedure()).build());
                         createProcedure.begin();
-                        createProcedure.stage("taskStart", a.a(aVar));
-                        createProcedure.stage("cpuStartTime", aVar.cpuStartTime);
-                        createProcedure.addProperty("isMainThread", Boolean.valueOf(a.a(aVar)));
-                        createProcedure.addProperty("threadName", a.a(aVar));
-                        createProcedure.stage("taskEnd", aVar.b);
-                        createProcedure.stage("cpuEndTime", aVar.c);
+                        createProcedure.stage("taskStart", property.startTime);
+                        createProcedure.stage("cpuStartTime", property.cpuStartTime);
+                        createProcedure.addProperty("isMainThread", property.isMainThread);
+                        createProcedure.addProperty("threadName", property.threadName);
+                        createProcedure.stage("taskEnd", property.taskEnd);
+                        createProcedure.stage("cpuEndTime", property.cpuEndTime);
                         createProcedure.end();
                         it.remove();
                     }
                 }
-                b.f6b = false;
+                TBAPMAdapterSubTaskManager.f6b = false;
             }
         });
     }

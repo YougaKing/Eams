@@ -4,7 +4,7 @@ import com.taobao.monitor.impl.common.Global;
 import java.io.File;
 
 /* compiled from: SenderLiteDb */
-class b implements a {
+class SenderLiteDb implements ILiteDb {
     private final File file = new File(Global.instance().context().getCacheDir() + "/" + "apm_db.db");
 
     /* JADX WARNING: Removed duplicated region for block: B:15:0x002c A[Catch:{ Exception -> 0x0030 }] */

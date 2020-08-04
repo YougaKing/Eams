@@ -33,4 +33,5 @@ dependencies {
 
     api project(path: ':alicloud-android-ha-fulltrace')
     api project(path: ':alicloud-android-ha-apm-impl')
+    api project(path: ':alicloud-android-ha-tbrest')
 }

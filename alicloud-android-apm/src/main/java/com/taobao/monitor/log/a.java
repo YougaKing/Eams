@@ -1,4 +1,4 @@
-package com.taobao.monitor.c;
+package com.taobao.monitor.log;
 
 import android.util.Log;
 

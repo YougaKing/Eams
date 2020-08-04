@@ -1,4 +1,4 @@
-package com.taobao.monitor.b;
+package com.taobao.monitor.exception;
 
 /* compiled from: ProcedureException */
 public class a extends RuntimeException {

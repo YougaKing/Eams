@@ -15,6 +15,7 @@ import com.ali.ha.fulltrace.FulltraceGlobal;
 import com.ali.ha.fulltrace.FulltraceLauncher;
 import com.taobao.monitor.APMLauncher;
 import com.taobao.monitor.ProcedureGlobal;
+import com.taobao.monitor.ProcedureLauncher;
 import com.taobao.monitor.adapter.constants.TBAPMConstants;
 import com.taobao.monitor.adapter.db.TBRestSender;
 import com.taobao.monitor.impl.common.Global;
@@ -191,7 +192,7 @@ public class SimpleApmInitiator implements Serializable {
     }
 
     private void initAPMLauncher(Application application, HashMap<String, Object> hashMap) {
-        com.taobao.monitor.b.a((Context) application, (Map<String, Object>) hashMap);
+        ProcedureLauncher.a((Context) application, (Map<String, Object>) hashMap);
         APMLauncher.init(application, hashMap);
         ProcedureManagerSetter.instance().setProxy(new IProcedureManager() {
             public void setCurrentActivityProcedure(IProcedure iProcedure) {

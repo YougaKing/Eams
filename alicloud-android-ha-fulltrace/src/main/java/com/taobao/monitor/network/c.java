@@ -46,7 +46,7 @@ public class c implements IProcedureLifeCycle {
             e.printStackTrace();
         }
         String jSONObject3 = jSONObject.toString();
-        com.taobao.monitor.c.a.i("NetworkDataUpdate", jSONObject3);
+        com.taobao.monitor.log.a.i("NetworkDataUpdate", jSONObject3);
         b.a().b(value.topic(), jSONObject3);
     }
 

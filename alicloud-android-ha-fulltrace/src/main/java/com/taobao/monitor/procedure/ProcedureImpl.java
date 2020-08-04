@@ -1,6 +1,6 @@
 package com.taobao.monitor.procedure;
 
-import com.taobao.monitor.c.a;
+import com.taobao.monitor.log.a;
 import com.taobao.monitor.procedure.model.Event;
 import com.taobao.monitor.procedure.model.Stage;
 import java.util.LinkedList;
@@ -213,7 +213,7 @@ public class ProcedureImpl implements IProcedureGroup, IValueCallback {
     public void finalize() throws Throwable {
         super.finalize();
         if (this.status == Status.RUNNING) {
-            a.throwException(new com.taobao.monitor.b.a("Please call end function first!"));
+            a.throwException(new com.taobao.monitor.exception.a("Please call end function first!"));
         }
     }
 

@@ -1,4 +1,4 @@
-package com.taobao.monitor.e;
+package com.taobao.monitor.process;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;

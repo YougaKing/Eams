@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 /* compiled from: ProcedureLauncher */
-public class b {
+public class ProcedureLauncher {
     private static boolean a = false;
 
     /* compiled from: ProcedureLauncher */
@@ -23,10 +23,10 @@ public class b {
     public static void a(Context context, Map<String, Object> map) {
         if (!a) {
             a = true;
-            a.a().a(context);
+            ProcedureGlobal.instance().a(context);
             b(context, map);
-            ProcedureManagerProxy.PROXY.setReal(a.f0a);
-            ProcedureFactoryProxy.PROXY.setReal(a.a);
+            ProcedureManagerProxy.PROXY.setReal(ProcedureGlobal.f0a);
+            ProcedureFactoryProxy.PROXY.setReal(ProcedureGlobal.a);
         }
     }
 
@@ -37,7 +37,7 @@ public class b {
         Header.appVersion = a(map.get("appVersion"), (a<String>) new a<String>() {
             /* renamed from: a */
             public String call() {
-                Context context = a.a().context();
+                Context context = ProcedureGlobal.instance().context();
                 try {
                     return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
                 } catch (Exception e) {
@@ -62,7 +62,7 @@ public class b {
         Header.processName = a(map.get("process"), (a<String>) new a<String>() {
             /* renamed from: a */
             public String call() {
-                return com.taobao.monitor.e.a.b();
+                return com.taobao.monitor.process.a.b();
             }
         });
         Header.session = String.valueOf(System.currentTimeMillis());
@@ -93,13 +93,11 @@ public class b {
             try {
                 str2 = (String) method.invoke(null, new Object[]{"java.vm.name"});
             } catch (Exception e) {
-                e = e;
                 e.printStackTrace();
                 str2 = null;
                 return new String[]{str, str2};
             }
-        } catch (Exception e2) {
-            e = e2;
+        } catch (Exception e) {
             str = null;
             e.printStackTrace();
             str2 = null;

@@ -62,7 +62,7 @@ public class b {
         Header.processName = a(map.get("process"), (a<String>) new a<String>() {
             /* renamed from: a */
             public String call() {
-                return com.taobao.monitor.e.a.b();
+                return com.taobao.monitor.process.a.b();
             }
         });
         Header.session = String.valueOf(System.currentTimeMillis());

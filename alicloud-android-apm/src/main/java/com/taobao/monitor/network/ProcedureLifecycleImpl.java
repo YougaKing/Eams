@@ -1,17 +1,19 @@
 package com.taobao.monitor.network;
 
-import com.taobao.monitor.ProcedureGlobal.a;
 import com.taobao.monitor.procedure.Header;
 import com.taobao.monitor.procedure.ProcedureImpl.IProcedureLifeCycle;
 import com.taobao.monitor.procedure.Value;
 import com.taobao.monitor.procedure.model.Biz;
 import com.taobao.monitor.procedure.model.Event;
 import com.taobao.monitor.procedure.model.Stage;
+import com.taobao.monitor.thread.ThreadUtils;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /* compiled from: ProcedureLifecycleImpl */
 public class ProcedureLifecycleImpl implements IProcedureLifeCycle {
@@ -25,9 +27,9 @@ public class ProcedureLifecycleImpl implements IProcedureLifeCycle {
     }
 
     public void end(final Value value) {
-        INetworkSender.start(new Runnable() {
+        ThreadUtils.start(new Runnable() {
             public void run() {
-                ProcedureLifecycleImpl.this.a(value);
+                ProcedureLifecycleImpl.this.m0a(value);
             }
         });
     }
@@ -46,7 +48,7 @@ public class ProcedureLifecycleImpl implements IProcedureLifeCycle {
             e.printStackTrace();
         }
         String jSONObject3 = jSONObject.toString();
-        com.taobao.monitor.c.a.i("NetworkDataUpdate", jSONObject3);
+        com.taobao.monitor.log.a.i("NetworkDataUpdate", jSONObject3);
         NetworkSenderProxy.instance().b(value.topic(), jSONObject3);
     }
 
@@ -55,7 +57,7 @@ public class ProcedureLifecycleImpl implements IProcedureLifeCycle {
         JSONObject jSONObject = new JSONObject();
         JSONObject jSONObject2 = new JSONObject();
         boolean z = false;
-        Map properties = value.properties();
+        Map<String, Object> properties = value.properties();
         if (!(properties == null || properties.size() == 0)) {
             for (Entry entry : properties.entrySet()) {
                 a(jSONObject2, (String) entry.getKey(), entry.getValue());

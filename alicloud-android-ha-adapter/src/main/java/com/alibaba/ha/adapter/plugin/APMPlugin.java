@@ -3,12 +3,13 @@ package com.alibaba.ha.adapter.plugin;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
+
 import com.alibaba.ha.adapter.AliHaAdapter;
 import com.alibaba.ha.adapter.Plugin;
 import com.alibaba.ha.protocol.AliHaParam;
 import com.alibaba.ha.protocol.AliHaPlugin;
 import com.taobao.monitor.adapter.SimpleApmInitiator;
-import com.ut.device.UTDevice;
+
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -41,7 +42,7 @@ public class APMPlugin implements AliHaPlugin {
 
     private void initApplicationMonitor(Application application, AliHaParam aliHaParam) {
         HashMap hashMap = new HashMap();
-        hashMap.put("deviceId", UTDevice.getUtdid(application.getApplicationContext()));
+        hashMap.put("deviceId", "UTDevice.getUtdid(application.getApplicationContext())");
         hashMap.put("onlineAppKey", aliHaParam.appKey);
         hashMap.put("appVersion", aliHaParam.appVersion);
         hashMap.put("process", application.getApplicationInfo().processName);

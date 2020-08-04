@@ -1,4 +1,4 @@
-package com.taobao.monitor.adapter.b;
+package com.taobao.monitor.adapter.db;
 
 import java.util.List;
 

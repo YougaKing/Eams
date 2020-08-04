@@ -1,13 +1,15 @@
-package com.taobao.monitor.adapter.b;
+package com.taobao.monitor.adapter.db;
 
 import com.alibaba.motu.tbrest.SendService;
-import com.taobao.monitor.d.a;
+import com.taobao.monitor.ProcedureGlobal;
+import com.taobao.monitor.adapter.constants.TBAPMConstants;
+import com.taobao.monitor.network.INetworkSender;
 import com.taobao.monitor.impl.logger.Logger;
 import java.util.List;
 
 /* compiled from: TBRestSender */
-public class c implements a {
-    private a a = new b();
+public class TBRestSender implements INetworkSender {
+    private INetworkSender a = new b();
 
     /* renamed from: a reason: collision with other field name */
     private final Integer f8a = Integer.valueOf(61004);
@@ -17,8 +19,8 @@ public class c implements a {
     private final String host = null;
 
     public void b(final String str, final String str2) {
-        if (com.taobao.monitor.adapter.a.a.d) {
-            com.taobao.monitor.a.a.start(new Runnable() {
+        if (TBAPMConstants.d) {
+            ProcedureGlobal.a.start(new Runnable() {
                 public void run() {
                     int i2 = 0;
                     try {
@@ -30,19 +32,19 @@ public class c implements a {
                             if (i3 >= 2) {
                                 break;
                             }
-                            z = c.a(c.this, str, str2);
+                            z = TBRestSender.a(TBRestSender.this, str, str2);
                             if (z) {
                                 Logger.i("TBRestSender", new Object[]{"send success" + i2});
                                 break;
                             }
                         }
                         if (!z) {
-                            c.a(c.this, str, str2);
-                            c.this.e = true;
+                            TBRestSender.a(TBRestSender.this, str, str2);
+                            TBRestSender.this.e = true;
                         }
-                        if (z && c.a(c.this)) {
-                            c.a(c.this);
-                            c.this.e = false;
+                        if (z && TBRestSender.a(TBRestSender.this)) {
+                            TBRestSender.a(TBRestSender.this);
+                            TBRestSender.this.e = false;
                         }
                     } catch (Throwable th) {
                         Logger.throwException(th);

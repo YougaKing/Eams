@@ -1,13 +1,13 @@
-package com.taobao.monitor.a;
+package com.taobao.monitor.thread;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 /* compiled from: ThreadUtils */
-public class a {
-    private static Executor a = Executors.newFixedThreadPool(3);
+public class ThreadUtils {
+    private static Executor executor = Executors.newFixedThreadPool(3);
 
     public static void start(Runnable runnable) {
-        a.execute(runnable);
+        executor.execute(runnable);
     }
 }

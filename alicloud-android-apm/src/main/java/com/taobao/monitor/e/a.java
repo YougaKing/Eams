@@ -5,6 +5,9 @@ import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.Context;
 import android.os.Process;
 import android.text.TextUtils;
+
+import com.taobao.monitor.ProcedureGlobal;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,7 +16,7 @@ public final class a {
     private static String j;
 
     public static String b() {
-        Context context = com.taobao.monitor.a.a().context();
+        Context context = ProcedureGlobal.instance().context();
         if (TextUtils.isEmpty(j)) {
             String c = c();
             if (TextUtils.isEmpty(c) && context != null) {

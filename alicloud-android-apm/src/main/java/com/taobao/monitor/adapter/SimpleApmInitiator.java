@@ -7,15 +7,16 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.WebView;
+
 import com.ali.alihadeviceevaluator.AliHAHardware;
 import com.ali.ha.datahub.BizSubscriber;
 import com.ali.ha.datahub.DataHub;
 import com.ali.ha.fulltrace.FulltraceGlobal;
 import com.ali.ha.fulltrace.FulltraceLauncher;
 import com.taobao.monitor.APMLauncher;
-import com.taobao.monitor.adapter.a.a;
-import com.taobao.monitor.adapter.b.c;
-import com.taobao.monitor.d.b;
+import com.taobao.monitor.ProcedureGlobal;
+import com.taobao.monitor.adapter.constants.TBAPMConstants;
+import com.taobao.monitor.adapter.db.TBRestSender;
 import com.taobao.monitor.impl.common.Global;
 import com.taobao.monitor.impl.data.AbsWebView;
 import com.taobao.monitor.impl.data.GlobalStats;
@@ -25,10 +26,13 @@ import com.taobao.monitor.impl.processor.pageload.IProcedureManager;
 import com.taobao.monitor.impl.processor.pageload.ProcedureManagerSetter;
 import com.taobao.monitor.impl.util.TimeUtils;
 import com.taobao.monitor.impl.util.TopicUtils;
+import com.taobao.monitor.network.NetworkSenderProxy;
 import com.taobao.monitor.procedure.Header;
 import com.taobao.monitor.procedure.IProcedure;
 import com.taobao.monitor.procedure.ProcedureConfig.Builder;
 import com.taobao.monitor.procedure.ProcedureFactoryProxy;
+import com.taobao.monitor.thread.ThreadUtils;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,13 +43,13 @@ public class SimpleApmInitiator implements Serializable {
     private long cpuStartTime = SystemClock.currentThreadTimeMillis();
 
     public void init(Application application, HashMap<String, Object> hashMap) {
-        if (!a.a) {
+        if (!TBAPMConstants.a) {
             Logger.i(TAG, new Object[]{"init start"});
-            a.open = true;
+            TBAPMConstants.open = true;
             initAPMFunction(application, hashMap);
             initDeviceEvaluation(application);
             Logger.i(TAG, new Object[]{"init end"});
-            a.a = true;
+            TBAPMConstants.a = true;
         }
         Logger.i(TAG, new Object[]{"apmStartTime:", Long.valueOf(TimeUtils.currentTimeMillis() - this.apmStartTime)});
     }
@@ -56,7 +60,7 @@ public class SimpleApmInitiator implements Serializable {
 
     private void initDeviceEvaluation(Application application) {
         AliHAHardware.getInstance().setUp(application, FulltraceGlobal.instance().dumpHandler());
-        com.taobao.monitor.a.a.start(new Runnable() {
+        ThreadUtils.start(new Runnable() {
             public void run() {
                 AliHAHardware.getInstance().getOutlineInfo();
             }
@@ -64,7 +68,7 @@ public class SimpleApmInitiator implements Serializable {
     }
 
     private void initAPMFunction(Application application, HashMap<String, Object> hashMap) {
-        Global.instance().setHandler(com.taobao.monitor.a.a().handler());
+        Global.instance().setHandler(ProcedureGlobal.instance().handler());
         initAPMLauncher(application, hashMap);
         initTbRest(application);
         initFulltrace(application);
@@ -74,18 +78,18 @@ public class SimpleApmInitiator implements Serializable {
     }
 
     private void initTbRest(Application application) {
-        b.a().a(new c());
+        NetworkSenderProxy.instance().setNetworkSender(new TBRestSender());
     }
 
     private void initDataHub() {
         DataHub.getInstance().init(new BizSubscriber() {
-            public void pub(final String str, final HashMap<String, String> hashMap) {
+            public void pub(final String str, final Map<String, Object> hashMap) {
                 if ("splash".equals(str)) {
                     GlobalStats.hasSplash = true;
                 }
                 async(new Runnable() {
                     public void run() {
-                        IProcedure a2 = a.a();
+                        IProcedure a2 = DataHubProcedureGroupHelper.instance();
                         if (a2 != null) {
                             a2.addBiz(str, hashMap);
                         }
@@ -93,10 +97,10 @@ public class SimpleApmInitiator implements Serializable {
                 });
             }
 
-            public void pubAB(final String str, final HashMap<String, String> hashMap) {
+            public void pubAB(final String str, final Map<String, Object> hashMap) {
                 async(new Runnable() {
                     public void run() {
-                        IProcedure a2 = a.a();
+                        IProcedure a2 = DataHubProcedureGroupHelper.instance();
                         if (a2 != null) {
                             a2.addBizAbTest(str, hashMap);
                         }
@@ -110,7 +114,7 @@ public class SimpleApmInitiator implements Serializable {
                 final String str4 = str;
                 async(new Runnable() {
                     public void run() {
-                        IProcedure a2 = a.a();
+                        IProcedure a2 = DataHubProcedureGroupHelper.instance();
                         if (a2 != null) {
                             HashMap hashMap = new HashMap();
                             hashMap.put(str3, Long.valueOf(currentTimeMillis));
@@ -123,7 +127,7 @@ public class SimpleApmInitiator implements Serializable {
             public void setMainBiz(final String str, final String str2) {
                 async(new Runnable() {
                     public void run() {
-                        IProcedure a2 = a.a();
+                        IProcedure a2 = DataHubProcedureGroupHelper.instance();
                         if (a2 != null) {
                             a2.addProperty("bizID", str);
                             if (!TextUtils.isEmpty(str2)) {
@@ -135,7 +139,7 @@ public class SimpleApmInitiator implements Serializable {
             }
 
             public void onBizDataReadyStage() {
-                IProcedure a2 = a.a();
+                IProcedure a2 = DataHubProcedureGroupHelper.instance();
                 if (a2 != null) {
                     a2.stage("onBizDataReadyTime", TimeUtils.currentTimeMillis());
                 }
@@ -170,7 +174,7 @@ public class SimpleApmInitiator implements Serializable {
         boolean z = true;
         IProcedure createProcedure = ProcedureFactoryProxy.PROXY.createProcedure(TopicUtils.getFullTopic("/startup"), new Builder().setIndependent(false).setUpload(true).setParentNeedStats(false).setParent(null).build());
         createProcedure.begin();
-        com.taobao.monitor.a.f0a.setLauncherProcedure(createProcedure);
+        ProcedureGlobal.f0a.setLauncherProcedure(createProcedure);
         IProcedure createProcedure2 = ProcedureFactoryProxy.PROXY.createProcedure("/APMSelf", new Builder().setIndependent(false).setUpload(false).setParentNeedStats(false).setParent(createProcedure).build());
         createProcedure2.begin();
         if (Looper.getMainLooper().getThread() != Thread.currentThread()) {
@@ -180,7 +184,7 @@ public class SimpleApmInitiator implements Serializable {
         createProcedure2.addProperty("threadName", Thread.currentThread().getName());
         createProcedure2.stage("taskStart", this.apmStartTime);
         createProcedure2.stage("cpuStartTime", this.cpuStartTime);
-        b.a();
+        NetworkSenderProxy.instance();
         createProcedure2.stage("taskEnd", TimeUtils.currentTimeMillis());
         createProcedure2.stage("cpuEndTime", SystemClock.currentThreadTimeMillis());
         createProcedure2.end();
@@ -191,21 +195,21 @@ public class SimpleApmInitiator implements Serializable {
         APMLauncher.init(application, hashMap);
         ProcedureManagerSetter.instance().setProxy(new IProcedureManager() {
             public void setCurrentActivityProcedure(IProcedure iProcedure) {
-                com.taobao.monitor.a.f0a.setCurrentActivityProcedure(iProcedure);
+                ProcedureGlobal.f0a.setCurrentActivityProcedure(iProcedure);
             }
 
             public void setCurrentFragmentProcedure(IProcedure iProcedure) {
-                com.taobao.monitor.a.f0a.setCurrentFragmentProcedure(iProcedure);
+                ProcedureGlobal.f0a.setCurrentFragmentProcedure(iProcedure);
             }
 
             public void setCurrentLauncherProcedure(IProcedure iProcedure) {
-                com.taobao.monitor.a.f0a.setLauncherProcedure(iProcedure);
+                ProcedureGlobal.f0a.setLauncherProcedure(iProcedure);
             }
         });
     }
 
     private void initFulltrace(final Application application) {
-        com.taobao.monitor.a.a.start(new Runnable() {
+        ThreadUtils.start(new Runnable() {
             public void run() {
                 HashMap hashMap = new HashMap();
                 hashMap.put("appVersion", Header.appVersion);

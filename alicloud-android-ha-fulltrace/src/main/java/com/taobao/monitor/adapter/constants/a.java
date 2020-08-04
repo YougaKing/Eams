@@ -1,4 +1,4 @@
-package com.taobao.monitor.adapter.a;
+package com.taobao.monitor.adapter.constants;
 
 /* compiled from: TBAPMConstants */
 public class a {

@@ -1,5 +1,6 @@
 package com.taobao.monitor.adapter;
 
+import com.taobao.monitor.ProcedureGlobal;
 import com.taobao.monitor.procedure.IProcedure;
 import com.taobao.monitor.procedure.ProcedureConfig.Builder;
 import com.taobao.monitor.procedure.ProcedureFactoryProxy;
@@ -63,6 +64,6 @@ public class b {
     }
 
     private static void async(Runnable runnable) {
-        com.taobao.monitor.a.a().handler().post(runnable);
+        ProcedureGlobal.instance().handler().post(runnable);
     }
 }

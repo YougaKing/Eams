@@ -1,6 +1,6 @@
 package com.taobao.monitor.procedure;
 
-import com.taobao.monitor.a;
+import com.taobao.monitor.ProcedureGlobal;
 import java.util.Map;
 
 public class ProcedureProxy implements IProcedureGroup, IValueCallback {
@@ -133,7 +133,7 @@ public class ProcedureProxy implements IProcedureGroup, IValueCallback {
     }
 
     private void async(Runnable runnable) {
-        a.a().handler().post(runnable);
+        ProcedureGlobal.instance().handler().post(runnable);
     }
 
     public void callback(Value value) {

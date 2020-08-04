@@ -1,7 +1,7 @@
-package com.taobao.monitor.adapter.b;
+package com.taobao.monitor.adapter.db;
 
 import com.alibaba.motu.tbrest.SendService;
-import com.taobao.monitor.d.a;
+import com.taobao.monitor.network.a;
 import com.taobao.monitor.impl.logger.Logger;
 import java.util.List;
 
@@ -17,7 +17,7 @@ public class c implements a {
     private final String host = null;
 
     public void b(final String str, final String str2) {
-        if (com.taobao.monitor.adapter.a.a.d) {
+        if (com.taobao.monitor.adapter.constants.a.d) {
             com.taobao.monitor.a.a.start(new Runnable() {
                 public void run() {
                     int i2 = 0;

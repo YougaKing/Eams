@@ -1,6 +1,6 @@
-package com.taobao.monitor.d;
+package com.taobao.monitor.network;
 
-import com.taobao.monitor.a.a;
+import com.taobao.monitor.ProcedureGlobal.a;
 import com.taobao.monitor.procedure.Header;
 import com.taobao.monitor.procedure.ProcedureImpl.IProcedureLifeCycle;
 import com.taobao.monitor.procedure.Value;
@@ -14,7 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /* compiled from: ProcedureLifecycleImpl */
-public class c implements IProcedureLifeCycle {
+public class ProcedureLifecycleImpl implements IProcedureLifeCycle {
     public void begin(Value value) {
     }
 
@@ -25,9 +25,9 @@ public class c implements IProcedureLifeCycle {
     }
 
     public void end(final Value value) {
-        a.start(new Runnable() {
+        INetworkSender.start(new Runnable() {
             public void run() {
-                c.this.a(value);
+                ProcedureLifecycleImpl.this.a(value);
             }
         });
     }
@@ -47,7 +47,7 @@ public class c implements IProcedureLifeCycle {
         }
         String jSONObject3 = jSONObject.toString();
         com.taobao.monitor.c.a.i("NetworkDataUpdate", jSONObject3);
-        b.a().b(value.topic(), jSONObject3);
+        NetworkSenderProxy.instance().b(value.topic(), jSONObject3);
     }
 
     /* access modifiers changed from: private */

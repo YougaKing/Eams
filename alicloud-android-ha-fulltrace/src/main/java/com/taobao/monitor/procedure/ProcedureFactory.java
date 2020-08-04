@@ -1,7 +1,7 @@
 package com.taobao.monitor.procedure;
 
 import com.taobao.monitor.a;
-import com.taobao.monitor.d.c;
+import com.taobao.monitor.network.c;
 import com.taobao.monitor.procedure.ProcedureConfig.Builder;
 
 public class ProcedureFactory implements IProcedureFactory {

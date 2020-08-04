@@ -1,4 +1,4 @@
-package com.taobao.monitor.d;
+package com.taobao.monitor.network;
 
 /* compiled from: INetworkSender */
 public interface a {

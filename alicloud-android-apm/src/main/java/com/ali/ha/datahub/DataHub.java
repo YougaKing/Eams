@@ -46,13 +46,13 @@ public class DataHub {
         return SingleInstanceHolder.sInstance;
     }
 
-    public void publish(String str, HashMap<String, String> hashMap) {
+    public void publish(String str, HashMap<String, Object> hashMap) {
         if (this.mSubscriber != null) {
             this.mSubscriber.pub(str, hashMap);
         }
     }
 
-    public void publishABTest(String str, HashMap<String, String> hashMap) {
+    public void publishABTest(String str, HashMap<String, Object> hashMap) {
         if (this.mSubscriber != null) {
             this.mSubscriber.pubAB(str, hashMap);
         }

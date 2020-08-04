@@ -1,5 +1,6 @@
 package com.taobao.monitor.procedure;
 
+import com.taobao.monitor.ProcedureGlobal;
 import com.taobao.monitor.c.a;
 import com.taobao.monitor.procedure.model.Event;
 import com.taobao.monitor.procedure.model.Stage;
@@ -166,7 +167,7 @@ public class ProcedureImpl implements IProcedureGroup, IValueCallback {
                 }
             }
             if (this.parent instanceof IProcedureGroup) {
-                com.taobao.monitor.a.a().handler().post(new Runnable() {
+                ProcedureGlobal.instance().handler().post(new Runnable() {
                     public void run() {
                         ((IProcedureGroup) ProcedureImpl.this.parent).removeSubProcedure(ProcedureImpl.this);
                     }

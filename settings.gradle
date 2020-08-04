@@ -1,6 +1,5 @@
 rootProject.name='Eams'
 include ':app'
-include ':library'
 include ':alicloud-android-ha-apm-impl'
 include ':alicloud-android-ha-adapter'
 include ':alicloud-android-ha-core'

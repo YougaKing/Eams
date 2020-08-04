@@ -26,7 +26,7 @@ import com.taobao.monitor.impl.common.ActivityManagerHook;
 import com.taobao.monitor.impl.common.Global;
 import com.taobao.monitor.impl.data.GlobalStats;
 import com.taobao.monitor.impl.data.collector.ActivityLifecycle;
-import com.taobao.monitor.impl.data.detector.GCCollector;
+import com.taobao.monitor.impl.data.gc.GCCollector;
 import com.taobao.monitor.impl.data.network.NetworkLifecycleImpl;
 import com.taobao.monitor.impl.data.phenix.PhenixLifeCycleImpl;
 import com.taobao.monitor.impl.processor.fragmentload.FragmentModelLifecycle;

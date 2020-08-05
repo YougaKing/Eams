@@ -33,5 +33,5 @@ dependencies {
 
     implementation project(path: ':alicloud-android-ha-core')
     implementation project(path: ':alicloud-android-ha-tbrest')
-    implementation project(path: ':alicloud-android-apm')
+    implementation project(path: ':alicloud-android-ha-apm')
 }

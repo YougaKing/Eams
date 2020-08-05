@@ -83,7 +83,8 @@ public class ProtocolConstants {
     }
 
     public static void getDocTypeDescriptor() {
-        List<Entry> arrayList = new ArrayList<>(getTypeDescriptor().entrySet());
+        HashMap<String, String> tmpMap = getTypeDescriptor();
+        List<Entry> arrayList = new ArrayList<Entry>(tmpMap.entrySet());
         Collections.sort(arrayList, new Comparator() {
             public int compare(Object o1, Object o2) {
                 return Integer.valueOf((String) ((Entry) o1).getKey()).compareTo(Integer.valueOf((String) ((Entry) o2).getKey()));

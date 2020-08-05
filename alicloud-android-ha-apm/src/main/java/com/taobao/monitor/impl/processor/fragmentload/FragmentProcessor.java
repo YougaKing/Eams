@@ -394,7 +394,7 @@ class FragmentProcessor extends AbsProcessor implements OnUsableVisibleListener<
         this.f56a.event("onFragmentViewCreated", hashMap);
     }
 
-    public void g(Fragment fragment, long j) {
+    public void onFragmentStarted(Fragment fragment, long j) {
         ProcedureManagerSetter.instance().setCurrentFragmentProcedure(this.f56a);
         this.f67q = true;
         this.g = j;
@@ -427,7 +427,7 @@ class FragmentProcessor extends AbsProcessor implements OnUsableVisibleListener<
         this.f56a.event("onFragmentPaused", hashMap);
     }
 
-    public void j(Fragment fragment, long j) {
+    public void onFragmentStopped(Fragment fragment, long j) {
         this.f67q = false;
         this.h += j - this.g;
         HashMap hashMap = new HashMap(1);

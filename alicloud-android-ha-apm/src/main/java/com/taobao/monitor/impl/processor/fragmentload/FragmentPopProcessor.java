@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /* compiled from: FragmentPopProcessor */
-class FragmentPopProcessor extends AbsProcessor implements FragmentModelLifecycle.b, ActivityEventDispatcher.EventListener, ApplicationGCDispatcher.GCListener, ApplicationLowMemoryDispatcher.LowMemoryListener, FPSDispatcher.FPSListener {
+class FragmentPopProcessor extends AbsProcessor implements FragmentModelLifecycle.ModelPairLifecycleListener, ActivityEventDispatcher.EventListener, ApplicationGCDispatcher.GCListener, ApplicationLowMemoryDispatcher.LowMemoryListener, FPSDispatcher.FPSListener {
     private IDispatcher a;
 
     /* renamed from: a reason: collision with other field name */

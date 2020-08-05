@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+
 import com.taobao.monitor.impl.data.GlobalStats;
 import com.taobao.monitor.impl.data.IExecutor;
+import com.taobao.monitor.impl.data.traffic.TrafficTracker;
 import com.taobao.monitor.impl.processor.AbsProcessor;
-import com.taobao.monitor.impl.processor.pageload.e.b;
+import com.taobao.monitor.impl.processor.pageload.PageModelLifecycle.ModelPairLifecycleListener;
 import com.taobao.monitor.impl.trace.ActivityEventDispatcher;
 import com.taobao.monitor.impl.trace.ApplicationGCDispatcher;
 import com.taobao.monitor.impl.trace.ApplicationLowMemoryDispatcher;
@@ -21,13 +23,18 @@ import com.taobao.monitor.impl.util.TopicUtils;
 import com.taobao.monitor.procedure.IProcedure;
 import com.taobao.monitor.procedure.ProcedureConfig.Builder;
 import com.taobao.monitor.procedure.ProcedureFactoryProxy;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 @TargetApi(16)
 /* compiled from: PageLoadPopProcessor */
-public class a extends AbsProcessor implements b, ActivityEventDispatcher.EventListener, ApplicationGCDispatcher.GCListener, ApplicationLowMemoryDispatcher.LowMemoryListener, FPSDispatcher.FPSListener {
+public class PageLoadPopProcessor extends AbsProcessor implements ModelPairLifecycleListener,
+        ActivityEventDispatcher.EventListener,
+        ApplicationGCDispatcher.GCListener,
+        ApplicationLowMemoryDispatcher.LowMemoryListener,
+        FPSDispatcher.FPSListener {
     private IDispatcher a;
 
     /* renamed from: a reason: collision with other field name */
@@ -54,7 +61,7 @@ public class a extends AbsProcessor implements b, ActivityEventDispatcher.EventL
     private boolean o = true;
     private String pageName;
 
-    public a() {
+    public PageLoadPopProcessor() {
         super(false);
     }
 
@@ -108,7 +115,7 @@ public class a extends AbsProcessor implements b, ActivityEventDispatcher.EventL
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(TimeUtils.currentTimeMillis()));
         this.f89a.event("onActivityStarted", hashMap);
-        long[] a2 = IExecutor.a.a();
+        long[] a2 = TrafficTracker.traffics();
         this.f91b[0] = a2[0];
         this.f91b[1] = a2[1];
         this.f89a.stage("loadStartTime", this.f);
@@ -128,7 +135,7 @@ public class a extends AbsProcessor implements b, ActivityEventDispatcher.EventL
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(TimeUtils.currentTimeMillis()));
         this.f89a.event("onActivityStopped", hashMap);
-        long[] a2 = IExecutor.a.a();
+        long[] a2 = TrafficTracker.traffics();
         this.f91b[0] = a2[0] - this.f91b[0];
         this.f91b[1] = a2[1] - this.f91b[1];
         this.f89a.addProperty("totalVisibleDuration", Long.valueOf(this.h));

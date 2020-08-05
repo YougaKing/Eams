@@ -23,6 +23,7 @@ import com.ali.ha.fulltrace.event.UsableEvent;
 import com.taobao.monitor.impl.data.GlobalStats;
 import com.taobao.monitor.impl.data.IExecutor;
 import com.taobao.monitor.impl.data.OnUsableVisibleListener;
+import com.taobao.monitor.impl.data.traffic.TrafficTracker;
 import com.taobao.monitor.impl.processor.AbsProcessor;
 import com.taobao.monitor.impl.trace.ApplicationGCDispatcher;
 import com.taobao.monitor.impl.trace.IDispatcher;
@@ -48,7 +49,16 @@ import java.util.List;
 
 @TargetApi(16)
 /* compiled from: PageLoadProcessor */
-public class c extends AbsProcessor implements OnUsableVisibleListener<Activity>, e.a, ActivityEventDispatcher.EventListener, ApplicationBackgroundChangedDispatcher.BackgroundChangedListener, ApplicationGCDispatcher.GCListener, ApplicationLowMemoryDispatcher.LowMemoryListener, FPSDispatcher.FPSListener, FragmentFunctionListener, ImageStageDispatcher.StageListener, NetworkStageDispatcher.StageListener {
+public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleListener<Activity>,
+        PageModelLifecycle.ModelLifecycleListener,
+        ActivityEventDispatcher.EventListener,
+        ApplicationBackgroundChangedDispatcher.BackgroundChangedListener,
+        ApplicationGCDispatcher.GCListener,
+        ApplicationLowMemoryDispatcher.LowMemoryListener,
+        FPSDispatcher.FPSListener,
+        FragmentFunctionListener,
+        ImageStageDispatcher.StageListener,
+        NetworkStageDispatcher.StageListener {
     private static List<String> d = new ArrayList(4);
     private static String g = "";
     private FPSEvent a = new FPSEvent();
@@ -127,7 +137,7 @@ public class c extends AbsProcessor implements OnUsableVisibleListener<Activity>
     private boolean f112t = true;
     private int u;
 
-    public c() {
+    public PageLoadProcessor() {
         super(false);
     }
 
@@ -175,7 +185,7 @@ public class c extends AbsProcessor implements OnUsableVisibleListener<Activity>
         this.f101d = activity;
         ProcedureManagerSetter.instance().setCurrentActivityProcedure(this.f95a);
         b(activity);
-        this.f100c = IExecutor.a.a();
+        this.f100c = TrafficTracker.traffics();
         OpenPageEvent openPageEvent = new OpenPageEvent();
         openPageEvent.pageName = ActivityUtils.getSimpleName(activity);
         DumpManager.getInstance().append(openPageEvent);
@@ -218,37 +228,37 @@ public class c extends AbsProcessor implements OnUsableVisibleListener<Activity>
         g = this.pageName;
         if (this.f108p) {
             this.f108p = false;
-            long[] a2 = IExecutor.a.a();
+            long[] a2 = TrafficTracker.traffics();
             long[] jArr = this.f98b;
             jArr[0] = jArr[0] + (a2[0] - this.f100c[0]);
             long[] jArr2 = this.f98b;
             jArr2[1] = jArr2[1] + (a2[1] - this.f100c[1]);
         }
-        this.f100c = IExecutor.a.a();
+        this.f100c = TrafficTracker.traffics();
         GlobalStats.lastValidPage = this.pageName;
         GlobalStats.lastValidTime = j;
     }
 
-    public void b(Activity activity, long j) {
+    public void onActivityResumed(Activity activity, long j) {
         ProcedureManagerSetter.instance().setCurrentActivityProcedure(this.f95a);
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
         this.f95a.event("onActivityResumed", hashMap);
     }
 
-    public void c(Activity activity, long j) {
+    public void onActivityPaused(Activity activity, long j) {
         this.f109q = false;
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
         this.f95a.event("onActivityPaused", hashMap);
     }
 
-    public void d(Activity activity, long j) {
+    public void onActivityStopped(Activity activity, long j) {
         this.h += j - this.f104g;
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
         this.f95a.event("onActivityStopped", hashMap);
-        long[] a2 = IExecutor.a.a();
+        long[] a2 = TrafficTracker.traffics();
         long[] jArr = this.f98b;
         jArr[0] = jArr[0] + (a2[0] - this.f100c[0]);
         long[] jArr2 = this.f98b;
@@ -270,11 +280,11 @@ public class c extends AbsProcessor implements OnUsableVisibleListener<Activity>
         DumpManager.getInstance().append(this.a);
     }
 
-    public void e(Activity activity, long j) {
+    public void onActivityDestroyed(Activity activity, long j) {
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
         this.f95a.event("onActivityDestroyed", hashMap);
-        long[] a2 = IExecutor.a.a();
+        long[] a2 = TrafficTracker.traffics();
         long[] jArr = this.f98b;
         jArr[0] = jArr[0] + (a2[0] - this.f100c[0]);
         long[] jArr2 = this.f98b;
@@ -311,7 +321,7 @@ public class c extends AbsProcessor implements OnUsableVisibleListener<Activity>
     }
 
     /* renamed from: f */
-    public void a(Activity activity, long j) {
+    public void onActivityStarted(Activity activity, long j) {
         if (this.f110r && activity == this.f101d) {
             this.f95a.addProperty("pageInitDuration", Long.valueOf(j - this.f));
             this.f95a.stage("renderStartTime", j);
@@ -487,7 +497,7 @@ public class c extends AbsProcessor implements OnUsableVisibleListener<Activity>
         }
     }
 
-    public void a(Activity activity, Fragment fragment, String str, long j) {
+    public void onFragmentAttached(Activity activity, Fragment fragment, String str, long j) {
         Integer valueOf;
         if (fragment != null && activity == this.f101d) {
             String str2 = fragment.getClass().getSimpleName() + "_" + str;

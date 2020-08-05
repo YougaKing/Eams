@@ -3,10 +3,12 @@ package com.taobao.monitor.impl.processor.launcher;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+
+import androidx.fragment.app.Fragment;
+
 import com.ali.alihadeviceevaluator.AliHAHardware;
 import com.ali.ha.fulltrace.dump.DumpManager;
 import com.ali.ha.fulltrace.event.DisplayedEvent;
@@ -20,19 +22,19 @@ import com.taobao.application.common.IAppLaunchListener;
 import com.taobao.application.common.data.AppLaunchHelper;
 import com.taobao.application.common.impl.ApmImpl;
 import com.taobao.monitor.impl.data.GlobalStats;
-import com.taobao.monitor.impl.data.IExecutor;
 import com.taobao.monitor.impl.data.OnUsableVisibleListener;
+import com.taobao.monitor.impl.data.traffic.TrafficTracker;
 import com.taobao.monitor.impl.processor.AbsProcessor;
+import com.taobao.monitor.impl.processor.pageload.PageModelLifecycle;
 import com.taobao.monitor.impl.processor.pageload.ProcedureManagerSetter;
-import com.taobao.monitor.impl.processor.pageload.e;
 import com.taobao.monitor.impl.trace.ActivityEventDispatcher;
-import com.taobao.monitor.impl.trace.ApplicationGCDispatcher;
-import com.taobao.monitor.impl.trace.IDispatcher;
 import com.taobao.monitor.impl.trace.ApplicationBackgroundChangedDispatcher;
+import com.taobao.monitor.impl.trace.ApplicationGCDispatcher;
 import com.taobao.monitor.impl.trace.ApplicationLowMemoryDispatcher;
 import com.taobao.monitor.impl.trace.FPSDispatcher;
 import com.taobao.monitor.impl.trace.FragmentFunctionDispatcher;
 import com.taobao.monitor.impl.trace.FragmentFunctionListener;
+import com.taobao.monitor.impl.trace.IDispatcher;
 import com.taobao.monitor.impl.trace.ImageStageDispatcher;
 import com.taobao.monitor.impl.trace.NetworkStageDispatcher;
 import com.taobao.monitor.impl.util.ActivityUtils;
@@ -42,19 +44,30 @@ import com.taobao.monitor.procedure.IProcedure;
 import com.taobao.monitor.procedure.ProcedureConfig.Builder;
 import com.taobao.monitor.procedure.ProcedureFactoryProxy;
 import com.taobao.monitor.procedure.ProcedureManagerProxy;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 /* compiled from: LauncherProcessor */
-public class b extends AbsProcessor implements OnUsableVisibleListener<Activity>, e.a, ActivityEventDispatcher.EventListener, ApplicationBackgroundChangedDispatcher.BackgroundChangedListener, ApplicationGCDispatcher.GCListener, ApplicationLowMemoryDispatcher.LowMemoryListener, FPSDispatcher.FPSListener, FragmentFunctionListener, ImageStageDispatcher.StageListener, NetworkStageDispatcher.StageListener {
+public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleListener<Activity>,
+        PageModelLifecycle.ModelLifecycleListener,
+        ActivityEventDispatcher.EventListener,
+        ApplicationBackgroundChangedDispatcher.BackgroundChangedListener,
+        ApplicationGCDispatcher.GCListener,
+        ApplicationLowMemoryDispatcher.LowMemoryListener,
+        FPSDispatcher.FPSListener,
+        FragmentFunctionListener,
+        ImageStageDispatcher.StageListener,
+        NetworkStageDispatcher.StageListener {
+
     public static volatile String c = "COLD";
     public static boolean isBackgroundLaunch = false;
     private IDispatcher a;
 
     /* renamed from: a reason: collision with other field name */
     private IProcedure f71a;
-    IAppLaunchListener b = ApmImpl.instance().instance();
+    IAppLaunchListener b = ApmImpl.instance().m3a();
 
     /* renamed from: b reason: collision with other field name */
     private IDispatcher f72b;
@@ -123,14 +136,14 @@ public class b extends AbsProcessor implements OnUsableVisibleListener<Activity>
     private boolean f88u = false;
     private volatile boolean v = false;
 
-    public b() {
+    public LauncherProcessor() {
         super(false);
     }
 
     /* access modifiers changed from: protected */
     public void n() {
         super.n();
-        this.f78c = IExecutor.a.a();
+        this.f78c = TrafficTracker.traffics();
         new AppLaunchHelper().a(this.f82f);
         this.f71a = ProcedureManagerProxy.PROXY.getLauncherProcedure();
         if (this.f71a == null || !this.f71a.isAlive()) {
@@ -180,7 +193,7 @@ public class b extends AbsProcessor implements OnUsableVisibleListener<Activity>
         this.f71a.stage("launchStartTime", GlobalStats.launchStartTime);
     }
 
-    public void a(Activity activity, Bundle bundle, long j) {
+    public void onActivityCreated(Activity activity, Bundle bundle, long j) {
         String b2 = ActivityUtils.getSimpleName(activity);
         this.f81e = ActivityUtils.getName(activity);
         if (!this.f88u) {
@@ -228,21 +241,21 @@ public class b extends AbsProcessor implements OnUsableVisibleListener<Activity>
         this.f71a.event("onActivityStarted", hashMap);
     }
 
-    public void b(Activity activity, long j) {
+    public void onActivityResumed(Activity activity, long j) {
         HashMap hashMap = new HashMap(2);
         hashMap.put("timestamp", Long.valueOf(j));
         hashMap.put("pageName", ActivityUtils.getSimpleName(activity));
         this.f71a.event("onActivityResumed", hashMap);
     }
 
-    public void c(Activity activity, long j) {
+    public void onActivityPaused(Activity activity, long j) {
         HashMap hashMap = new HashMap(2);
         hashMap.put("timestamp", Long.valueOf(j));
         hashMap.put("pageName", ActivityUtils.getSimpleName(activity));
         this.f71a.event("onActivityPaused", hashMap);
     }
 
-    public void d(Activity activity, long j) {
+    public void onActivityStopped(Activity activity, long j) {
         HashMap hashMap = new HashMap(2);
         hashMap.put("timestamp", Long.valueOf(j));
         hashMap.put("pageName", ActivityUtils.getSimpleName(activity));
@@ -252,7 +265,7 @@ public class b extends AbsProcessor implements OnUsableVisibleListener<Activity>
         }
     }
 
-    public void e(Activity activity, long j) {
+    public void onActivityDestroyed(Activity activity, long j) {
         HashMap hashMap = new HashMap(2);
         hashMap.put("timestamp", Long.valueOf(j));
         hashMap.put("pageName", ActivityUtils.getSimpleName(activity));
@@ -286,7 +299,7 @@ public class b extends AbsProcessor implements OnUsableVisibleListener<Activity>
     }
 
     /* renamed from: f */
-    public void a(Activity activity, long j) {
+    public void onActivityStarted(Activity activity, long j) {
         if (this.f85r && activity == this.d) {
             this.f71a.addProperty("appInitDuration", Long.valueOf(j - this.i));
             this.f71a.stage("renderStartTime", j);
@@ -367,7 +380,7 @@ public class b extends AbsProcessor implements OnUsableVisibleListener<Activity>
             this.f71a.addStatistic("networkSuccessCount", Integer.valueOf(this.s));
             this.f71a.addStatistic("networkFailedCount", Integer.valueOf(this.t));
             this.f71a.addStatistic("networkCanceledCount", Integer.valueOf(this.u));
-            long[] a2 = IExecutor.a.a();
+            long[] a2 = TrafficTracker.traffics();
             this.f71a.addStatistic("totalRx", Long.valueOf(a2[0] - this.f78c[0]));
             this.f71a.addStatistic("totalTx", Long.valueOf(a2[1] - this.f78c[1]));
             this.f71a.stage("procedureEndTime", TimeUtils.currentTimeMillis());
@@ -472,7 +485,7 @@ public class b extends AbsProcessor implements OnUsableVisibleListener<Activity>
         }
     }
 
-    public void a(Activity activity, Fragment fragment, String str, long j) {
+    public void onFragmentAttached(Activity activity, Fragment fragment, String str, long j) {
         Integer valueOf;
         if (fragment != null && activity != null && activity == this.d) {
             String str2 = fragment.getClass().getSimpleName() + "_" + str;

@@ -126,7 +126,7 @@ public class ApmImpl implements Apm, IApplicationMonitor {
     }
 
     /* renamed from: a reason: collision with other method in class */
-    public Handler m1a() {
+    public Handler getAsyncHandler() {
         return this.f3a;
     }
 
@@ -165,6 +165,6 @@ public class ApmImpl implements Apm, IApplicationMonitor {
     }
 
     private <T> T a(Object obj) {
-        return obj;
+        return (T) obj;
     }
 }

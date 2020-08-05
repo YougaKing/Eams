@@ -4,14 +4,14 @@ import com.taobao.monitor.impl.common.DynamicConstants;
 import com.taobao.monitor.impl.processor.IProcessorFactory;
 
 /* compiled from: LauncherProcessorFactory */
-class c implements IProcessorFactory<b> {
-    c() {
+class LauncherProcessorFactory implements IProcessorFactory<LauncherProcessor> {
+    LauncherProcessorFactory() {
     }
 
     /* renamed from: a */
-    public b createProcessor() {
+    public LauncherProcessor createProcessor() {
         if (DynamicConstants.needLauncher) {
-            return new b();
+            return new LauncherProcessor();
         }
         return null;
     }

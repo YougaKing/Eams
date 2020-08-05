@@ -4,14 +4,14 @@ import com.taobao.monitor.impl.common.DynamicConstants;
 import com.taobao.monitor.impl.processor.IProcessorFactory;
 
 /* compiled from: PageLoadPopProcessorFactory */
-class b implements IProcessorFactory<a> {
-    b() {
+class PageLoadPopProcessorFactory implements IProcessorFactory<PageLoadPopProcessor> {
+    PageLoadPopProcessorFactory() {
     }
 
     /* renamed from: a */
-    public a createProcessor() {
+    public PageLoadPopProcessor createProcessor() {
         if (DynamicConstants.needPageLoadPop) {
-            return new a();
+            return new PageLoadPopProcessor();
         }
         return null;
     }

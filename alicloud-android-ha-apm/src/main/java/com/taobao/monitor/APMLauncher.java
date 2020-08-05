@@ -27,7 +27,9 @@ import com.taobao.monitor.impl.data.GlobalStats;
 import com.taobao.monitor.impl.data.activity.ActivityLifecycle;
 import com.taobao.monitor.impl.data.phenix.PhenixLifeCycleImpl;
 import com.taobao.monitor.impl.processor.fragmentload.FragmentModelLifecycle;
-import com.taobao.monitor.impl.processor.launcher.b;
+import com.taobao.monitor.impl.processor.launcher.LauncherModelLifeCycle;
+import com.taobao.monitor.impl.processor.launcher.LauncherProcessor;
+import com.taobao.monitor.impl.processor.pageload.PageModelLifecycle;
 import com.taobao.monitor.impl.processor.weex.WeexApmAdapterFactory;
 import com.taobao.monitor.impl.trace.ActivityEventDispatcher;
 import com.taobao.monitor.impl.trace.ActivityLifeCycleDispatcher;
@@ -140,8 +142,8 @@ public class APMLauncher {
                 Looper.myQueue().addIdleHandler(new IdleHandler() {
                     public boolean queueIdle() {
                         if (GlobalStats.createdPageCount == 0) {
-                            b.c = "HOT";
-                            b.isBackgroundLaunch = true;
+                            LauncherProcessor.c = "HOT";
+                            LauncherProcessor.isBackgroundLaunch = true;
                             APMLauncher.launchHelper.a("HOT");
                         }
 
@@ -228,8 +230,8 @@ public class APMLauncher {
         DispatcherManager.putDispatcher("APPLICATION_BACKGROUND_CHANGED_DISPATCHER", var0);
         DispatcherManager.putDispatcher("ACTIVITY_FPS_DISPATCHER", new FPSDispatcher());
         ActivityLifeCycleDispatcher var1 = new ActivityLifeCycleDispatcher();
-        var1.addListener(new com.taobao.monitor.impl.processor.pageload.e());
-        var1.addListener(new com.taobao.monitor.impl.processor.launcher.a());
+        var1.addListener(new PageModelLifecycle());
+        var1.addListener(new LauncherModelLifeCycle());
         DispatcherManager.putDispatcher("ACTIVITY_LIFECYCLE_DISPATCHER", var1);
         DispatcherManager.putDispatcher("ACTIVITY_EVENT_DISPATCHER", new ActivityEventDispatcher());
         DispatcherManager.putDispatcher("ACTIVITY_USABLE_VISIBLE_DISPATCHER", new UsableVisibleDispatcher());

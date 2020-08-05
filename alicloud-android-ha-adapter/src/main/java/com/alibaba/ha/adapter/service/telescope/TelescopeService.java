@@ -1,10 +1,5 @@
 package com.alibaba.ha.adapter.service.telescope;
 
-import com.ali.telescope.api.Telescope;
-import com.ali.telescope.data.AppConfig;
-import com.ali.telescope.interfaces.OnAccurateBootListener;
-import com.ali.telescope.interfaces.TelescopeErrReporter;
-import com.ali.telescope.interfaces.TelescopeEventData;
 import java.lang.reflect.Method;
 
 public class TelescopeService {
@@ -37,24 +32,24 @@ public class TelescopeService {
     }
 
     private static void addBootActivityName(String str) {
-        AppConfig.bootActivityNameList.add(str);
+//        AppConfig.bootActivityNameList.add(str);
     }
 
-    public static void addOnAccurateBootListener(OnAccurateBootListener onAccurateBootListener) {
-        if (isValid) {
-            Telescope.addOnAccurateBootListener(onAccurateBootListener);
-        }
-    }
-
-    public static void addTelescopeErrorReporter(TelescopeErrReporter telescopeErrReporter) {
-        if (isValid) {
-            Telescope.addTelescopeErrorReporter(telescopeErrReporter);
-        }
-    }
-
-    public static void addTelescopeDataListener(TelescopeEventData telescopeEventData) {
-        if (isValid) {
-            Telescope.addTelescopeEventDataListener(telescopeEventData);
-        }
-    }
+//    public static void addOnAccurateBootListener(OnAccurateBootListener onAccurateBootListener) {
+//        if (isValid) {
+//            Telescope.addOnAccurateBootListener(onAccurateBootListener);
+//        }
+//    }
+//
+//    public static void addTelescopeErrorReporter(TelescopeErrReporter telescopeErrReporter) {
+//        if (isValid) {
+//            Telescope.addTelescopeErrorReporter(telescopeErrReporter);
+//        }
+//    }
+//
+//    public static void addTelescopeDataListener(TelescopeEventData telescopeEventData) {
+//        if (isValid) {
+//            Telescope.addTelescopeEventDataListener(telescopeEventData);
+//        }
+//    }
 }

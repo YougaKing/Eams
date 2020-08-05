@@ -2,14 +2,12 @@ package com.alibaba.ha.adapter.plugin;
 
 import android.content.Context;
 import android.util.Log;
+
 import com.alibaba.ha.adapter.AliHaAdapter;
 import com.alibaba.ha.adapter.Plugin;
-import com.alibaba.ha.adapter.service.crash.CrashActivityCallBack;
-import com.alibaba.ha.adapter.service.crash.CrashService;
 import com.alibaba.ha.protocol.AliHaParam;
 import com.alibaba.ha.protocol.AliHaPlugin;
-import com.alibaba.motu.crashreporter.MotuCrashReporter;
-import com.alibaba.motu.crashreporter.ReporterConfigure;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CrashReporterPlugin implements AliHaPlugin {
@@ -32,19 +30,19 @@ public class CrashReporterPlugin implements AliHaPlugin {
         String str5 = aliHaParam.channel;
         String str6 = aliHaParam.userNick;
         Log.i(AliHaAdapter.TAG, "init crashreporter, appId is " + str + " appKey is " + str2 + " appVersion is " + str4 + " channel is " + str5 + " userNick is " + str6);
-        if (this.enabling.compareAndSet(false, true)) {
-            ReporterConfigure reporterConfigure = new ReporterConfigure();
-            reporterConfigure.setEnableDumpSysLog(true);
-            reporterConfigure.setEnableDumpRadioLog(true);
-            reporterConfigure.setEnableDumpEventsLog(true);
-            reporterConfigure.setEnableCatchANRException(true);
-            reporterConfigure.enableDeduplication = false;
-            try {
-                MotuCrashReporter.getInstance().enable(context, str, str2, str3, str4, str5, str6, reporterConfigure);
-            } catch (Exception e) {
-                Log.e(AliHaAdapter.TAG, "crashreporter plugin start failure ", e);
-            }
-            CrashService.addJavaCrashListener(new CrashActivityCallBack());
-        }
+//        if (this.enabling.compareAndSet(false, true)) {
+//            ReporterConfigure reporterConfigure = new ReporterConfigure();
+//            reporterConfigure.setEnableDumpSysLog(true);
+//            reporterConfigure.setEnableDumpRadioLog(true);
+//            reporterConfigure.setEnableDumpEventsLog(true);
+//            reporterConfigure.setEnableCatchANRException(true);
+//            reporterConfigure.enableDeduplication = false;
+//            try {
+//                MotuCrashReporter.getInstance().enable(context, str, str2, str3, str4, str5, str6, reporterConfigure);
+//            } catch (Exception e) {
+//                Log.e(AliHaAdapter.TAG, "crashreporter plugin start failure ", e);
+//            }
+//            CrashService.addJavaCrashListener(new CrashActivityCallBack());
+//        }
     }
 }

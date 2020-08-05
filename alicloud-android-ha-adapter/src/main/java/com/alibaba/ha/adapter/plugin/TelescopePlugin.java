@@ -3,16 +3,13 @@ package com.alibaba.ha.adapter.plugin;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
-import com.ali.telescope.api.Telescope;
-import com.ali.telescope.api.Telescope.TelescopeConfig;
-import com.ali.telescope.base.plugin.INameConverter;
+
 import com.alibaba.ha.adapter.AliHaAdapter;
 import com.alibaba.ha.adapter.Plugin;
-import com.alibaba.ha.adapter.service.telescope.TelescopeDataListener;
-import com.alibaba.ha.adapter.service.telescope.TelescopeService;
 import com.alibaba.ha.protocol.AliHaParam;
 import com.alibaba.ha.protocol.AliHaPlugin;
 import com.alibaba.motu.tbrest.utils.AppUtils;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TelescopePlugin implements AliHaPlugin {
@@ -34,13 +31,13 @@ public class TelescopePlugin implements AliHaPlugin {
         }
         String myProcessNameByAppProcessInfo = AppUtils.getMyProcessNameByAppProcessInfo(context);
         Log.i(AliHaAdapter.TAG, "init telescope, appId is " + str + " appKey is " + str2 + " appVersion is " + str3 + " package name " + myProcessNameByAppProcessInfo);
-        if (this.enabling.compareAndSet(false, true)) {
-            try {
-                Telescope.start(new TelescopeConfig().application(application).logLevel(3).strictMode(false).appKey(str2).appVersion(str3).packageName(myProcessNameByAppProcessInfo).nameConverter(INameConverter.DEFAULT_CONVERTR).channel(aliHaParam.channel));
-                TelescopeService.addTelescopeDataListener(new TelescopeDataListener());
-            } catch (Exception e) {
-                Log.e(AliHaAdapter.TAG, "param is unlegal, telescope plugin start failure ", e);
-            }
-        }
+//        if (this.enabling.compareAndSet(false, true)) {
+//            try {
+//                Telescope.start(new TelescopeConfig().application(application).logLevel(3).strictMode(false).appKey(str2).appVersion(str3).packageName(myProcessNameByAppProcessInfo).nameConverter(INameConverter.DEFAULT_CONVERTR).channel(aliHaParam.channel));
+//                TelescopeService.addTelescopeDataListener(new TelescopeDataListener());
+//            } catch (Exception e) {
+//                Log.e(AliHaAdapter.TAG, "param is unlegal, telescope plugin start failure ", e);
+//            }
+//        }
     }
 }

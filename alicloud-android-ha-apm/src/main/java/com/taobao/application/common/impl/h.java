@@ -53,6 +53,6 @@ class h implements IPageListener, f<IPageListener> {
     }
 
     private void a(Runnable runnable) {
-        b.a().b(runnable);
+        ApmImpl.instance().b(runnable);
     }
 }

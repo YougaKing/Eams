@@ -47,6 +47,6 @@ public class a implements IApmEventListener, f<IApmEventListener> {
     }
 
     private void a(Runnable runnable) {
-        b.a().b(runnable);
+        ApmImpl.instance().b(runnable);
     }
 }

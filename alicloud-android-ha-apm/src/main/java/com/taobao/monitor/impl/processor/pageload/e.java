@@ -3,11 +3,13 @@ package com.taobao.monitor.impl.processor.pageload;
 import android.app.Activity;
 import android.os.Bundle;
 import com.taobao.monitor.impl.processor.IProcessorFactory;
+import com.taobao.monitor.impl.trace.ActivityLifeCycleDispatcher;
+
 import java.util.HashMap;
 import java.util.Map;
 
 /* compiled from: PageModelLifecycle */
-public class e implements com.taobao.monitor.impl.trace.c.a {
+public class e implements ActivityLifeCycleDispatcher.LifeCycleListener {
     private Activity a = null;
 
     /* renamed from: a reason: collision with other field name */
@@ -37,7 +39,7 @@ public class e implements com.taobao.monitor.impl.trace.c.a {
         void onActivityStopped(Activity activity);
     }
 
-    public void a(Activity activity, Bundle bundle, long j) {
+    public void onActivityCreated(Activity activity, Bundle bundle, long j) {
         c cVar = (c) this.d.createProcessor();
         if (cVar != null) {
             this.map.put(activity, cVar);
@@ -46,7 +48,7 @@ public class e implements com.taobao.monitor.impl.trace.c.a {
         this.a = activity;
     }
 
-    public void a(Activity activity, long j) {
+    public void onActivityStarted(Activity activity, long j) {
         this.v++;
         a aVar = (a) this.map.get(activity);
         if (aVar != null) {
@@ -62,21 +64,21 @@ public class e implements com.taobao.monitor.impl.trace.c.a {
         this.a = activity;
     }
 
-    public void b(Activity activity, long j) {
+    public void onActivityResumed(Activity activity, long j) {
         a aVar = (a) this.map.get(activity);
         if (aVar != null) {
             aVar.b(activity, j);
         }
     }
 
-    public void c(Activity activity, long j) {
+    public void onActivityPaused(Activity activity, long j) {
         a aVar = (a) this.map.get(activity);
         if (aVar != null) {
             aVar.c(activity, j);
         }
     }
 
-    public void d(Activity activity, long j) {
+    public void onActivityStopped(Activity activity, long j) {
         this.v--;
         a aVar = (a) this.map.get(activity);
         if (aVar != null) {
@@ -92,7 +94,7 @@ public class e implements com.taobao.monitor.impl.trace.c.a {
         }
     }
 
-    public void e(Activity activity, long j) {
+    public void onActivityDestroyed(Activity activity, long j) {
         a aVar = (a) this.map.get(activity);
         if (aVar != null) {
             aVar.e(activity, j);

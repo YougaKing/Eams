@@ -56,13 +56,13 @@ public class ActivityLifecycle implements ActivityLifecycleCallbacks {
             ++GlobalStats.createdPageCount;
             String var4 = ActivityUtils.getName(var1);
             GlobalStats.activityStatusManager.b(var4);
-            com.taobao.monitor.impl.data.a.a var5 = new ActivityDataCollector(var1);
+            com.taobao.monitor.impl.data.activity.a var5 = new ActivityDataCollector(var1);
             this.map.put(var1, var5);
             var5.onActivityCreated(var1, var2);
             if (var1 instanceof FragmentActivity && DynamicConstants.needFragment) {
                 FragmentActivity var6 = (FragmentActivity) var1;
                 FragmentManager var7 = var6.getSupportFragmentManager();
-                var7.registerFragmentLifecycleCallbacks(new com.taobao.monitor.impl.data.b.b(var1), true);
+                var7.registerFragmentLifecycleCallbacks(new com.taobao.monitor.impl.data.fragment.b(var1), true);
             }
         }
 

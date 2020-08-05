@@ -16,7 +16,7 @@ import com.taobao.monitor.impl.util.TimeUtils;
 
 import java.lang.reflect.Proxy;
 
-public class ActivityDataCollector extends AbstractDataCollector<Activity> implements com.taobao.monitor.impl.data.a.b.a, com.taobao.monitor.impl.data.a.d.a {
+public class ActivityDataCollector extends AbstractDataCollector<Activity> implements com.taobao.monitor.impl.data.activity.b.a, com.taobao.monitor.impl.data.activity.d.a {
     private final Activity c;
     private c a = null;
     private b a = null;
@@ -79,7 +79,7 @@ public class ActivityDataCollector extends AbstractDataCollector<Activity> imple
                     Window.Callback var4 = var2.getCallback();
                     if (var4 != null) {
                         try {
-                            Window.Callback var5 = (Window.Callback) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[]{Window.Callback.class}, new com.taobao.monitor.impl.data.a.d(var4, this));
+                            Window.Callback var5 = (Window.Callback) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[]{Window.Callback.class}, new com.taobao.monitor.impl.data.activity.d(var4, this));
                             var2.setCallback(var5);
                         } catch (Exception var6) {
                             var6.printStackTrace();

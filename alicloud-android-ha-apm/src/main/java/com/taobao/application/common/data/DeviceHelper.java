@@ -1,6 +1,6 @@
 package com.taobao.application.common.data;
 
-public class DeviceHelper extends a {
+public class DeviceHelper extends AbstractHelper {
     public void setMobileModel(String str) {
         this.preferences.putString("mobileModel", str);
     }

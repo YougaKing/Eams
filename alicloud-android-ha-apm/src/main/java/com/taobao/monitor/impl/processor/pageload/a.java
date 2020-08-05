@@ -7,8 +7,15 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import com.taobao.monitor.impl.data.GlobalStats;
+import com.taobao.monitor.impl.data.IExecutor;
+import com.taobao.monitor.impl.processor.AbsProcessor;
 import com.taobao.monitor.impl.processor.pageload.e.b;
+import com.taobao.monitor.impl.trace.ActivityEventDispatcher;
+import com.taobao.monitor.impl.trace.ApplicationGCDispatcher;
+import com.taobao.monitor.impl.trace.ApplicationLowMemoryDispatcher;
+import com.taobao.monitor.impl.trace.FPSDispatcher;
 import com.taobao.monitor.impl.trace.IDispatcher;
+import com.taobao.monitor.impl.util.ActivityUtils;
 import com.taobao.monitor.impl.util.TimeUtils;
 import com.taobao.monitor.impl.util.TopicUtils;
 import com.taobao.monitor.procedure.IProcedure;
@@ -20,7 +27,7 @@ import java.util.List;
 
 @TargetApi(16)
 /* compiled from: PageLoadPopProcessor */
-public class a extends com.taobao.monitor.impl.processor.a implements b, com.taobao.monitor.impl.trace.b.a, com.taobao.monitor.impl.trace.e.a, com.taobao.monitor.impl.trace.f.a, com.taobao.monitor.impl.trace.i.a {
+public class a extends AbsProcessor implements b, ActivityEventDispatcher.EventListener, ApplicationGCDispatcher.GCListener, ApplicationLowMemoryDispatcher.LowMemoryListener, FPSDispatcher.FPSListener {
     private IDispatcher a;
 
     /* renamed from: a reason: collision with other field name */
@@ -56,10 +63,10 @@ public class a extends com.taobao.monitor.impl.processor.a implements b, com.tao
         super.n();
         this.f89a = ProcedureFactoryProxy.PROXY.createProcedure(TopicUtils.getFullTopic("/pageLoad"), new Builder().setIndependent(false).setUpload(true).setParentNeedStats(false).setParent(null).build());
         this.f89a.begin();
-        this.a = a("ACTIVITY_EVENT_DISPATCHER");
-        this.b = a("APPLICATION_LOW_MEMORY_DISPATCHER");
-        this.f92c = a("ACTIVITY_FPS_DISPATCHER");
-        this.f93d = a("APPLICATION_GC_DISPATCHER");
+        this.a = getDispatcher("ACTIVITY_EVENT_DISPATCHER");
+        this.b = getDispatcher("APPLICATION_LOW_MEMORY_DISPATCHER");
+        this.f92c = getDispatcher("ACTIVITY_FPS_DISPATCHER");
+        this.f93d = getDispatcher("APPLICATION_GC_DISPATCHER");
         this.f93d.addListener(this);
         this.b.addListener(this);
         this.a.addListener(this);
@@ -74,7 +81,7 @@ public class a extends com.taobao.monitor.impl.processor.a implements b, com.tao
     }
 
     private void b(Activity activity) {
-        this.pageName = com.taobao.monitor.impl.util.a.b(activity);
+        this.pageName = ActivityUtils.getSimpleName(activity);
         this.f89a.addProperty("pageName", this.pageName);
         this.f89a.addProperty("fullPageName", activity.getClass().getName());
         Intent intent = activity.getIntent();
@@ -86,7 +93,7 @@ public class a extends com.taobao.monitor.impl.processor.a implements b, com.tao
         }
         this.f89a.addProperty("isInterpretiveExecution", Boolean.valueOf(false));
         this.f89a.addProperty("isFirstLaunch", Boolean.valueOf(GlobalStats.isFirstLaunch));
-        this.f89a.addProperty("isFirstLoad", Boolean.valueOf(GlobalStats.activityStatusManager.a(com.taobao.monitor.impl.util.a.a(activity))));
+        this.f89a.addProperty("isFirstLoad", Boolean.valueOf(GlobalStats.activityStatusManager.a(ActivityUtils.getName(activity))));
         this.f89a.addProperty("jumpTime", Long.valueOf(GlobalStats.jumpTime));
         this.f89a.addProperty("lastValidTime", Long.valueOf(GlobalStats.lastValidTime));
         this.f89a.addProperty("lastValidPage", GlobalStats.lastValidPage);
@@ -101,7 +108,7 @@ public class a extends com.taobao.monitor.impl.processor.a implements b, com.tao
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(TimeUtils.currentTimeMillis()));
         this.f89a.event("onActivityStarted", hashMap);
-        long[] a2 = com.taobao.monitor.impl.data.f.a.a();
+        long[] a2 = IExecutor.a.a();
         this.f91b[0] = a2[0];
         this.f91b[1] = a2[1];
         this.f89a.stage("loadStartTime", this.f);
@@ -121,7 +128,7 @@ public class a extends com.taobao.monitor.impl.processor.a implements b, com.tao
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(TimeUtils.currentTimeMillis()));
         this.f89a.event("onActivityStopped", hashMap);
-        long[] a2 = com.taobao.monitor.impl.data.f.a.a();
+        long[] a2 = IExecutor.a.a();
         this.f91b[0] = a2[0] - this.f91b[0];
         this.f91b[1] = a2[1] - this.f91b[1];
         this.f89a.addProperty("totalVisibleDuration", Long.valueOf(this.h));
@@ -137,7 +144,7 @@ public class a extends com.taobao.monitor.impl.processor.a implements b, com.tao
         this.f89a.event("onLowMemory", hashMap);
     }
 
-    public void a(Activity activity, MotionEvent motionEvent, long j) {
+    public void onMotionEvent(Activity activity, MotionEvent motionEvent, long j) {
         if (activity == this.d && this.o) {
             this.f89a.stage("firstInteractiveTime", j);
             this.f89a.addProperty("firstInteractiveDuration", Long.valueOf(j - this.f));
@@ -173,7 +180,7 @@ public class a extends com.taobao.monitor.impl.processor.a implements b, com.tao
         this.l++;
     }
 
-    public void a(Activity activity, KeyEvent keyEvent, long j) {
+    public void onKeyEvent(Activity activity, KeyEvent keyEvent, long j) {
         if (keyEvent.getAction() != 0) {
             return;
         }

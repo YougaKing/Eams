@@ -1,7 +1,7 @@
 package com.taobao.application.common.data;
 
 /* compiled from: BackgroundForegroundHelper */
-public class d extends a {
+public class d extends AbstractHelper {
     public void c(boolean z) {
         this.preferences.putBoolean("isInBackground", z);
     }

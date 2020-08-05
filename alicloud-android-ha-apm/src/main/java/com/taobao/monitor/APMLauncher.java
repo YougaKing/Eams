@@ -19,19 +19,27 @@ import android.os.MessageQueue.IdleHandler;
 import android.text.TextUtils;
 import com.ali.alihadeviceevaluator.AliHAHardware;
 import com.taobao.application.common.data.DeviceHelper;
-import com.taobao.application.common.data.c;
-import com.taobao.application.common.data.c.a;
+import com.taobao.application.common.data.AppLaunchHelper;
+import com.taobao.application.common.data.AppLaunchHelper.AppLaunchHelperHolder;
 import com.taobao.monitor.impl.common.DynamicConstants;
 import com.taobao.monitor.impl.common.Global;
 import com.taobao.monitor.impl.data.GlobalStats;
+import com.taobao.monitor.impl.data.activity.ActivityLifecycle;
+import com.taobao.monitor.impl.data.phenix.PhenixLifeCycleImpl;
+import com.taobao.monitor.impl.processor.fragmentload.FragmentModelLifecycle;
 import com.taobao.monitor.impl.processor.launcher.b;
-import com.taobao.monitor.impl.trace.f;
-import com.taobao.monitor.impl.trace.g;
-import com.taobao.monitor.impl.trace.i;
-import com.taobao.monitor.impl.trace.l;
-import com.taobao.monitor.impl.trace.m;
-import com.taobao.monitor.impl.trace.n;
-import com.taobao.monitor.impl.trace.o;
+import com.taobao.monitor.impl.processor.weex.WeexApmAdapterFactory;
+import com.taobao.monitor.impl.trace.ActivityEventDispatcher;
+import com.taobao.monitor.impl.trace.ActivityLifeCycleDispatcher;
+import com.taobao.monitor.impl.trace.ApplicationBackgroundChangedDispatcher;
+import com.taobao.monitor.impl.trace.ApplicationGCDispatcher;
+import com.taobao.monitor.impl.trace.ApplicationLowMemoryDispatcher;
+import com.taobao.monitor.impl.trace.DispatcherManager;
+import com.taobao.monitor.impl.trace.FPSDispatcher;
+import com.taobao.monitor.impl.trace.FragmentLifecycleDispatcher;
+import com.taobao.monitor.impl.trace.ImageStageDispatcher;
+import com.taobao.monitor.impl.trace.NetworkStageDispatcher;
+import com.taobao.monitor.impl.trace.UsableVisibleDispatcher;
 import com.taobao.monitor.impl.util.TimeUtils;
 import com.taobao.monitor.impl.util.d;
 import com.taobao.monitor.impl.util.e;
@@ -45,7 +53,7 @@ import java.util.Map;
 public class APMLauncher {
     private static final String TAG = "APMLauncher";
     private static boolean init = false;
-    private static final c launchHelper = new c();
+    private static final AppLaunchHelper launchHelper = new AppLaunchHelper();
 
     private APMLauncher() {
     }
@@ -117,7 +125,7 @@ public class APMLauncher {
             var6.apply();
         }
 
-        GlobalStats.lastProcessStartTime = a.a();
+        GlobalStats.lastProcessStartTime = AppLaunchHelperHolder.a();
         launchHelper.b(GlobalStats.isFirstLaunch);
         launchHelper.a(GlobalStats.isFirstInstall);
         launchHelper.a(GlobalStats.lastProcessStartTime);
@@ -145,12 +153,12 @@ public class APMLauncher {
     }
 
     private static void initLifecycle(Application var0) {
-        var0.registerActivityLifecycleCallbacks(new com.taobao.monitor.impl.data.a.b());
+        var0.registerActivityLifecycleCallbacks(new ActivityLifecycle());
     }
 
     private static void initWeex() {
         if (DynamicConstants.needWeex) {
-            APMAdapterFactoryProxy.instance().setFactory(new com.taobao.monitor.impl.processor.a.a());
+            APMAdapterFactoryProxy.instance().setFactory(new WeexApmAdapterFactory());
         }
 
     }
@@ -214,30 +222,30 @@ public class APMLauncher {
     }
 
     private static void initDispatcher() {
-        g.a("APPLICATION_LOW_MEMORY_DISPATCHER", new f());
-        g.a("APPLICATION_GC_DISPATCHER", new com.taobao.monitor.impl.trace.e());
-        com.taobao.monitor.impl.trace.d var0 = new com.taobao.monitor.impl.trace.d();
-        g.a("APPLICATION_BACKGROUND_CHANGED_DISPATCHER", var0);
-        g.a("ACTIVITY_FPS_DISPATCHER", new i());
-        com.taobao.monitor.impl.trace.c var1 = new com.taobao.monitor.impl.trace.c();
+        DispatcherManager.putDispatcher("APPLICATION_LOW_MEMORY_DISPATCHER", new ApplicationLowMemoryDispatcher());
+        DispatcherManager.putDispatcher("APPLICATION_GC_DISPATCHER", new ApplicationGCDispatcher());
+        ApplicationBackgroundChangedDispatcher var0 = new ApplicationBackgroundChangedDispatcher();
+        DispatcherManager.putDispatcher("APPLICATION_BACKGROUND_CHANGED_DISPATCHER", var0);
+        DispatcherManager.putDispatcher("ACTIVITY_FPS_DISPATCHER", new FPSDispatcher());
+        ActivityLifeCycleDispatcher var1 = new ActivityLifeCycleDispatcher();
         var1.addListener(new com.taobao.monitor.impl.processor.pageload.e());
         var1.addListener(new com.taobao.monitor.impl.processor.launcher.a());
-        g.a("ACTIVITY_LIFECYCLE_DISPATCHER", var1);
-        g.a("ACTIVITY_EVENT_DISPATCHER", new com.taobao.monitor.impl.trace.b());
-        g.a("ACTIVITY_USABLE_VISIBLE_DISPATCHER", new o());
-        l var2 = new l();
-        var2.addListener(new com.taobao.monitor.impl.processor.fragmentload.a());
-        g.a("FRAGMENT_LIFECYCLE_DISPATCHER", var2);
-        g.a("FRAGMENT_USABLE_VISIBLE_DISPATCHER", new o());
-        g.a("IMAGE_STAGE_DISPATCHER", new m());
-        PhenixLifeCycleManager.instance().addLifeCycle(new com.taobao.monitor.impl.data.d.a());
-        g.a("NETWORK_STAGE_DISPATCHER", new n());
-        NetworkLifecycleManager.instance().setLifecycle(new com.taobao.monitor.impl.data.e.a());
-        MtopLifecycleManager.instance().setLifecycle(new com.taobao.monitor.impl.data.e.a());
+        DispatcherManager.putDispatcher("ACTIVITY_LIFECYCLE_DISPATCHER", var1);
+        DispatcherManager.putDispatcher("ACTIVITY_EVENT_DISPATCHER", new ActivityEventDispatcher());
+        DispatcherManager.putDispatcher("ACTIVITY_USABLE_VISIBLE_DISPATCHER", new UsableVisibleDispatcher());
+        FragmentLifecycleDispatcher var2 = new FragmentLifecycleDispatcher();
+        var2.addListener(new FragmentModelLifecycle());
+        DispatcherManager.putDispatcher("FRAGMENT_LIFECYCLE_DISPATCHER", var2);
+        DispatcherManager.putDispatcher("FRAGMENT_USABLE_VISIBLE_DISPATCHER", new UsableVisibleDispatcher());
+        DispatcherManager.putDispatcher("IMAGE_STAGE_DISPATCHER", new ImageStageDispatcher());
+        PhenixLifeCycleManager.instance().addLifeCycle(new PhenixLifeCycleImpl());
+        DispatcherManager.putDispatcher("NETWORK_STAGE_DISPATCHER", new NetworkStageDispatcher());
+        NetworkLifecycleManager.instance().setLifecycle(new com.taobao.monitor.impl.data.network.a());
+        MtopLifecycleManager.instance().setLifecycle(new com.taobao.monitor.impl.data.network.a());
     }
 
     private static void initExecutor() {
-        com.taobao.monitor.impl.data.c.a var0 = new com.taobao.monitor.impl.data.c.a();
+        com.taobao.monitor.impl.data.gc.a var0 = new com.taobao.monitor.impl.data.gc.a();
         var0.execute();
     }
 

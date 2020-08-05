@@ -4,10 +4,12 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+
+import androidx.fragment.app.Fragment;
+
 import com.ali.alihadeviceevaluator.AliHAHardware;
 import com.ali.ha.fulltrace.dump.DumpManager;
 import com.ali.ha.fulltrace.event.DisplayedEvent;
@@ -19,23 +21,26 @@ import com.ali.ha.fulltrace.event.OpenPageEvent;
 import com.ali.ha.fulltrace.event.ReceiverLowMemoryEvent;
 import com.ali.ha.fulltrace.event.UsableEvent;
 import com.taobao.monitor.impl.data.GlobalStats;
-import com.taobao.monitor.impl.data.h;
-import com.taobao.monitor.impl.processor.a;
+import com.taobao.monitor.impl.data.IExecutor;
+import com.taobao.monitor.impl.data.OnUsableVisibleListener;
+import com.taobao.monitor.impl.processor.AbsProcessor;
+import com.taobao.monitor.impl.trace.ApplicationGCDispatcher;
 import com.taobao.monitor.impl.trace.IDispatcher;
-import com.taobao.monitor.impl.trace.b;
-import com.taobao.monitor.impl.trace.d;
-import com.taobao.monitor.impl.trace.e;
-import com.taobao.monitor.impl.trace.f;
-import com.taobao.monitor.impl.trace.i;
-import com.taobao.monitor.impl.trace.j;
-import com.taobao.monitor.impl.trace.k;
-import com.taobao.monitor.impl.trace.m;
-import com.taobao.monitor.impl.trace.n;
+import com.taobao.monitor.impl.trace.ActivityEventDispatcher;
+import com.taobao.monitor.impl.trace.ApplicationBackgroundChangedDispatcher;
+import com.taobao.monitor.impl.trace.ApplicationLowMemoryDispatcher;
+import com.taobao.monitor.impl.trace.FPSDispatcher;
+import com.taobao.monitor.impl.trace.FragmentFunctionDispatcher;
+import com.taobao.monitor.impl.trace.FragmentFunctionListener;
+import com.taobao.monitor.impl.trace.ImageStageDispatcher;
+import com.taobao.monitor.impl.trace.NetworkStageDispatcher;
+import com.taobao.monitor.impl.util.ActivityUtils;
 import com.taobao.monitor.impl.util.TimeUtils;
 import com.taobao.monitor.impl.util.TopicUtils;
 import com.taobao.monitor.procedure.IProcedure;
 import com.taobao.monitor.procedure.ProcedureConfig.Builder;
 import com.taobao.monitor.procedure.ProcedureFactoryProxy;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -43,7 +48,7 @@ import java.util.List;
 
 @TargetApi(16)
 /* compiled from: PageLoadProcessor */
-public class c extends a implements h<Activity>, e.a, b.a, d.a, e.a, f.a, i.a, k, m.a, n.a {
+public class c extends AbsProcessor implements OnUsableVisibleListener<Activity>, e.a, ActivityEventDispatcher.EventListener, ApplicationBackgroundChangedDispatcher.BackgroundChangedListener, ApplicationGCDispatcher.GCListener, ApplicationLowMemoryDispatcher.LowMemoryListener, FPSDispatcher.FPSListener, FragmentFunctionListener, ImageStageDispatcher.StageListener, NetworkStageDispatcher.StageListener {
     private static List<String> d = new ArrayList(4);
     private static String g = "";
     private FPSEvent a = new FPSEvent();
@@ -131,14 +136,14 @@ public class c extends a implements h<Activity>, e.a, b.a, d.a, e.a, f.a, i.a, k
         super.n();
         this.f95a = ProcedureFactoryProxy.PROXY.createProcedure(TopicUtils.getFullTopic("/pageLoad"), new Builder().setIndependent(false).setUpload(true).setParentNeedStats(true).setParent(null).build());
         this.f95a.begin();
-        this.f94a = a("ACTIVITY_EVENT_DISPATCHER");
-        this.b = a("APPLICATION_LOW_MEMORY_DISPATCHER");
-        this.e = a("ACTIVITY_USABLE_VISIBLE_DISPATCHER");
-        this.f99c = a("ACTIVITY_FPS_DISPATCHER");
-        this.f102d = a("APPLICATION_GC_DISPATCHER");
-        this.f103f = a("APPLICATION_BACKGROUND_CHANGED_DISPATCHER");
-        this.f105g = a("NETWORK_STAGE_DISPATCHER");
-        this.f106h = a("IMAGE_STAGE_DISPATCHER");
+        this.f94a = getDispatcher("ACTIVITY_EVENT_DISPATCHER");
+        this.b = getDispatcher("APPLICATION_LOW_MEMORY_DISPATCHER");
+        this.e = getDispatcher("ACTIVITY_USABLE_VISIBLE_DISPATCHER");
+        this.f99c = getDispatcher("ACTIVITY_FPS_DISPATCHER");
+        this.f102d = getDispatcher("APPLICATION_GC_DISPATCHER");
+        this.f103f = getDispatcher("APPLICATION_BACKGROUND_CHANGED_DISPATCHER");
+        this.f105g = getDispatcher("NETWORK_STAGE_DISPATCHER");
+        this.f106h = getDispatcher("IMAGE_STAGE_DISPATCHER");
         this.f102d.addListener(this);
         this.b.addListener(this);
         this.f94a.addListener(this);
@@ -147,7 +152,7 @@ public class c extends a implements h<Activity>, e.a, b.a, d.a, e.a, f.a, i.a, k
         this.f103f.addListener(this);
         this.f105g.addListener(this);
         this.f106h.addListener(this);
-        j.b.addListener(this);
+        FragmentFunctionDispatcher.FRAGMENT_FUNCTION_DISPATCHER.addListener(this);
         p();
         this.f98b[0] = 0;
         this.f98b[1] = 0;
@@ -170,19 +175,19 @@ public class c extends a implements h<Activity>, e.a, b.a, d.a, e.a, f.a, i.a, k
         this.f101d = activity;
         ProcedureManagerSetter.instance().setCurrentActivityProcedure(this.f95a);
         b(activity);
-        this.f100c = com.taobao.monitor.impl.data.f.a.a();
+        this.f100c = IExecutor.a.a();
         OpenPageEvent openPageEvent = new OpenPageEvent();
-        openPageEvent.pageName = com.taobao.monitor.impl.util.a.b(activity);
+        openPageEvent.pageName = ActivityUtils.getSimpleName(activity);
         DumpManager.getInstance().append(openPageEvent);
     }
 
     private void b(Activity activity) {
-        this.pageName = com.taobao.monitor.impl.util.a.b(activity);
+        this.pageName = ActivityUtils.getSimpleName(activity);
         if (d.size() < 10) {
             d.add(this.pageName);
         }
         this.f95a.addProperty("pageName", this.pageName);
-        this.f95a.addProperty("fullPageName", com.taobao.monitor.impl.util.a.a(activity));
+        this.f95a.addProperty("fullPageName", ActivityUtils.getName(activity));
         if (!TextUtils.isEmpty(g)) {
             this.f95a.addProperty("fromPageName", g);
         }
@@ -194,7 +199,7 @@ public class c extends a implements h<Activity>, e.a, b.a, d.a, e.a, f.a, i.a, k
             }
         }
         this.f95a.addProperty("isFirstLaunch", Boolean.valueOf(GlobalStats.isFirstLaunch));
-        this.f95a.addProperty("isFirstLoad", Boolean.valueOf(GlobalStats.activityStatusManager.a(com.taobao.monitor.impl.util.a.a(activity))));
+        this.f95a.addProperty("isFirstLoad", Boolean.valueOf(GlobalStats.activityStatusManager.a(ActivityUtils.getName(activity))));
         this.f95a.addProperty("jumpTime", Long.valueOf(GlobalStats.jumpTime));
         GlobalStats.jumpTime = -1;
         this.f95a.addProperty("lastValidTime", Long.valueOf(GlobalStats.lastValidTime));
@@ -213,13 +218,13 @@ public class c extends a implements h<Activity>, e.a, b.a, d.a, e.a, f.a, i.a, k
         g = this.pageName;
         if (this.f108p) {
             this.f108p = false;
-            long[] a2 = com.taobao.monitor.impl.data.f.a.a();
+            long[] a2 = IExecutor.a.a();
             long[] jArr = this.f98b;
             jArr[0] = jArr[0] + (a2[0] - this.f100c[0]);
             long[] jArr2 = this.f98b;
             jArr2[1] = jArr2[1] + (a2[1] - this.f100c[1]);
         }
-        this.f100c = com.taobao.monitor.impl.data.f.a.a();
+        this.f100c = IExecutor.a.a();
         GlobalStats.lastValidPage = this.pageName;
         GlobalStats.lastValidTime = j;
     }
@@ -243,7 +248,7 @@ public class c extends a implements h<Activity>, e.a, b.a, d.a, e.a, f.a, i.a, k
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
         this.f95a.event("onActivityStopped", hashMap);
-        long[] a2 = com.taobao.monitor.impl.data.f.a.a();
+        long[] a2 = IExecutor.a.a();
         long[] jArr = this.f98b;
         jArr[0] = jArr[0] + (a2[0] - this.f100c[0]);
         long[] jArr2 = this.f98b;
@@ -269,13 +274,13 @@ public class c extends a implements h<Activity>, e.a, b.a, d.a, e.a, f.a, i.a, k
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
         this.f95a.event("onActivityDestroyed", hashMap);
-        long[] a2 = com.taobao.monitor.impl.data.f.a.a();
+        long[] a2 = IExecutor.a.a();
         long[] jArr = this.f98b;
         jArr[0] = jArr[0] + (a2[0] - this.f100c[0]);
         long[] jArr2 = this.f98b;
         jArr2[1] = jArr2[1] + (a2[1] - this.f100c[1]);
         FinishLoadPageEvent finishLoadPageEvent = new FinishLoadPageEvent();
-        finishLoadPageEvent.pageName = com.taobao.monitor.impl.util.a.b(activity);
+        finishLoadPageEvent.pageName = ActivityUtils.getSimpleName(activity);
         DumpManager.getInstance().append(finishLoadPageEvent);
         o();
     }
@@ -289,7 +294,7 @@ public class c extends a implements h<Activity>, e.a, b.a, d.a, e.a, f.a, i.a, k
         DumpManager.getInstance().append(receiverLowMemoryEvent);
     }
 
-    public void a(Activity activity, MotionEvent motionEvent, long j) {
+    public void onMotionEvent(Activity activity, MotionEvent motionEvent, long j) {
         if (activity == this.f101d) {
             if (this.f107o) {
                 this.f95a.stage("firstInteractiveTime", j);
@@ -392,7 +397,7 @@ public class c extends a implements h<Activity>, e.a, b.a, d.a, e.a, f.a, i.a, k
             this.f103f.removeListener(this);
             this.f106h.removeListener(this);
             this.f105g.removeListener(this);
-            j.b.removeListener(this);
+            FragmentFunctionDispatcher.FRAGMENT_FUNCTION_DISPATCHER.removeListener(this);
             this.f95a.end();
             super.o();
         }
@@ -418,7 +423,7 @@ public class c extends a implements h<Activity>, e.a, b.a, d.a, e.a, f.a, i.a, k
         }
     }
 
-    public void c(int i2, long j) {
+    public void backgroundChanged(int i2, long j) {
         if (i2 == 1) {
             HashMap hashMap = new HashMap(1);
             hashMap.put("timestamp", Long.valueOf(j));
@@ -431,7 +436,7 @@ public class c extends a implements h<Activity>, e.a, b.a, d.a, e.a, f.a, i.a, k
         this.f95a.event("background2Foreground", hashMap2);
     }
 
-    public void a(Activity activity, KeyEvent keyEvent, long j) {
+    public void onKeyEvent(Activity activity, KeyEvent keyEvent, long j) {
         if (activity == this.f101d) {
             int action = keyEvent.getAction();
             int keyCode = keyEvent.getKeyCode();
@@ -452,7 +457,7 @@ public class c extends a implements h<Activity>, e.a, b.a, d.a, e.a, f.a, i.a, k
         }
     }
 
-    public void d(int i2) {
+    public void imageStage(int i2) {
         if (!this.f109q) {
             return;
         }
@@ -467,7 +472,7 @@ public class c extends a implements h<Activity>, e.a, b.a, d.a, e.a, f.a, i.a, k
         }
     }
 
-    public void e(int i2) {
+    public void networkStage(int i2) {
         if (!this.f109q) {
             return;
         }

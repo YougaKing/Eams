@@ -83,7 +83,7 @@ public class CanvasCalculator implements ICalculator {
         } else {
             ViewGroup var3 = (ViewGroup)var1;
             if (var3 instanceof WebView) {
-                return com.taobao.monitor.impl.data.c.a.isWebViewLoadFinished((WebView)var3) ? 1.0F : 0.0F;
+                return com.taobao.monitor.impl.data.gc.a.isWebViewLoadFinished((WebView)var3) ? 1.0F : 0.0F;
             } else if (WebViewProxy.INSTANCE.isWebView(var3)) {
                 return WebViewProxy.INSTANCE.isWebViewLoadFinished(var3) ? 1.0F : 0.0F;
             } else {

@@ -49,6 +49,6 @@ class c implements IAppLaunchListener, f<IAppLaunchListener> {
     }
 
     private void a(Runnable runnable) {
-        b.a().b(runnable);
+        ApmImpl.instance().b(runnable);
     }
 }

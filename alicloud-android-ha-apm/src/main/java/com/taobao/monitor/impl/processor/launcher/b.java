@@ -17,20 +17,25 @@ import com.ali.ha.fulltrace.event.OpenAppFromURL;
 import com.ali.ha.fulltrace.event.StartUpBeginEvent;
 import com.ali.ha.fulltrace.event.StartUpEndEvent;
 import com.taobao.application.common.IAppLaunchListener;
-import com.taobao.application.common.data.c;
+import com.taobao.application.common.data.AppLaunchHelper;
+import com.taobao.application.common.impl.ApmImpl;
 import com.taobao.monitor.impl.data.GlobalStats;
-import com.taobao.monitor.impl.data.h;
-import com.taobao.monitor.impl.processor.a;
+import com.taobao.monitor.impl.data.IExecutor;
+import com.taobao.monitor.impl.data.OnUsableVisibleListener;
+import com.taobao.monitor.impl.processor.AbsProcessor;
 import com.taobao.monitor.impl.processor.pageload.ProcedureManagerSetter;
 import com.taobao.monitor.impl.processor.pageload.e;
+import com.taobao.monitor.impl.trace.ActivityEventDispatcher;
+import com.taobao.monitor.impl.trace.ApplicationGCDispatcher;
 import com.taobao.monitor.impl.trace.IDispatcher;
-import com.taobao.monitor.impl.trace.d;
-import com.taobao.monitor.impl.trace.f;
-import com.taobao.monitor.impl.trace.i;
-import com.taobao.monitor.impl.trace.j;
-import com.taobao.monitor.impl.trace.k;
-import com.taobao.monitor.impl.trace.m;
-import com.taobao.monitor.impl.trace.n;
+import com.taobao.monitor.impl.trace.ApplicationBackgroundChangedDispatcher;
+import com.taobao.monitor.impl.trace.ApplicationLowMemoryDispatcher;
+import com.taobao.monitor.impl.trace.FPSDispatcher;
+import com.taobao.monitor.impl.trace.FragmentFunctionDispatcher;
+import com.taobao.monitor.impl.trace.FragmentFunctionListener;
+import com.taobao.monitor.impl.trace.ImageStageDispatcher;
+import com.taobao.monitor.impl.trace.NetworkStageDispatcher;
+import com.taobao.monitor.impl.util.ActivityUtils;
 import com.taobao.monitor.impl.util.TimeUtils;
 import com.taobao.monitor.impl.util.TopicUtils;
 import com.taobao.monitor.procedure.IProcedure;
@@ -42,14 +47,14 @@ import java.util.HashMap;
 import java.util.List;
 
 /* compiled from: LauncherProcessor */
-public class b extends a implements h<Activity>, e.a, com.taobao.monitor.impl.trace.b.a, d.a, com.taobao.monitor.impl.trace.e.a, f.a, i.a, k, m.a, n.a {
+public class b extends AbsProcessor implements OnUsableVisibleListener<Activity>, e.a, ActivityEventDispatcher.EventListener, ApplicationBackgroundChangedDispatcher.BackgroundChangedListener, ApplicationGCDispatcher.GCListener, ApplicationLowMemoryDispatcher.LowMemoryListener, FPSDispatcher.FPSListener, FragmentFunctionListener, ImageStageDispatcher.StageListener, NetworkStageDispatcher.StageListener {
     public static volatile String c = "COLD";
     public static boolean isBackgroundLaunch = false;
     private IDispatcher a;
 
     /* renamed from: a reason: collision with other field name */
     private IProcedure f71a;
-    IAppLaunchListener b = com.taobao.application.common.impl.b.a().a();
+    IAppLaunchListener b = ApmImpl.instance().instance();
 
     /* renamed from: b reason: collision with other field name */
     private IDispatcher f72b;
@@ -125,8 +130,8 @@ public class b extends a implements h<Activity>, e.a, com.taobao.monitor.impl.tr
     /* access modifiers changed from: protected */
     public void n() {
         super.n();
-        this.f78c = com.taobao.monitor.impl.data.f.a.a();
-        new c().a(this.f82f);
+        this.f78c = IExecutor.a.a();
+        new AppLaunchHelper().a(this.f82f);
         this.f71a = ProcedureManagerProxy.PROXY.getLauncherProcedure();
         if (this.f71a == null || !this.f71a.isAlive()) {
             this.f71a = ProcedureFactoryProxy.PROXY.createProcedure(TopicUtils.getFullTopic("/startup"), new Builder().setIndependent(false).setUpload(true).setParentNeedStats(true).setParent(null).build());
@@ -134,14 +139,14 @@ public class b extends a implements h<Activity>, e.a, com.taobao.monitor.impl.tr
             ProcedureManagerSetter.instance().setCurrentLauncherProcedure(this.f71a);
         }
         this.f71a.stage("procedureStartTime", TimeUtils.currentTimeMillis());
-        this.a = a("ACTIVITY_EVENT_DISPATCHER");
-        this.f72b = a("APPLICATION_LOW_MEMORY_DISPATCHER");
-        this.e = a("ACTIVITY_USABLE_VISIBLE_DISPATCHER");
-        this.f76c = a("ACTIVITY_FPS_DISPATCHER");
-        this.f79d = a("APPLICATION_GC_DISPATCHER");
-        this.f = a("APPLICATION_BACKGROUND_CHANGED_DISPATCHER");
-        this.g = a("NETWORK_STAGE_DISPATCHER");
-        this.h = a("IMAGE_STAGE_DISPATCHER");
+        this.a = getDispatcher("ACTIVITY_EVENT_DISPATCHER");
+        this.f72b = getDispatcher("APPLICATION_LOW_MEMORY_DISPATCHER");
+        this.e = getDispatcher("ACTIVITY_USABLE_VISIBLE_DISPATCHER");
+        this.f76c = getDispatcher("ACTIVITY_FPS_DISPATCHER");
+        this.f79d = getDispatcher("APPLICATION_GC_DISPATCHER");
+        this.f = getDispatcher("APPLICATION_BACKGROUND_CHANGED_DISPATCHER");
+        this.g = getDispatcher("NETWORK_STAGE_DISPATCHER");
+        this.h = getDispatcher("IMAGE_STAGE_DISPATCHER");
         this.f72b.addListener(this);
         this.f76c.addListener(this);
         this.f79d.addListener(this);
@@ -150,7 +155,7 @@ public class b extends a implements h<Activity>, e.a, com.taobao.monitor.impl.tr
         this.f.addListener(this);
         this.g.addListener(this);
         this.h.addListener(this);
-        j.b.addListener(this);
+        FragmentFunctionDispatcher.FRAGMENT_FUNCTION_DISPATCHER.addListener(this);
         p();
         StartUpBeginEvent startUpBeginEvent = new StartUpBeginEvent();
         startUpBeginEvent.firstInstall = GlobalStats.isFirstInstall;
@@ -176,8 +181,8 @@ public class b extends a implements h<Activity>, e.a, com.taobao.monitor.impl.tr
     }
 
     public void a(Activity activity, Bundle bundle, long j) {
-        String b2 = com.taobao.monitor.impl.util.a.b(activity);
-        this.f81e = com.taobao.monitor.impl.util.a.a(activity);
+        String b2 = ActivityUtils.getSimpleName(activity);
+        this.f81e = ActivityUtils.getName(activity);
         if (!this.f88u) {
             this.d = activity;
             n();
@@ -219,28 +224,28 @@ public class b extends a implements h<Activity>, e.a, com.taobao.monitor.impl.tr
     public void a(Activity activity, long j) {
         HashMap hashMap = new HashMap(2);
         hashMap.put("timestamp", Long.valueOf(j));
-        hashMap.put("pageName", com.taobao.monitor.impl.util.a.b(activity));
+        hashMap.put("pageName", ActivityUtils.getSimpleName(activity));
         this.f71a.event("onActivityStarted", hashMap);
     }
 
     public void b(Activity activity, long j) {
         HashMap hashMap = new HashMap(2);
         hashMap.put("timestamp", Long.valueOf(j));
-        hashMap.put("pageName", com.taobao.monitor.impl.util.a.b(activity));
+        hashMap.put("pageName", ActivityUtils.getSimpleName(activity));
         this.f71a.event("onActivityResumed", hashMap);
     }
 
     public void c(Activity activity, long j) {
         HashMap hashMap = new HashMap(2);
         hashMap.put("timestamp", Long.valueOf(j));
-        hashMap.put("pageName", com.taobao.monitor.impl.util.a.b(activity));
+        hashMap.put("pageName", ActivityUtils.getSimpleName(activity));
         this.f71a.event("onActivityPaused", hashMap);
     }
 
     public void d(Activity activity, long j) {
         HashMap hashMap = new HashMap(2);
         hashMap.put("timestamp", Long.valueOf(j));
-        hashMap.put("pageName", com.taobao.monitor.impl.util.a.b(activity));
+        hashMap.put("pageName", ActivityUtils.getSimpleName(activity));
         this.f71a.event("onActivityStopped", hashMap);
         if (activity == this.d) {
             o();
@@ -250,7 +255,7 @@ public class b extends a implements h<Activity>, e.a, com.taobao.monitor.impl.tr
     public void e(Activity activity, long j) {
         HashMap hashMap = new HashMap(2);
         hashMap.put("timestamp", Long.valueOf(j));
-        hashMap.put("pageName", com.taobao.monitor.impl.util.a.b(activity));
+        hashMap.put("pageName", ActivityUtils.getSimpleName(activity));
         this.f71a.event("onActivityDestroyed", hashMap);
         if (activity == this.d) {
             this.f85r = true;
@@ -264,10 +269,10 @@ public class b extends a implements h<Activity>, e.a, com.taobao.monitor.impl.tr
         this.f71a.event("onLowMemory", hashMap);
     }
 
-    public void a(Activity activity, MotionEvent motionEvent, long j) {
-        if (this.f84o && !PageList.inBlackList(com.taobao.monitor.impl.util.a.a(activity))) {
+    public void onMotionEvent(Activity activity, MotionEvent motionEvent, long j) {
+        if (this.f84o && !PageList.inBlackList(ActivityUtils.getName(activity))) {
             if (TextUtils.isEmpty(this.f80d)) {
-                this.f80d = com.taobao.monitor.impl.util.a.a(activity);
+                this.f80d = ActivityUtils.getName(activity);
             }
             if (activity == this.d) {
                 this.f71a.stage("firstInteractiveTime", j);
@@ -362,7 +367,7 @@ public class b extends a implements h<Activity>, e.a, com.taobao.monitor.impl.tr
             this.f71a.addStatistic("networkSuccessCount", Integer.valueOf(this.s));
             this.f71a.addStatistic("networkFailedCount", Integer.valueOf(this.t));
             this.f71a.addStatistic("networkCanceledCount", Integer.valueOf(this.u));
-            long[] a2 = com.taobao.monitor.impl.data.f.a.a();
+            long[] a2 = IExecutor.a.a();
             this.f71a.addStatistic("totalRx", Long.valueOf(a2[0] - this.f78c[0]));
             this.f71a.addStatistic("totalTx", Long.valueOf(a2[1] - this.f78c[1]));
             this.f71a.stage("procedureEndTime", TimeUtils.currentTimeMillis());
@@ -375,7 +380,7 @@ public class b extends a implements h<Activity>, e.a, com.taobao.monitor.impl.tr
             this.e.removeListener(this);
             this.h.removeListener(this);
             this.g.removeListener(this);
-            j.b.removeListener(this);
+            FragmentFunctionDispatcher.FRAGMENT_FUNCTION_DISPATCHER.removeListener(this);
             this.f71a.end();
             DumpManager.getInstance().append(new StartUpEndEvent());
             super.o();
@@ -396,7 +401,7 @@ public class b extends a implements h<Activity>, e.a, com.taobao.monitor.impl.tr
         this.l++;
     }
 
-    public void c(int i2, long j) {
+    public void backgroundChanged(int i2, long j) {
         if (i2 == 1) {
             HashMap hashMap = new HashMap(1);
             hashMap.put("timestamp", Long.valueOf(j));
@@ -419,8 +424,8 @@ public class b extends a implements h<Activity>, e.a, com.taobao.monitor.impl.tr
         }
     }
 
-    public void a(Activity activity, KeyEvent keyEvent, long j) {
-        if (!PageList.inBlackList(com.taobao.monitor.impl.util.a.a(activity)) && activity == this.d) {
+    public void onKeyEvent(Activity activity, KeyEvent keyEvent, long j) {
+        if (!PageList.inBlackList(ActivityUtils.getName(activity)) && activity == this.d) {
             int action = keyEvent.getAction();
             int keyCode = keyEvent.getKeyCode();
             if (action != 0) {
@@ -428,7 +433,7 @@ public class b extends a implements h<Activity>, e.a, com.taobao.monitor.impl.tr
             }
             if (keyCode == 4 || keyCode == 3) {
                 if (TextUtils.isEmpty(this.f80d)) {
-                    this.f80d = com.taobao.monitor.impl.util.a.a(activity);
+                    this.f80d = ActivityUtils.getName(activity);
                 }
                 if (keyCode == 3) {
                     this.f71a.addProperty("leaveType", "home");
@@ -443,7 +448,7 @@ public class b extends a implements h<Activity>, e.a, com.taobao.monitor.impl.tr
         }
     }
 
-    public void d(int i2) {
+    public void imageStage(int i2) {
         if (i2 == 0) {
             this.n++;
         } else if (i2 == 1) {
@@ -455,7 +460,7 @@ public class b extends a implements h<Activity>, e.a, com.taobao.monitor.impl.tr
         }
     }
 
-    public void e(int i2) {
+    public void networkStage(int i2) {
         if (i2 == 0) {
             this.r++;
         } else if (i2 == 1) {

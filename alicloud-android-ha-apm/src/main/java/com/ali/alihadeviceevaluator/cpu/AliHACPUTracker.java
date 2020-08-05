@@ -156,10 +156,8 @@ public class AliHACPUTracker implements Runnable {
                     }
                 }
             } catch (Throwable th3) {
-                th = th3;
                 randomAccessFile2 = null;
                 closeRandomAccessFile(randomAccessFile2);
-                throw th;
             }
         } else {
             try {
@@ -182,23 +180,17 @@ public class AliHACPUTracker implements Runnable {
                     this.mCpuPercent = f;
                     closeRandomAccessFile(randomAccessFile);
                 } catch (Throwable th4) {
-                    th = th4;
                     try {
-                        th.printStackTrace();
                         closeRandomAccessFile(randomAccessFile);
                         this.peakCpuLock.writeLock().unlock();
                         return f;
                     } catch (Throwable th5) {
-                        th = th5;
                         closeRandomAccessFile(randomAccessFile);
-                        throw th;
                     }
                 }
             } catch (Throwable th6) {
-                th = th6;
                 randomAccessFile = null;
                 closeRandomAccessFile(randomAccessFile);
-                throw th;
             }
         }
         this.peakCpuLock.writeLock().unlock();

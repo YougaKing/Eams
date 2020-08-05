@@ -65,7 +65,7 @@ public class AppPreferencesImpl implements IAppPreferences {
     }
 
     private <T> T getValue(String str) {
-        return this.map.get(str);
+        return (T) this.map.get(str);
     }
 
     private void putValue(String str, Object obj) {

@@ -1,3 +1,8 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by Fernflower decompiler)
+//
+
 package com.taobao.monitor.adapter.device;
 
 import android.app.Activity;
@@ -5,197 +10,191 @@ import android.content.Context;
 import android.content.SharedPreferences.Editor;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
-import android.support.annotation.Keep;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+
+import androidx.annotation.Keep;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 public class ApmHardWareInfo {
-    private final Editor a;
-
-    /* renamed from: a reason: collision with other field name */
-    ViewGroup f9a;
-
-    /* renamed from: a reason: collision with other field name */
-    a f10a;
-
-    /* renamed from: a reason: collision with other field name */
-    private final a f11a;
     long d;
     String e;
     String f;
-
-    class a extends GLSurfaceView {
-        b a;
-
-        public a(Context context) {
-            super(context);
-            setEGLConfigChooser(8, 8, 8, 8, 0, 0);
-            this.a = new b();
-            setRenderer(this.a);
-        }
-    }
-
-    class b implements Renderer {
-        b() {
-        }
-
-        public void onSurfaceCreated(GL10 gl10, EGLConfig eGLConfig) {
-            try {
-                ApmHardWareInfo.this.e = gl10.glGetString(7937);
-                ApmHardWareInfo.this.f = gl10.glGetString(7936);
-                ApmHardWareInfo.this.d = ApmHardWareInfo.this.a();
-                ApmHardWareInfo.a(ApmHardWareInfo.this).a(ApmHardWareInfo.this.e, ApmHardWareInfo.this.f);
-                ApmHardWareInfo.a(ApmHardWareInfo.this).putString("GPU_NAME", ApmHardWareInfo.this.e);
-                ApmHardWareInfo.a(ApmHardWareInfo.this).putString("GPU_BRAND", ApmHardWareInfo.this.f);
-                ApmHardWareInfo.a(ApmHardWareInfo.this).apply();
-            } catch (Throwable th) {
-            }
-        }
-
-        public void onDrawFrame(GL10 gl10) {
-        }
-
-        public void onSurfaceChanged(GL10 gl10, int i, int i2) {
-        }
-    }
+    ViewGroup mViewGroup;
+    ApmHardWareInfo.ApmGLSurfaceView mApmGLSurfaceView;
+    private ApmDeviceInfoCallback mApmDeviceInfoCallback;
+    private Editor mEditor;
 
     @Keep
-    public void getGpuInfo(Activity activity) {
+    public void getGpuInfo(Activity var1) {
         try {
-            this.f9a = (ViewGroup) activity.getWindow().getDecorView();
-            if (this.f9a != null) {
-                this.f10a = new a(activity);
-                this.f10a.setAlpha(0.0f);
-                this.f9a.addView(this.f10a, new LayoutParams(1, 1));
+            this.mViewGroup = (ViewGroup) var1.getWindow().getDecorView();
+            if (this.mViewGroup != null) {
+                this.mApmGLSurfaceView = new ApmHardWareInfo.ApmGLSurfaceView(var1);
+                this.mApmGLSurfaceView.setAlpha(0.0F);
+                LayoutParams var2 = new LayoutParams(1, 1);
+                this.mViewGroup.addView(this.mApmGLSurfaceView, var2);
             }
-        } catch (Throwable th) {
-            th.printStackTrace();
+        } catch (Throwable var3) {
+            var3.printStackTrace();
         }
+
     }
 
-    /* access modifiers changed from: 0000 */
-    public long a() {
-        long j;
+    long a() {
+        long var1 = 0L;
+
         try {
-            File file = new File("/sys/devices/platform/gpusysfs/gpu_max_clock");
-            if (!file.exists()) {
-                file = new File("/sys/devices/platform/gpusysfs/max_freq");
+            String var3 = null;
+            File var4 = new File("/sys/devices/platform/gpusysfs/gpu_max_clock");
+            if (!var4.exists()) {
+                var4 = new File("/sys/devices/platform/gpusysfs/max_freq");
             }
-            if (file.exists()) {
-                FileReader fileReader = new FileReader(file);
-                String readLine = new BufferedReader(fileReader).readLine();
-                if (readLine != null) {
-                    j = Long.parseLong(readLine);
-                    if (j > 0) {
-                        try {
-                            j = (j / 1000) / 1000;
-                        } catch (Exception e2) {
-                        }
+
+            if (var4.exists()) {
+                FileReader var5 = new FileReader(var4);
+                BufferedReader var6 = new BufferedReader(var5);
+                var3 = var6.readLine();
+                if (var3 != null) {
+                    var1 = Long.parseLong(var3);
+                    if (var1 > 0L) {
+                        var1 = var1 / 1000L / 1000L;
                     }
-                } else {
-                    j = 0;
                 }
-                fileReader.close();
-                if (j > 0) {
-                    return j;
+
+                var5.close();
+                if (var1 > 0L) {
+                    return var1;
                 }
-            } else {
-                j = 0;
             }
-            File file2 = new File("/sys/class/devfreq/");
-            if (file2.exists() && file2.isDirectory()) {
-                File[] listFiles = file2.listFiles();
-                if (listFiles == null) {
-                    return 0;
+
+            var4 = new File("/sys/class/devfreq/");
+            if (var4.exists() && var4.isDirectory()) {
+                File[] var12 = var4.listFiles();
+                if (var12 == null) {
+                    return 0L;
                 }
-                int i = 0;
-                while (true) {
-                    int i2 = i;
-                    if (i2 >= listFiles.length) {
-                        break;
-                    } else if (listFiles[i2].getName().contains("kgsl")) {
-                        File file3 = new File(listFiles[i2].getAbsolutePath() + "/max_freq");
-                        if (!file3.exists()) {
-                            file3 = new File(listFiles[i2].getAbsolutePath() + "/max_gpuclk");
+
+                for (int var13 = 0; var13 < var12.length; ++var13) {
+                    File var7 = var12[var13];
+                    if (var7.getName().contains("kgsl")) {
+                        File var8 = new File(var12[var13].getAbsolutePath() + "/max_freq");
+                        if (!var8.exists()) {
+                            var8 = new File(var12[var13].getAbsolutePath() + "/max_gpuclk");
                         }
-                        if (file3.exists()) {
-                            FileReader fileReader2 = new FileReader(file3);
-                            String readLine2 = new BufferedReader(fileReader2).readLine();
-                            if (readLine2 != null) {
-                                j = Long.parseLong(readLine2);
-                                if (j > 0) {
-                                    j = (j / 1000) / 1000;
+
+                        if (var8.exists()) {
+                            FileReader var9 = new FileReader(var8);
+                            BufferedReader var10 = new BufferedReader(var9);
+                            var3 = var10.readLine();
+                            if (var3 != null) {
+                                var1 = Long.parseLong(var3);
+                                if (var1 > 0L) {
+                                    var1 = var1 / 1000L / 1000L;
                                 }
                             }
-                            fileReader2.close();
+
+                            var9.close();
                         }
-                    } else {
-                        i = i2 + 1;
+                        break;
                     }
                 }
             }
-        } catch (Exception e3) {
-            j = 0;
+        } catch (Exception var11) {
         }
-        if (j == 0) {
-            return a("/sys/devices/");
+
+        if (var1 == 0L) {
+            var1 = this.a("/sys/devices/");
         }
-        return j;
+
+        return var1;
     }
 
-    /* access modifiers changed from: 0000 */
-    public long a(String str) {
-        long j;
+    long a(String var1) {
+        long var2 = 0L;
+
         try {
-            File file = new File(str);
-            if (!file.exists() || !file.isDirectory()) {
-                j = 0;
-            } else {
-                File[] listFiles = file.listFiles();
-                if (listFiles == null) {
-                    return 0;
+            File var4 = new File(var1);
+            if (var4.exists() && var4.isDirectory()) {
+                File[] var5 = var4.listFiles();
+                if (var5 == null) {
+                    return 0L;
                 }
-                int i = 0;
-                j = 0;
-                while (i < listFiles.length) {
-                    try {
-                        File file2 = listFiles[i];
-                        if (file2 != null && file2.getName().contains("kgsl") && file2.isDirectory()) {
-                            j = a(file2.getAbsolutePath());
-                            if (j > 0) {
-                                return j;
-                            }
+
+                for (int var6 = 0; var6 < var5.length; ++var6) {
+                    File var7 = var5[var6];
+                    if (var7 != null && var7.getName().contains("kgsl") && var7.isDirectory()) {
+                        var2 = this.a(var7.getAbsolutePath());
+                        if (var2 > 0L) {
+                            return var2;
                         }
-                        i++;
-                    } catch (Exception e2) {
-                        return j;
                     }
                 }
             }
-            File file3 = new File(str + "/max_freq");
-            if (!file3.exists()) {
-                file3 = new File(str + "/max_gpuclk");
+
+            File var10 = new File(var1 + "/max_freq");
+            if (!var10.exists()) {
+                var10 = new File(var1 + "/max_gpuclk");
             }
-            if (!file3.exists()) {
-                return j;
-            }
-            FileReader fileReader = new FileReader(file3);
-            String readLine = new BufferedReader(fileReader).readLine();
-            if (readLine != null) {
-                j = Long.parseLong(readLine);
-                if (j > 0) {
-                    j = (j / 1000) / 1000;
+
+            if (var10.exists()) {
+                FileReader var11 = new FileReader(var10);
+                BufferedReader var12 = new BufferedReader(var11);
+                String var8 = var12.readLine();
+                if (var8 != null) {
+                    var2 = Long.parseLong(var8);
+                    if (var2 > 0L) {
+                        var2 = var2 / 1000L / 1000L;
+                    }
                 }
+
+                var11.close();
             }
-            fileReader.close();
-            return j;
-        } catch (Exception e3) {
-            return 0;
+        } catch (Exception var9) {
+        }
+
+        return var2;
+    }
+
+    class ApmGLSurfaceView extends GLSurfaceView {
+        ApmRenderer mApmRenderer;
+
+        public ApmGLSurfaceView(Context var2) {
+            super(var2);
+            this.setEGLConfigChooser(8, 8, 8, 8, 0, 0);
+            this.mApmRenderer = ApmHardWareInfo.this.new ApmRenderer();
+            this.setRenderer(this.mApmRenderer);
+        }
+    }
+
+    class ApmRenderer implements Renderer {
+        ApmRenderer() {
+        }
+
+        public void onSurfaceCreated(GL10 var1, EGLConfig var2) {
+            try {
+                ApmHardWareInfo.this.e = var1.glGetString(7937);
+                ApmHardWareInfo.this.f = var1.glGetString(7936);
+                ApmHardWareInfo.this.d = ApmHardWareInfo.this.a();
+                ApmHardWareInfo.this.mApmDeviceInfoCallback.a(ApmHardWareInfo.this.e, ApmHardWareInfo.this.f);
+                ApmHardWareInfo.this.mEditor.putString("GPU_NAME", ApmHardWareInfo.this.e);
+                ApmHardWareInfo.this.mEditor.putString("GPU_BRAND", ApmHardWareInfo.this.f);
+                ApmHardWareInfo.this.mEditor.apply();
+            } catch (Throwable var4) {
+            }
+
+        }
+
+        public void onDrawFrame(GL10 var1) {
+        }
+
+        public void onSurfaceChanged(GL10 var1, int var2, int var3) {
         }
     }
 }

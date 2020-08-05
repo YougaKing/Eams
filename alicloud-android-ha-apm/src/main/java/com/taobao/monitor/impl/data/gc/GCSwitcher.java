@@ -4,7 +4,7 @@ import com.taobao.monitor.impl.trace.ApplicationBackgroundChangedDispatcher.Back
 import com.taobao.monitor.impl.trace.ApplicationGCDispatcher;
 
 /* compiled from: GCSwitcher */
-public class d implements BackgroundChangedListener, ApplicationGCDispatcher.GCListener {
+public class GCSwitcher implements BackgroundChangedListener, ApplicationGCDispatcher.GCListener {
     private volatile boolean m = false;
 
     public void gc() {
@@ -33,6 +33,6 @@ public class d implements BackgroundChangedListener, ApplicationGCDispatcher.GCL
     }
 
     private void l() {
-        new b();
+        new GCDetector();
     }
 }

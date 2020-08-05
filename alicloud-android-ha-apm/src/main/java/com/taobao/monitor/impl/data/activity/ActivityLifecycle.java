@@ -35,11 +35,11 @@ public class ActivityLifecycle implements ActivityLifecycleCallbacks {
 
     /* renamed from: a reason: collision with other field name */
     private final BackgroundForegroundEventImpl mBackgroundForegroundEvent = new BackgroundForegroundEventImpl();
-    private final ActivityLifecycleCallbacks b = ApmImpl.instance().mainApplicationLifecycleCallbacks();
-    private final ActivityLifecycleCallbacks c = ApmImpl.instance().applicationLifecycleCallbacks();
+    private final ActivityLifecycleCallbacks mMainApplicationLifecycleCallbacks = ApmImpl.instance().mainApplicationLifecycleCallbacks();
+    private final ActivityLifecycleCallbacks mApplicationLifecycleCallbacks = ApmImpl.instance().applicationLifecycleCallbacks();
     private int count;
-    private int i = 0;
-    protected Map<Activity, LifecycleListener> map = new HashMap();
+    private int mAliveActivityCount = 0;
+    protected Map<Activity, LifecycleListener> mLifecycleListenerMap = new HashMap<>();
 
     /* compiled from: ActivityLifecycle */
     interface LifecycleListener {
@@ -57,34 +57,34 @@ public class ActivityLifecycle implements ActivityLifecycleCallbacks {
     }
 
     public ActivityLifecycle() {
-        this.mActivityCountHelper.aliveActivityCount(this.i);
+        this.mActivityCountHelper.aliveActivityCount(this.mAliveActivityCount);
     }
 
     @Override
     public void onActivityCreated(Activity activity, Bundle bundle) {
-        ActivityCountHelper bVar = this.mActivityCountHelper;
-        int i2 = this.i + 1;
-        this.i = i2;
-        bVar.aliveActivityCount(i2);
-        if (((LifecycleListener) this.map.get(activity)) == null) {
+        int i2 = this.mAliveActivityCount + 1;
+        this.mAliveActivityCount = i2;
+        this.mActivityCountHelper.aliveActivityCount(i2);
+
+        if (this.mLifecycleListenerMap.get(activity) == null) {
             GlobalStats.createdPageCount++;
-            GlobalStats.activityStatusManager.b(ActivityUtils.getName(activity));
+            GlobalStats.activityStatusManager.put(ActivityUtils.getName(activity));
             LifecycleListener aVar = new ActivityDataCollector(activity);
-            this.map.put(activity, aVar);
+            this.mLifecycleListenerMap.put(activity, aVar);
             aVar.onActivityCreated(activity, bundle);
             if ((activity instanceof FragmentActivity) && DynamicConstants.needFragment) {
                 ((FragmentActivity) activity).getSupportFragmentManager().registerFragmentLifecycleCallbacks(new FragmentLifecycle(activity), true);
             }
         }
         DataLoggerUtils.log("ActivityLifeCycle", "onActivityCreated", activity.getClass().getSimpleName());
-        ApmImpl.instance().a(activity);
-        this.b.onActivityCreated(activity, bundle);
-        this.c.onActivityCreated(activity, bundle);
+        ApmImpl.instance().setActivity(activity);
+        this.mMainApplicationLifecycleCallbacks.onActivityCreated(activity, bundle);
+        this.mApplicationLifecycleCallbacks.onActivityCreated(activity, bundle);
     }
 
     @Override
     public void onActivityStarted(Activity activity) {
-        LifecycleListener aVar = (LifecycleListener) this.map.get(activity);
+        LifecycleListener aVar = (LifecycleListener) this.mLifecycleListenerMap.get(activity);
         DataLoggerUtils.log("ActivityLifeCycle", "onActivityStarted", activity.getClass().getSimpleName());
         this.count++;
         if (this.count == 1) {
@@ -100,38 +100,38 @@ public class ActivityLifecycle implements ActivityLifecycleCallbacks {
         if (aVar != null) {
             aVar.onActivityStarted(activity);
         }
-        ApmImpl.instance().a(activity);
-        this.b.onActivityStarted(activity);
-        this.c.onActivityStarted(activity);
+        ApmImpl.instance().setActivity(activity);
+        this.mMainApplicationLifecycleCallbacks.onActivityStarted(activity);
+        this.mApplicationLifecycleCallbacks.onActivityStarted(activity);
     }
 
     @Override
     public void onActivityResumed(Activity activity) {
         DataLoggerUtils.log("ActivityLifeCycle", "onActivityResumed", activity.getClass().getSimpleName());
-        LifecycleListener aVar = (LifecycleListener) this.map.get(activity);
+        LifecycleListener aVar = (LifecycleListener) this.mLifecycleListenerMap.get(activity);
         if (aVar != null) {
             aVar.onActivityResumed(activity);
         }
-        ApmImpl.instance().a(activity);
-        this.b.onActivityResumed(activity);
-        this.c.onActivityResumed(activity);
+        ApmImpl.instance().setActivity(activity);
+        this.mMainApplicationLifecycleCallbacks.onActivityResumed(activity);
+        this.mApplicationLifecycleCallbacks.onActivityResumed(activity);
     }
 
     @Override
     public void onActivityPaused(Activity activity) {
         DataLoggerUtils.log("ActivityLifeCycle", "onActivityPaused", activity.getClass().getSimpleName());
-        LifecycleListener aVar = (LifecycleListener) this.map.get(activity);
+        LifecycleListener aVar = (LifecycleListener) this.mLifecycleListenerMap.get(activity);
         if (aVar != null) {
             aVar.onActivityPaused(activity);
         }
-        this.b.onActivityPaused(activity);
-        this.c.onActivityPaused(activity);
+        this.mMainApplicationLifecycleCallbacks.onActivityPaused(activity);
+        this.mApplicationLifecycleCallbacks.onActivityPaused(activity);
     }
 
     @Override
     public void onActivityStopped(Activity activity) {
         DataLoggerUtils.log("ActivityLifeCycle", "onActivityStopped", activity.getClass().getSimpleName());
-        LifecycleListener aVar = (LifecycleListener) this.map.get(activity);
+        LifecycleListener aVar = (LifecycleListener) this.mLifecycleListenerMap.get(activity);
         if (aVar != null) {
             aVar.onActivityStopped(activity);
         }
@@ -151,33 +151,33 @@ public class ActivityLifecycle implements ActivityLifecycleCallbacks {
             this.mBackgroundForegroundEvent.j();
             c(ActivityUtils.getName(activity));
         }
-        this.b.onActivityStopped(activity);
-        this.c.onActivityStopped(activity);
+        this.mMainApplicationLifecycleCallbacks.onActivityStopped(activity);
+        this.mApplicationLifecycleCallbacks.onActivityStopped(activity);
     }
 
     @Override
     public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
-        this.b.onActivitySaveInstanceState(activity, bundle);
-        this.c.onActivitySaveInstanceState(activity, bundle);
+        this.mMainApplicationLifecycleCallbacks.onActivitySaveInstanceState(activity, bundle);
+        this.mApplicationLifecycleCallbacks.onActivitySaveInstanceState(activity, bundle);
     }
 
     @Override
     public void onActivityDestroyed(Activity activity) {
         DataLoggerUtils.log("ActivityLifeCycle", "onActivityDestroyed", activity.getClass().getSimpleName());
-        LifecycleListener aVar = (LifecycleListener) this.map.get(activity);
+        LifecycleListener aVar = (LifecycleListener) this.mLifecycleListenerMap.get(activity);
         if (aVar != null) {
             aVar.onActivityDestroyed(activity);
         }
-        this.map.remove(activity);
+        this.mLifecycleListenerMap.remove(activity);
         if (this.count == 0) {
             c("");
-            ApmImpl.instance().a((Activity) null);
+            ApmImpl.instance().setActivity((Activity) null);
         }
-        this.b.onActivityDestroyed(activity);
-        this.c.onActivityDestroyed(activity);
+        this.mMainApplicationLifecycleCallbacks.onActivityDestroyed(activity);
+        this.mApplicationLifecycleCallbacks.onActivityDestroyed(activity);
         ActivityCountHelper bVar = this.mActivityCountHelper;
-        int i2 = this.i - 1;
-        this.i = i2;
+        int i2 = this.mAliveActivityCount - 1;
+        this.mAliveActivityCount = i2;
         bVar.aliveActivityCount(i2);
     }
 

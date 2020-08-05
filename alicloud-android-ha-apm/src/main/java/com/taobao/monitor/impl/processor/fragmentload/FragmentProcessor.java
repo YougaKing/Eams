@@ -179,7 +179,7 @@ class FragmentProcessor extends AbsProcessor implements OnUsableVisibleListener<
         }
         this.mPageLoadProcedure.addProperty("isInterpretiveExecution", Boolean.valueOf(false));
         this.mPageLoadProcedure.addProperty("isFirstLaunch", Boolean.valueOf(GlobalStats.isFirstLaunch));
-        this.mPageLoadProcedure.addProperty("isFirstLoad", Boolean.valueOf(GlobalStats.activityStatusManager.a(fragment.getClass().getName())));
+        this.mPageLoadProcedure.addProperty("isFirstLoad", Boolean.valueOf(GlobalStats.activityStatusManager.get(fragment.getClass().getName())));
         this.mPageLoadProcedure.addProperty("lastValidTime", Long.valueOf(GlobalStats.lastValidTime));
         this.mPageLoadProcedure.addProperty("lastValidPage", GlobalStats.lastValidPage);
         this.mPageLoadProcedure.addProperty("loadType", "push");

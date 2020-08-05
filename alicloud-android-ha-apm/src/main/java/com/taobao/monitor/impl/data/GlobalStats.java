@@ -3,7 +3,7 @@ package com.taobao.monitor.impl.data;
 import java.util.HashMap;
 
 public class GlobalStats {
-    public static a activityStatusManager = new a();
+    public static ActivityStatusManager activityStatusManager = new ActivityStatusManager();
     public static String appVersion = "unknown";
     public static int createdPageCount = 0;
     public static volatile boolean hasSplash = false;
@@ -21,22 +21,22 @@ public class GlobalStats {
     public static String oppoCPUResource = "false";
     public static long processStartTime = -1;
 
-    public static class a {
-        HashMap<String, Boolean> a = new HashMap<>();
+    public static class ActivityStatusManager {
+        HashMap<String, Boolean> mMap = new HashMap<>();
 
-        public boolean a(String str) {
-            Boolean bool = (Boolean) this.a.get(str);
+        public boolean get(String str) {
+            Boolean bool = this.mMap.get(str);
             if (bool == null) {
                 return true;
             }
-            return bool.booleanValue();
+            return bool;
         }
 
-        public void b(String str) {
-            if (this.a.get(str) == null) {
-                this.a.put(str, Boolean.valueOf(true));
+        public void put(String str) {
+            if (this.mMap.get(str) == null) {
+                this.mMap.put(str, Boolean.TRUE);
             } else {
-                this.a.put(str, Boolean.valueOf(false));
+                this.mMap.put(str, Boolean.FALSE);
             }
         }
     }

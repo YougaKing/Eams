@@ -62,7 +62,7 @@ public class FragmentModelLifecycle implements FragmentLifecycleDispatcher.Lifec
     }
 
     public void onFragmentPreAttached(Fragment fragment, long j) {
-        GlobalStats.activityStatusManager.b(fragment.getClass().getName());
+        GlobalStats.activityStatusManager.put(fragment.getClass().getName());
         ModelLifecycleListener aVar = (ModelLifecycleListener) this.mFragmentProcessorFactory.createProcessor();
         if (aVar != null) {
             this.mModelLifecycleListenerMap.put(fragment, aVar);

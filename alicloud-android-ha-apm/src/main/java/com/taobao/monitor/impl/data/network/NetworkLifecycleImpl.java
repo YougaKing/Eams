@@ -8,10 +8,10 @@ import com.taobao.network.lifecycle.INetworkLifecycle;
 import java.util.Map;
 
 /* compiled from: NetworkLifecycleImpl */
-public class a implements IMtopLifecycle, INetworkLifecycle {
+public class NetworkLifecycleImpl implements IMtopLifecycle, INetworkLifecycle {
     private NetworkStageDispatcher a = null;
 
-    public a() {
+    public NetworkLifecycleImpl() {
         m();
     }
 

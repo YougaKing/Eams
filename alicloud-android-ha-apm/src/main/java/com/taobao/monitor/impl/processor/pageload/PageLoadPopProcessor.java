@@ -8,7 +8,6 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.taobao.monitor.impl.data.GlobalStats;
-import com.taobao.monitor.impl.data.IExecutor;
 import com.taobao.monitor.impl.data.traffic.TrafficTracker;
 import com.taobao.monitor.impl.processor.AbsProcessor;
 import com.taobao.monitor.impl.processor.pageload.PageModelLifecycle.ModelPairLifecycleListener;
@@ -100,7 +99,7 @@ public class PageLoadPopProcessor extends AbsProcessor implements ModelPairLifec
         }
         this.f89a.addProperty("isInterpretiveExecution", Boolean.valueOf(false));
         this.f89a.addProperty("isFirstLaunch", Boolean.valueOf(GlobalStats.isFirstLaunch));
-        this.f89a.addProperty("isFirstLoad", Boolean.valueOf(GlobalStats.activityStatusManager.a(ActivityUtils.getName(activity))));
+        this.f89a.addProperty("isFirstLoad", Boolean.valueOf(GlobalStats.activityStatusManager.get(ActivityUtils.getName(activity))));
         this.f89a.addProperty("jumpTime", Long.valueOf(GlobalStats.jumpTime));
         this.f89a.addProperty("lastValidTime", Long.valueOf(GlobalStats.lastValidTime));
         this.f89a.addProperty("lastValidPage", GlobalStats.lastValidPage);

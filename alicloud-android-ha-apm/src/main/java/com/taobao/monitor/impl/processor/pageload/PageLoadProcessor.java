@@ -21,7 +21,6 @@ import com.ali.ha.fulltrace.event.OpenPageEvent;
 import com.ali.ha.fulltrace.event.ReceiverLowMemoryEvent;
 import com.ali.ha.fulltrace.event.UsableEvent;
 import com.taobao.monitor.impl.data.GlobalStats;
-import com.taobao.monitor.impl.data.IExecutor;
 import com.taobao.monitor.impl.data.OnUsableVisibleListener;
 import com.taobao.monitor.impl.data.traffic.TrafficTracker;
 import com.taobao.monitor.impl.processor.AbsProcessor;
@@ -209,7 +208,7 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
             }
         }
         this.f95a.addProperty("isFirstLaunch", Boolean.valueOf(GlobalStats.isFirstLaunch));
-        this.f95a.addProperty("isFirstLoad", Boolean.valueOf(GlobalStats.activityStatusManager.a(ActivityUtils.getName(activity))));
+        this.f95a.addProperty("isFirstLoad", Boolean.valueOf(GlobalStats.activityStatusManager.get(ActivityUtils.getName(activity))));
         this.f95a.addProperty("jumpTime", Long.valueOf(GlobalStats.jumpTime));
         GlobalStats.jumpTime = -1;
         this.f95a.addProperty("lastValidTime", Long.valueOf(GlobalStats.lastValidTime));

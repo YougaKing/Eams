@@ -156,7 +156,7 @@ public class ApmImpl implements Apm, IApplicationMonitor {
         return (IApmEventListener) a((Object) this.mApmEventListenerGroup);
     }
 
-    public void a(Activity activity) {
+    public void setActivity(Activity activity) {
         this.mActivity = activity;
     }
 

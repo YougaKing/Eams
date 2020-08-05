@@ -108,7 +108,7 @@ class FragmentPopProcessor extends AbsProcessor implements FragmentModelLifecycl
         }
         this.mPageLoadProcedure.addProperty("isInterpretiveExecution", Boolean.valueOf(false));
         this.mPageLoadProcedure.addProperty("isFirstLaunch", Boolean.valueOf(GlobalStats.isFirstLaunch));
-        this.mPageLoadProcedure.addProperty("isFirstLoad", Boolean.valueOf(GlobalStats.activityStatusManager.a(ActivityUtils.getName(activity))));
+        this.mPageLoadProcedure.addProperty("isFirstLoad", Boolean.valueOf(GlobalStats.activityStatusManager.get(ActivityUtils.getName(activity))));
         this.mPageLoadProcedure.addProperty("jumpTime", Long.valueOf(GlobalStats.jumpTime));
         this.mPageLoadProcedure.addProperty("lastValidTime", Long.valueOf(GlobalStats.lastValidTime));
         this.mPageLoadProcedure.addProperty("lastValidPage", GlobalStats.lastValidPage);

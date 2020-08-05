@@ -134,7 +134,7 @@ class ActivityDataCollector extends AbstractDataCollector<Activity> implements A
         }
         usable(3, TimeUtils.currentTimeMillis());
         if (motionEvent.getAction() == 2 && VERSION.SDK_INT >= 16) {
-            this.mDrawTimeCollector.f();
+            this.mDrawTimeCollector.mOnTouchEvent();
         }
     }
 

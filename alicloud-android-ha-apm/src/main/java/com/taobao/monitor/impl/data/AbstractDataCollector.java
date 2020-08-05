@@ -99,7 +99,7 @@ public class AbstractDataCollector<T> implements PageLoadCalculate.PageLoadCalcu
         this.d = false;
         if (!this.f23a) {
             if (!DispatcherManager.isEmpty((IDispatcher) this.mUsableVisibleDispatcher)) {
-                this.mUsableVisibleDispatcher.a(this.mT, TimeUtils.currentTimeMillis());
+                this.mUsableVisibleDispatcher.onResume(this.mT, TimeUtils.currentTimeMillis());
             }
             this.mPageLoadCalculate = new PageLoadCalculate(view);
             ((PageLoadCalculate) this.mPageLoadCalculate).setPageLoadCalculateListener(this);
@@ -126,7 +126,7 @@ public class AbstractDataCollector<T> implements PageLoadCalculate.PageLoadCalcu
             DataLoggerUtils.log("AbstractDataCollector", "usable", this.pageName);
             Logger.i("AbstractDataCollector", this.pageName, " usable", Long.valueOf(j));
             if (!DispatcherManager.isEmpty((IDispatcher) this.mUsableVisibleDispatcher)) {
-                this.mUsableVisibleDispatcher.a(this.mT, 2, i, j);
+                this.mUsableVisibleDispatcher.usable(this.mT, 2, i, j);
             }
             stop();
             this.mPageListener.onPageChanged(this.pageName, 3, j);
@@ -139,26 +139,26 @@ public class AbstractDataCollector<T> implements PageLoadCalculate.PageLoadCalcu
         Logger.i("AbstractDataCollector", "visiblePercent", Float.valueOf(f), this.pageName);
         if (Math.abs(f - this.a) > 0.05f || f > 0.8f) {
             if (!DispatcherManager.isEmpty((IDispatcher) this.mUsableVisibleDispatcher)) {
-                this.mUsableVisibleDispatcher.a((Object) this.mT, f, TimeUtils.currentTimeMillis());
+                this.mUsableVisibleDispatcher.visiblePercent((Object) this.mT, f, TimeUtils.currentTimeMillis());
             }
             DataLoggerUtils.log("AbstractDataCollector", "visiblePercent", Float.valueOf(f), this.pageName);
             if (f > 0.8f) {
-                h(TimeUtils.currentTimeMillis());
+                display(TimeUtils.currentTimeMillis());
                 run();
             }
             this.a = f;
         }
     }
 
-    public void g(long j) {
-        h(j);
+    public void pageDisplay(long j) {
+        display(j);
     }
 
-    private void h(long j) {
+    private void display(long j) {
         if (!this.c && !this.d) {
             if (!DispatcherManager.isEmpty((IDispatcher) this.mUsableVisibleDispatcher)) {
                 Logger.i("AbstractDataCollector", this.pageName, " visible", Long.valueOf(j));
-                this.mUsableVisibleDispatcher.a((Object) this.mT, 2, j);
+                this.mUsableVisibleDispatcher.display((Object) this.mT, 2, j);
             }
             this.mPageListener.onPageChanged(this.pageName, 2, j);
             stop();
@@ -166,7 +166,7 @@ public class AbstractDataCollector<T> implements PageLoadCalculate.PageLoadCalcu
         }
     }
 
-    public void b(int i, long j) {
+    public void pageUsable(int i, long j) {
         usable(i, j);
     }
 

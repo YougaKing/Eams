@@ -166,13 +166,13 @@ public class a extends AbsProcessor implements b, ActivityEventDispatcher.EventL
         super.o();
     }
 
-    public void b(int i) {
+    public void fps(int i) {
         if (this.f90b.size() < 60) {
             this.f90b.add(Integer.valueOf(i));
         }
     }
 
-    public void c(int i) {
+    public void jank(int i) {
         this.c += i;
     }
 

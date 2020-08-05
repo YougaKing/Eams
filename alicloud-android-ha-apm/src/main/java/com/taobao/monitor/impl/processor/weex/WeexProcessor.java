@@ -175,13 +175,13 @@ public class WeexProcessor extends AbsProcessor implements OnUsableVisibleListen
         this.f39a.event("onLowMemory", hashMap);
     }
 
-    public void b(int i2) {
+    public void fps(int i2) {
         if (this.f40b.size() < 200 && this.f44q) {
             this.f40b.add(Integer.valueOf(i2));
         }
     }
 
-    public void c(int i2) {
+    public void jank(int i2) {
         if (this.f44q) {
             this.c += i2;
         }
@@ -238,7 +238,7 @@ public class WeexProcessor extends AbsProcessor implements OnUsableVisibleListen
         }
     }
 
-    public void a(Activity activity, int i2, long j) {
+    public void display(Activity activity, int i2, long j) {
         if (this.f47t && this.f44q && i2 == 2) {
             this.f39a.addProperty("displayDuration", Long.valueOf(j - this.f));
             this.f39a.stage("displayedTime", j);
@@ -246,7 +246,7 @@ public class WeexProcessor extends AbsProcessor implements OnUsableVisibleListen
         }
     }
 
-    public void a(Activity activity, int i2, int i3, long j) {
+    public void usable(Activity activity, int i2, int i3, long j) {
         if (this.f46s && this.f44q && i2 == 2) {
             this.f39a.addProperty("interactiveDuration", Long.valueOf(j - this.f));
             this.f39a.addProperty("loadDuration", Long.valueOf(j - this.f));
@@ -257,7 +257,7 @@ public class WeexProcessor extends AbsProcessor implements OnUsableVisibleListen
     }
 
     /* renamed from: f */
-    public void a(Activity activity, long j) {
+    public void onResume(Activity activity, long j) {
         if (this.f45r && this.f44q) {
             this.f39a.addProperty("pageInitDuration", Long.valueOf(j - this.f));
             this.f39a.stage("renderStartTime", j);
@@ -265,7 +265,7 @@ public class WeexProcessor extends AbsProcessor implements OnUsableVisibleListen
         }
     }
 
-    public void a(Activity activity, float f2, long j) {
+    public void visiblePercent(Activity activity, float f2, long j) {
         if (this.f44q) {
             this.f39a.addProperty("onRenderPercent", Float.valueOf(f2));
             this.f39a.addProperty("drawPercentTime", Long.valueOf(j));

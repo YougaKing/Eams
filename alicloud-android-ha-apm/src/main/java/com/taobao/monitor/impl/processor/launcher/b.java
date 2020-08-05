@@ -221,7 +221,7 @@ public class b extends AbsProcessor implements OnUsableVisibleListener<Activity>
         this.f71a.event("onActivityCreated", hashMap);
     }
 
-    public void a(Activity activity, long j) {
+    public void onResume(Activity activity, long j) {
         HashMap hashMap = new HashMap(2);
         hashMap.put("timestamp", Long.valueOf(j));
         hashMap.put("pageName", ActivityUtils.getSimpleName(activity));
@@ -300,14 +300,14 @@ public class b extends AbsProcessor implements OnUsableVisibleListener<Activity>
         return this.f82f.equals("COLD") ? 0 : 1;
     }
 
-    public void a(Activity activity, float f2, long j) {
+    public void visiblePercent(Activity activity, float f2, long j) {
         if (activity == this.d) {
             this.f71a.addProperty("onRenderPercent", Float.valueOf(f2));
             this.f71a.addProperty("drawPercentTime", Long.valueOf(j));
         }
     }
 
-    public void a(Activity activity, int i2, int i3, long j) {
+    public void usable(Activity activity, int i2, int i3, long j) {
         if (this.f86s && activity == this.d && i2 == 2) {
             this.f71a.addProperty("errorCode", Integer.valueOf(0));
             this.f71a.addProperty("interactiveDuration", Long.valueOf(j - this.i));
@@ -327,7 +327,7 @@ public class b extends AbsProcessor implements OnUsableVisibleListener<Activity>
         }
     }
 
-    public void a(Activity activity, int i2, long j) {
+    public void display(Activity activity, int i2, long j) {
         if (this.f87t) {
             if (i2 == 2 && !PageList.inBlackList(this.f81e) && TextUtils.isEmpty(this.f80d)) {
                 this.f80d = this.f81e;
@@ -387,13 +387,13 @@ public class b extends AbsProcessor implements OnUsableVisibleListener<Activity>
         }
     }
 
-    public void b(int i2) {
+    public void fps(int i2) {
         if (this.f74b.size() < 200) {
             this.f74b.add(Integer.valueOf(i2));
         }
     }
 
-    public void c(int i2) {
+    public void jank(int i2) {
         this.f75c += i2;
     }
 

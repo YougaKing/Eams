@@ -208,7 +208,7 @@ public class c extends AbsProcessor implements OnUsableVisibleListener<Activity>
         this.f95a.addProperty("loadType", "push");
     }
 
-    public void a(Activity activity, long j) {
+    public void onResume(Activity activity, long j) {
         this.f109q = true;
         this.f104g = j;
         HashMap hashMap = new HashMap(1);
@@ -319,14 +319,14 @@ public class c extends AbsProcessor implements OnUsableVisibleListener<Activity>
         }
     }
 
-    public void a(Activity activity, float f2, long j) {
+    public void visiblePercent(Activity activity, float f2, long j) {
         if (activity == this.f101d) {
             this.f95a.addProperty("onRenderPercent", Float.valueOf(f2));
             this.f95a.addProperty("drawPercentTime", Long.valueOf(j));
         }
     }
 
-    public void a(Activity activity, int i2, int i3, long j) {
+    public void usable(Activity activity, int i2, int i3, long j) {
         if (this.f111s && activity == this.f101d && i2 == 2) {
             this.f95a.addProperty("interactiveDuration", Long.valueOf(j - this.f));
             this.f95a.addProperty("loadDuration", Long.valueOf(j - this.f));
@@ -357,7 +357,7 @@ public class c extends AbsProcessor implements OnUsableVisibleListener<Activity>
         }
     }
 
-    public void a(Activity activity, int i2, long j) {
+    public void display(Activity activity, int i2, long j) {
         if (this.f112t && activity == this.f101d && i2 == 2) {
             this.f95a.addProperty("displayDuration", Long.valueOf(j - this.f));
             this.f95a.stage("displayedTime", j);
@@ -403,13 +403,13 @@ public class c extends AbsProcessor implements OnUsableVisibleListener<Activity>
         }
     }
 
-    public void b(int i2) {
+    public void fps(int i2) {
         if (this.f97b.size() < 200 && this.f109q) {
             this.f97b.add(Integer.valueOf(i2));
         }
     }
 
-    public void c(int i2) {
+    public void jank(int i2) {
         if (this.f109q) {
             this.c += i2;
             DumpManager.getInstance().append(new JankEvent());

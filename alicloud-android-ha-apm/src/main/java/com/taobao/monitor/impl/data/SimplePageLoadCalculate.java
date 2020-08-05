@@ -25,9 +25,9 @@ public class SimplePageLoadCalculate implements OnDrawListener, IExecutor {
     private final Runnable mRunnable = new Runnable() {
         public void run() {
             h();
-            mPageLoadCalculateListener.g(b);
+            mPageLoadCalculateListener.pageDisplay(b);
             if (e > b) {
-                mPageLoadCalculateListener.b(2, e);
+                mPageLoadCalculateListener.pageUsable(2, e);
                 stop();
             }
         }
@@ -55,9 +55,9 @@ public class SimplePageLoadCalculate implements OnDrawListener, IExecutor {
 
     /* compiled from: SimplePageLoadCalculate */
     public interface PageLoadCalculateListener {
-        void b(int i, long j);
+        void pageUsable(int i, long j);
 
-        void g(long j);
+        void pageDisplay(long j);
     }
 
     public SimplePageLoadCalculate(View view, PageLoadCalculateListener aVar) {
@@ -91,9 +91,9 @@ public class SimplePageLoadCalculate implements OnDrawListener, IExecutor {
     }
 
     public void e() {
-        this.mPageLoadCalculateListener.g(this.b);
+        this.mPageLoadCalculateListener.pageDisplay(this.b);
         if (this.e > this.b) {
-            this.mPageLoadCalculateListener.b(4, this.e);
+            this.mPageLoadCalculateListener.pageUsable(4, this.e);
             stop();
         }
     }

@@ -16,17 +16,17 @@ import com.ali.ha.fulltrace.event.FinishLoadPageEvent;
 import com.ali.ha.fulltrace.event.OpenPageEvent;
 import com.ali.ha.fulltrace.event.UsableEvent;
 import com.taobao.monitor.impl.data.GlobalStats;
-import com.taobao.monitor.impl.data.IExecutor;
 import com.taobao.monitor.impl.data.OnUsableVisibleListener;
+import com.taobao.monitor.impl.data.traffic.TrafficTracker;
 import com.taobao.monitor.impl.processor.AbsProcessor;
 import com.taobao.monitor.impl.processor.fragmentload.FragmentModelLifecycle.ModelLifecycleListener;
 import com.taobao.monitor.impl.processor.pageload.ProcedureManagerSetter;
-import com.taobao.monitor.impl.trace.ApplicationBackgroundChangedDispatcher;
-import com.taobao.monitor.impl.trace.IDispatcher;
 import com.taobao.monitor.impl.trace.ActivityEventDispatcher;
+import com.taobao.monitor.impl.trace.ApplicationBackgroundChangedDispatcher;
 import com.taobao.monitor.impl.trace.ApplicationGCDispatcher;
 import com.taobao.monitor.impl.trace.ApplicationLowMemoryDispatcher;
 import com.taobao.monitor.impl.trace.FPSDispatcher;
+import com.taobao.monitor.impl.trace.IDispatcher;
 import com.taobao.monitor.impl.trace.ImageStageDispatcher;
 import com.taobao.monitor.impl.trace.NetworkStageDispatcher;
 import com.taobao.monitor.impl.util.TimeUtils;
@@ -53,45 +53,45 @@ class FragmentProcessor extends AbsProcessor implements OnUsableVisibleListener<
     private FPSEvent a = new FPSEvent();
 
     /* renamed from: a reason: collision with other field name */
-    private IDispatcher f55a;
+    private IDispatcher mActivityEventDispatcher;
 
     /* renamed from: a reason: collision with other field name */
-    private IProcedure f56a;
+    private IProcedure mPageLoadProcedure;
     private Fragment b = null;
 
     /* renamed from: b reason: collision with other field name */
-    private IDispatcher f57b;
+    private IDispatcher mApplicationLowMemoryDispatcher;
 
     /* renamed from: b reason: collision with other field name */
-    private List<Integer> f58b = new ArrayList();
+    private List<Integer> mFpsList = new ArrayList();
 
     /* renamed from: b reason: collision with other field name */
     private long[] f59b = new long[2];
-    private int c = 0;
+    private int mJankCount = 0;
 
     /* renamed from: c reason: collision with other field name */
-    private IDispatcher f60c;
+    private IDispatcher mActivityFpsDispatcher;
 
     /* renamed from: c reason: collision with other field name */
     private long[] f61c;
-    private IDispatcher d;
-    private IDispatcher e;
+    private IDispatcher mApplicationGcDispatcher;
+    private IDispatcher mFragmentUsableVisibleDispatcher;
     private long f;
 
     /* renamed from: f reason: collision with other field name */
-    private IDispatcher f62f;
+    private IDispatcher mApplicationBackgroundChangedDispatcher;
     private long g = -1;
 
     /* renamed from: g reason: collision with other field name */
-    private IDispatcher f63g;
-    private long h = 0;
+    private IDispatcher mNetworkStageDispatcher;
+    private long mTotalVisibleDuration = 0;
 
     /* renamed from: h reason: collision with other field name */
-    private IDispatcher f64h;
+    private IDispatcher mImageStageDispatcher;
     private boolean i = false;
-    private int l = 0;
+    private int mGcCount = 0;
     private int m = 0;
-    private int n;
+    private int mImageCount;
     private int o;
 
     /* renamed from: o reason: collision with other field name */
@@ -126,73 +126,79 @@ class FragmentProcessor extends AbsProcessor implements OnUsableVisibleListener<
     /* access modifiers changed from: protected */
     public void n() {
         super.n();
-        this.f56a = ProcedureFactoryProxy.PROXY.createProcedure(TopicUtils.getFullTopic("/pageLoad"), new Builder().setIndependent(false).setUpload(true).setParentNeedStats(true).setParent(null).build());
-        this.f56a.begin();
-        this.f55a = getDispatcher("ACTIVITY_EVENT_DISPATCHER");
-        this.f57b = getDispatcher("APPLICATION_LOW_MEMORY_DISPATCHER");
-        this.e = getDispatcher("FRAGMENT_USABLE_VISIBLE_DISPATCHER");
-        this.f60c = getDispatcher("ACTIVITY_FPS_DISPATCHER");
-        this.d = getDispatcher("APPLICATION_GC_DISPATCHER");
-        this.f62f = getDispatcher("APPLICATION_BACKGROUND_CHANGED_DISPATCHER");
-        this.f63g = getDispatcher("NETWORK_STAGE_DISPATCHER");
-        this.f64h = getDispatcher("IMAGE_STAGE_DISPATCHER");
-        this.d.addListener(this);
-        this.f57b.addListener(this);
-        this.f55a.addListener(this);
-        this.e.addListener(this);
-        this.f60c.addListener(this);
-        this.f62f.addListener(this);
-        this.f63g.addListener(this);
-        this.f64h.addListener(this);
+        this.mPageLoadProcedure = ProcedureFactoryProxy.PROXY.createProcedure(TopicUtils.getFullTopic("/pageLoad"), new Builder()
+                .setIndependent(false)
+                .setUpload(true)
+                .setParentNeedStats(true)
+                .setParent(null)
+                .build());
+
+        this.mPageLoadProcedure.begin();
+        this.mActivityEventDispatcher = getDispatcher("ACTIVITY_EVENT_DISPATCHER");
+        this.mApplicationLowMemoryDispatcher = getDispatcher("APPLICATION_LOW_MEMORY_DISPATCHER");
+        this.mFragmentUsableVisibleDispatcher = getDispatcher("FRAGMENT_USABLE_VISIBLE_DISPATCHER");
+        this.mActivityFpsDispatcher = getDispatcher("ACTIVITY_FPS_DISPATCHER");
+        this.mApplicationGcDispatcher = getDispatcher("APPLICATION_GC_DISPATCHER");
+        this.mApplicationBackgroundChangedDispatcher = getDispatcher("APPLICATION_BACKGROUND_CHANGED_DISPATCHER");
+        this.mNetworkStageDispatcher = getDispatcher("NETWORK_STAGE_DISPATCHER");
+        this.mImageStageDispatcher = getDispatcher("IMAGE_STAGE_DISPATCHER");
+        this.mApplicationGcDispatcher.addListener(this);
+        this.mApplicationLowMemoryDispatcher.addListener(this);
+        this.mActivityEventDispatcher.addListener(this);
+        this.mFragmentUsableVisibleDispatcher.addListener(this);
+        this.mActivityFpsDispatcher.addListener(this);
+        this.mApplicationBackgroundChangedDispatcher.addListener(this);
+        this.mNetworkStageDispatcher.addListener(this);
+        this.mImageStageDispatcher.addListener(this);
         p();
         this.f59b[0] = 0;
         this.f59b[1] = 0;
     }
 
     private void p() {
-        this.f56a.stage("procedureStartTime", TimeUtils.currentTimeMillis());
-        this.f56a.addProperty("errorCode", Integer.valueOf(1));
-        this.f56a.addProperty("installType", GlobalStats.installType);
-        this.f56a.addProperty("leaveType", "other");
+        this.mPageLoadProcedure.stage("procedureStartTime", TimeUtils.currentTimeMillis());
+        this.mPageLoadProcedure.addProperty("errorCode", Integer.valueOf(1));
+        this.mPageLoadProcedure.addProperty("installType", GlobalStats.installType);
+        this.mPageLoadProcedure.addProperty("leaveType", "other");
     }
 
     private void o(Fragment fragment) {
         this.pageName = fragment.getClass().getSimpleName();
-        this.f56a.addProperty("pageName", this.pageName);
-        this.f56a.addProperty("fullPageName", fragment.getClass().getName());
+        this.mPageLoadProcedure.addProperty("pageName", this.pageName);
+        this.mPageLoadProcedure.addProperty("fullPageName", fragment.getClass().getName());
         FragmentActivity activity = fragment.getActivity();
         if (activity != null) {
             Intent intent = activity.getIntent();
             if (intent != null) {
                 String dataString = intent.getDataString();
                 if (!TextUtils.isEmpty(dataString)) {
-                    this.f56a.addProperty("schemaUrl", dataString);
+                    this.mPageLoadProcedure.addProperty("schemaUrl", dataString);
                 }
             }
-            this.f56a.addProperty("activityName", activity.getClass().getSimpleName());
+            this.mPageLoadProcedure.addProperty("activityName", activity.getClass().getSimpleName());
         }
-        this.f56a.addProperty("isInterpretiveExecution", Boolean.valueOf(false));
-        this.f56a.addProperty("isFirstLaunch", Boolean.valueOf(GlobalStats.isFirstLaunch));
-        this.f56a.addProperty("isFirstLoad", Boolean.valueOf(GlobalStats.activityStatusManager.a(fragment.getClass().getName())));
-        this.f56a.addProperty("lastValidTime", Long.valueOf(GlobalStats.lastValidTime));
-        this.f56a.addProperty("lastValidPage", GlobalStats.lastValidPage);
-        this.f56a.addProperty("loadType", "push");
+        this.mPageLoadProcedure.addProperty("isInterpretiveExecution", Boolean.valueOf(false));
+        this.mPageLoadProcedure.addProperty("isFirstLaunch", Boolean.valueOf(GlobalStats.isFirstLaunch));
+        this.mPageLoadProcedure.addProperty("isFirstLoad", Boolean.valueOf(GlobalStats.activityStatusManager.a(fragment.getClass().getName())));
+        this.mPageLoadProcedure.addProperty("lastValidTime", Long.valueOf(GlobalStats.lastValidTime));
+        this.mPageLoadProcedure.addProperty("lastValidPage", GlobalStats.lastValidPage);
+        this.mPageLoadProcedure.addProperty("loadType", "push");
     }
 
     public void onLowMemory() {
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(TimeUtils.currentTimeMillis()));
-        this.f56a.event("onLowMemory", hashMap);
+        this.mPageLoadProcedure.event("onLowMemory", hashMap);
     }
 
     public void onMotionEvent(Activity activity, MotionEvent motionEvent, long j) {
         if (this.b != null) {
             try {
                 if (activity == this.b.getActivity() && this.f65o) {
-                    this.f56a.stage("firstInteractiveTime", j);
-                    this.f56a.addProperty("firstInteractiveDuration", Long.valueOf(j - this.f));
-                    this.f56a.addProperty("leaveType", "touch");
-                    this.f56a.addProperty("errorCode", Integer.valueOf(0));
+                    this.mPageLoadProcedure.stage("firstInteractiveTime", j);
+                    this.mPageLoadProcedure.addProperty("firstInteractiveDuration", Long.valueOf(j - this.f));
+                    this.mPageLoadProcedure.addProperty("leaveType", "touch");
+                    this.mPageLoadProcedure.addProperty("errorCode", Integer.valueOf(0));
                     this.f65o = false;
                 }
             } catch (Exception e2) {
@@ -202,45 +208,45 @@ class FragmentProcessor extends AbsProcessor implements OnUsableVisibleListener<
     }
 
     /* renamed from: o */
-    public void a(Fragment fragment, long j) {
+    public void onResume(Fragment fragment, long j) {
         if (this.f68r && fragment == this.b) {
-            this.f56a.addProperty("pageInitDuration", Long.valueOf(j - this.f));
-            this.f56a.stage("renderStartTime", j);
+            this.mPageLoadProcedure.addProperty("pageInitDuration", Long.valueOf(j - this.f));
+            this.mPageLoadProcedure.stage("renderStartTime", j);
             this.f68r = false;
         }
     }
 
-    public void a(Fragment fragment, float f2, long j) {
+    public void visiblePercent(Fragment fragment, float f2, long j) {
         if (fragment == this.b) {
-            this.f56a.addProperty("onRenderPercent", Float.valueOf(f2));
-            this.f56a.addProperty("drawPercentTime", Long.valueOf(j));
+            this.mPageLoadProcedure.addProperty("onRenderPercent", Float.valueOf(f2));
+            this.mPageLoadProcedure.addProperty("drawPercentTime", Long.valueOf(j));
         }
     }
 
-    public void a(Fragment fragment, int i2, int i3, long j) {
+    public void usable(Fragment fragment, int i2, int i3, long j) {
         if (this.f69s && fragment == this.b && i2 == 2) {
-            this.f56a.addProperty("interactiveDuration", Long.valueOf(j - this.f));
-            this.f56a.addProperty("loadDuration", Long.valueOf(j - this.f));
-            this.f56a.addProperty("usableChangeType", Integer.valueOf(i3));
-            this.f56a.stage("interactiveTime", j);
-            this.f56a.addProperty("errorCode", Integer.valueOf(0));
-            this.f56a.addStatistic("totalRx", Long.valueOf(this.f59b[0]));
-            this.f56a.addStatistic("totalTx", Long.valueOf(this.f59b[1]));
+            this.mPageLoadProcedure.addProperty("interactiveDuration", Long.valueOf(j - this.f));
+            this.mPageLoadProcedure.addProperty("loadDuration", Long.valueOf(j - this.f));
+            this.mPageLoadProcedure.addProperty("usableChangeType", Integer.valueOf(i3));
+            this.mPageLoadProcedure.stage("interactiveTime", j);
+            this.mPageLoadProcedure.addProperty("errorCode", Integer.valueOf(0));
+            this.mPageLoadProcedure.addStatistic("totalRx", Long.valueOf(this.f59b[0]));
+            this.mPageLoadProcedure.addStatistic("totalTx", Long.valueOf(this.f59b[1]));
             this.f69s = false;
             UsableEvent usableEvent = new UsableEvent();
             usableEvent.duration = (float) (j - this.f);
             DumpManager.getInstance().append(usableEvent);
-            if (this.f58b != null && this.f58b.size() != 0) {
+            if (this.mFpsList != null && this.mFpsList.size() != 0) {
                 Integer valueOf = Integer.valueOf(0);
-                Iterator it = this.f58b.iterator();
+                Iterator it = this.mFpsList.iterator();
                 while (true) {
                     Integer num = valueOf;
                     if (it.hasNext()) {
                         Integer num2 = (Integer) it.next();
                         valueOf = Integer.valueOf(num2.intValue() + num.intValue());
                     } else {
-                        this.a.averageLoadFps = (float) (num.intValue() / this.f58b.size());
-                        this.m = this.f58b.size();
+                        this.a.averageLoadFps = (float) (num.intValue() / this.mFpsList.size());
+                        this.m = this.mFpsList.size();
                         return;
                     }
                 }
@@ -248,10 +254,10 @@ class FragmentProcessor extends AbsProcessor implements OnUsableVisibleListener<
         }
     }
 
-    public void a(Fragment fragment, int i2, long j) {
+    public void display(Fragment fragment, int i2, long j) {
         if (this.f70t && fragment == this.b && i2 == 2) {
-            this.f56a.addProperty("displayDuration", Long.valueOf(j - this.f));
-            this.f56a.stage("displayedTime", j);
+            this.mPageLoadProcedure.addProperty("displayDuration", Long.valueOf(j - this.f));
+            this.mPageLoadProcedure.stage("displayedTime", j);
             DumpManager.getInstance().append(new DisplayedEvent());
             this.f70t = false;
         }
@@ -261,49 +267,49 @@ class FragmentProcessor extends AbsProcessor implements OnUsableVisibleListener<
     public void o() {
         if (!this.i) {
             this.i = true;
-            this.f56a.addProperty("totalVisibleDuration", Long.valueOf(this.h));
-            this.f56a.stage("procedureEndTime", TimeUtils.currentTimeMillis());
-            this.f56a.addStatistic("gcCount", Integer.valueOf(this.l));
-            this.f56a.addStatistic("fps", this.f58b.toString());
-            this.f56a.addStatistic("jankCount", Integer.valueOf(this.c));
-            this.f56a.addStatistic("image", Integer.valueOf(this.n));
-            this.f56a.addStatistic("imageOnRequest", Integer.valueOf(this.n));
-            this.f56a.addStatistic("imageSuccessCount", Integer.valueOf(this.o));
-            this.f56a.addStatistic("imageFailedCount", Integer.valueOf(this.p));
-            this.f56a.addStatistic("imageCanceledCount", Integer.valueOf(this.q));
-            this.f56a.addStatistic("network", Integer.valueOf(this.r));
-            this.f56a.addStatistic("networkOnRequest", Integer.valueOf(this.r));
-            this.f56a.addStatistic("networkSuccessCount", Integer.valueOf(this.s));
-            this.f56a.addStatistic("networkFailedCount", Integer.valueOf(this.t));
-            this.f56a.addStatistic("networkCanceledCount", Integer.valueOf(this.u));
-            this.f57b.removeListener(this);
-            this.f55a.removeListener(this);
-            this.e.removeListener(this);
-            this.f60c.removeListener(this);
-            this.d.removeListener(this);
-            this.f62f.removeListener(this);
-            this.f64h.removeListener(this);
-            this.f63g.removeListener(this);
-            this.f56a.end();
+            this.mPageLoadProcedure.addProperty("totalVisibleDuration", this.mTotalVisibleDuration);
+            this.mPageLoadProcedure.stage("procedureEndTime", TimeUtils.currentTimeMillis());
+            this.mPageLoadProcedure.addStatistic("gcCount", this.mGcCount);
+            this.mPageLoadProcedure.addStatistic("fps", this.mFpsList.toString());
+            this.mPageLoadProcedure.addStatistic("jankCount", this.mJankCount);
+            this.mPageLoadProcedure.addStatistic("image", this.mImageCount);
+            this.mPageLoadProcedure.addStatistic("imageOnRequest", Integer.valueOf(this.mImageCount));
+            this.mPageLoadProcedure.addStatistic("imageSuccessCount", Integer.valueOf(this.o));
+            this.mPageLoadProcedure.addStatistic("imageFailedCount", Integer.valueOf(this.p));
+            this.mPageLoadProcedure.addStatistic("imageCanceledCount", Integer.valueOf(this.q));
+            this.mPageLoadProcedure.addStatistic("network", Integer.valueOf(this.r));
+            this.mPageLoadProcedure.addStatistic("networkOnRequest", Integer.valueOf(this.r));
+            this.mPageLoadProcedure.addStatistic("networkSuccessCount", Integer.valueOf(this.s));
+            this.mPageLoadProcedure.addStatistic("networkFailedCount", Integer.valueOf(this.t));
+            this.mPageLoadProcedure.addStatistic("networkCanceledCount", Integer.valueOf(this.u));
+            this.mApplicationLowMemoryDispatcher.removeListener(this);
+            this.mActivityEventDispatcher.removeListener(this);
+            this.mFragmentUsableVisibleDispatcher.removeListener(this);
+            this.mActivityFpsDispatcher.removeListener(this);
+            this.mApplicationGcDispatcher.removeListener(this);
+            this.mApplicationBackgroundChangedDispatcher.removeListener(this);
+            this.mImageStageDispatcher.removeListener(this);
+            this.mNetworkStageDispatcher.removeListener(this);
+            this.mPageLoadProcedure.end();
             super.o();
         }
     }
 
-    public void b(int i2) {
-        if (this.f58b.size() < 200 && this.f67q) {
-            this.f58b.add(Integer.valueOf(i2));
+    public void fps(int i2) {
+        if (this.mFpsList.size() < 200 && this.f67q) {
+            this.mFpsList.add(Integer.valueOf(i2));
         }
     }
 
-    public void c(int i2) {
+    public void jank(int i2) {
         if (this.f67q) {
-            this.c += i2;
+            this.mJankCount += i2;
         }
     }
 
     public void gc() {
         if (this.f67q) {
-            this.l++;
+            this.mGcCount++;
         }
     }
 
@@ -311,13 +317,13 @@ class FragmentProcessor extends AbsProcessor implements OnUsableVisibleListener<
         if (i2 == 1) {
             HashMap hashMap = new HashMap(1);
             hashMap.put("timestamp", Long.valueOf(j));
-            this.f56a.event("foreground2Background", hashMap);
+            this.mPageLoadProcedure.event("foreground2Background", hashMap);
             o();
             return;
         }
         HashMap hashMap2 = new HashMap(1);
         hashMap2.put("timestamp", Long.valueOf(j));
-        this.f56a.event("background2Foreground", hashMap2);
+        this.mPageLoadProcedure.event("background2Foreground", hashMap2);
     }
 
     public void onKeyEvent(Activity activity, KeyEvent keyEvent, long j) {
@@ -335,30 +341,30 @@ class FragmentProcessor extends AbsProcessor implements OnUsableVisibleListener<
                 }
                 if (keyCode == 4 || keyCode == 3) {
                     if (keyCode == 3) {
-                        this.f56a.addProperty("leaveType", "home");
+                        this.mPageLoadProcedure.addProperty("leaveType", "home");
                     } else {
-                        this.f56a.addProperty("leaveType", "back");
+                        this.mPageLoadProcedure.addProperty("leaveType", "back");
                     }
                     HashMap hashMap = new HashMap(2);
                     hashMap.put("timestamp", Long.valueOf(j));
                     hashMap.put("key", Integer.valueOf(keyEvent.getKeyCode()));
-                    this.f56a.event("keyEvent", hashMap);
+                    this.mPageLoadProcedure.event("keyEvent", hashMap);
                 }
             }
         }
     }
 
-    public void a(Fragment fragment, long j) {
+    public void onFragmentPreAttached(Fragment fragment, long j) {
         n();
-        ProcedureManagerSetter.instance().setCurrentFragmentProcedure(this.f56a);
-        this.f56a.stage("loadStartTime", j);
+        ProcedureManagerSetter.instance().setCurrentFragmentProcedure(this.mPageLoadProcedure);
+        this.mPageLoadProcedure.stage("loadStartTime", j);
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
-        this.f56a.event("onFragmentPreAttached", hashMap);
+        this.mPageLoadProcedure.event("onFragmentPreAttached", hashMap);
         this.b = fragment;
         this.f = j;
         o(fragment);
-        this.f61c = IExecutor.a.a();
+        this.f61c = TrafficTracker.traffics();
         OpenPageEvent openPageEvent = new OpenPageEvent();
         openPageEvent.pageName = fragment.getClass().getSimpleName();
         DumpManager.getInstance().append(openPageEvent);
@@ -367,90 +373,90 @@ class FragmentProcessor extends AbsProcessor implements OnUsableVisibleListener<
     public void onFragmentAttached(Fragment fragment, long j) {
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
-        this.f56a.event("onFragmentAttached", hashMap);
+        this.mPageLoadProcedure.event("onFragmentAttached", hashMap);
     }
 
     public void onFragmentPreCreated(Fragment fragment, long j) {
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
-        this.f56a.event("onFragmentPreCreated", hashMap);
+        this.mPageLoadProcedure.event("onFragmentPreCreated", hashMap);
     }
 
     public void onFragmentCreated(Fragment fragment, long j) {
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
-        this.f56a.event("onFragmentCreated", hashMap);
+        this.mPageLoadProcedure.event("onFragmentCreated", hashMap);
     }
 
     public void onFragmentActivityCreated(Fragment fragment, long j) {
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
-        this.f56a.event("onFragmentActivityCreated", hashMap);
+        this.mPageLoadProcedure.event("onFragmentActivityCreated", hashMap);
     }
 
     public void onFragmentViewCreated(Fragment fragment, long j) {
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
-        this.f56a.event("onFragmentViewCreated", hashMap);
+        this.mPageLoadProcedure.event("onFragmentViewCreated", hashMap);
     }
 
     public void onFragmentStarted(Fragment fragment, long j) {
-        ProcedureManagerSetter.instance().setCurrentFragmentProcedure(this.f56a);
+        ProcedureManagerSetter.instance().setCurrentFragmentProcedure(this.mPageLoadProcedure);
         this.f67q = true;
         this.g = j;
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
-        this.f56a.event("onFragmentStarted", hashMap);
+        this.mPageLoadProcedure.event("onFragmentStarted", hashMap);
         if (this.f66p) {
             this.f66p = false;
-            long[] a2 = IExecutor.a.a();
+            long[] a2 = TrafficTracker.traffics();
             long[] jArr = this.f59b;
             jArr[0] = jArr[0] + (a2[0] - this.f61c[0]);
             long[] jArr2 = this.f59b;
             jArr2[1] = jArr2[1] + (a2[1] - this.f61c[1]);
         }
-        this.f61c = IExecutor.a.a();
+        this.f61c = TrafficTracker.traffics();
         GlobalStats.lastValidPage = this.pageName;
         GlobalStats.lastValidTime = j;
     }
 
     public void onFragmentResumed(Fragment fragment, long j) {
-        ProcedureManagerSetter.instance().setCurrentFragmentProcedure(this.f56a);
+        ProcedureManagerSetter.instance().setCurrentFragmentProcedure(this.mPageLoadProcedure);
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
-        this.f56a.event("onFragmentResumed", hashMap);
+        this.mPageLoadProcedure.event("onFragmentResumed", hashMap);
     }
 
     public void onFragmentPaused(Fragment fragment, long j) {
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
-        this.f56a.event("onFragmentPaused", hashMap);
+        this.mPageLoadProcedure.event("onFragmentPaused", hashMap);
     }
 
     public void onFragmentStopped(Fragment fragment, long j) {
         this.f67q = false;
-        this.h += j - this.g;
+        this.mTotalVisibleDuration += j - this.g;
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
-        this.f56a.event("onFragmentStopped", hashMap);
-        long[] a2 = IExecutor.a.a();
+        this.mPageLoadProcedure.event("onFragmentStopped", hashMap);
+        long[] a2 = TrafficTracker.traffics();
         long[] jArr = this.f59b;
         jArr[0] = jArr[0] + (a2[0] - this.f61c[0]);
         long[] jArr2 = this.f59b;
         jArr2[1] = jArr2[1] + (a2[1] - this.f61c[1]);
         this.f61c = a2;
-        if (this.f58b != null && this.m > this.f58b.size()) {
+        if (this.mFpsList != null && this.m > this.mFpsList.size()) {
             Integer valueOf = Integer.valueOf(0);
             int i2 = this.m;
             while (true) {
                 int i3 = i2;
-                if (i3 >= this.f58b.size()) {
+                if (i3 >= this.mFpsList.size()) {
                     break;
                 }
-                valueOf = Integer.valueOf(((Integer) this.f58b.get(i3)).intValue() + valueOf.intValue());
+                valueOf = Integer.valueOf(((Integer) this.mFpsList.get(i3)).intValue() + valueOf.intValue());
                 i2 = i3 + 1;
             }
-            this.a.averageUseFps = (float) (valueOf.intValue() / (this.f58b.size() - this.m));
+            this.a.averageUseFps = (float) (valueOf.intValue() / (this.mFpsList.size() - this.m));
         }
         DumpManager.getInstance().append(this.a);
     }
@@ -458,13 +464,13 @@ class FragmentProcessor extends AbsProcessor implements OnUsableVisibleListener<
     public void onFragmentSaveInstanceState(Fragment fragment, long j) {
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
-        this.f56a.event("onFragmentSaveInstanceState", hashMap);
+        this.mPageLoadProcedure.event("onFragmentSaveInstanceState", hashMap);
     }
 
     public void onFragmentViewDestroyed(Fragment fragment, long j) {
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
-        this.f56a.event("onFragmentViewDestroyed", hashMap);
+        this.mPageLoadProcedure.event("onFragmentViewDestroyed", hashMap);
     }
 
     public void imageStage(int i2) {
@@ -472,7 +478,7 @@ class FragmentProcessor extends AbsProcessor implements OnUsableVisibleListener<
             return;
         }
         if (i2 == 0) {
-            this.n++;
+            this.mImageCount++;
         } else if (i2 == 1) {
             this.o++;
         } else if (i2 == 2) {
@@ -500,14 +506,14 @@ class FragmentProcessor extends AbsProcessor implements OnUsableVisibleListener<
     public void onFragmentDestroyed(Fragment fragment, long j) {
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
-        this.f56a.event("onFragmentDestroyed", hashMap);
+        this.mPageLoadProcedure.event("onFragmentDestroyed", hashMap);
     }
 
     public void onFragmentDetached(Fragment fragment, long j) {
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
-        this.f56a.event("onFragmentDetached", hashMap);
-        long[] a2 = IExecutor.a.a();
+        this.mPageLoadProcedure.event("onFragmentDetached", hashMap);
+        long[] a2 = TrafficTracker.traffics();
         long[] jArr = this.f59b;
         jArr[0] = jArr[0] + (a2[0] - this.f61c[0]);
         long[] jArr2 = this.f59b;

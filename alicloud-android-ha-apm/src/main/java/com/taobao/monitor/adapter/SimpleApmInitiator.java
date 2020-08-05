@@ -44,15 +44,15 @@ public class SimpleApmInitiator implements Serializable {
     private long cpuStartTime = SystemClock.currentThreadTimeMillis();
 
     public void init(Application application, HashMap<String, Object> hashMap) {
-        if (!TBAPMConstants.a) {
-            Logger.i(TAG, new Object[]{"init start"});
+        if (!TBAPMConstants.init) {
+            Logger.i(TAG, "init start");
             TBAPMConstants.open = true;
             initAPMFunction(application, hashMap);
             initDeviceEvaluation(application);
-            Logger.i(TAG, new Object[]{"init end"});
-            TBAPMConstants.a = true;
+            Logger.i(TAG, "init end");
+            TBAPMConstants.init = true;
         }
-        Logger.i(TAG, new Object[]{"apmStartTime:", Long.valueOf(TimeUtils.currentTimeMillis() - this.apmStartTime)});
+        Logger.i(TAG, "apmStartTime:", TimeUtils.currentTimeMillis() - this.apmStartTime);
     }
 
     public static void setDebug(boolean z) {
@@ -175,7 +175,7 @@ public class SimpleApmInitiator implements Serializable {
         boolean z = true;
         IProcedure createProcedure = ProcedureFactoryProxy.PROXY.createProcedure(TopicUtils.getFullTopic("/startup"), new Builder().setIndependent(false).setUpload(true).setParentNeedStats(false).setParent(null).build());
         createProcedure.begin();
-        ProcedureGlobal.f0a.setLauncherProcedure(createProcedure);
+        ProcedureGlobal.PROCEDURE_MANAGER.setLauncherProcedure(createProcedure);
         IProcedure createProcedure2 = ProcedureFactoryProxy.PROXY.createProcedure("/APMSelf", new Builder().setIndependent(false).setUpload(false).setParentNeedStats(false).setParent(createProcedure).build());
         createProcedure2.begin();
         if (Looper.getMainLooper().getThread() != Thread.currentThread()) {
@@ -192,19 +192,19 @@ public class SimpleApmInitiator implements Serializable {
     }
 
     private void initAPMLauncher(Application application, HashMap<String, Object> hashMap) {
-        ProcedureLauncher.a((Context) application, (Map<String, Object>) hashMap);
+        ProcedureLauncher.init((Context) application, (Map<String, Object>) hashMap);
         APMLauncher.init(application, hashMap);
         ProcedureManagerSetter.instance().setProxy(new IProcedureManager() {
             public void setCurrentActivityProcedure(IProcedure iProcedure) {
-                ProcedureGlobal.f0a.setCurrentActivityProcedure(iProcedure);
+                ProcedureGlobal.PROCEDURE_MANAGER.setCurrentActivityProcedure(iProcedure);
             }
 
             public void setCurrentFragmentProcedure(IProcedure iProcedure) {
-                ProcedureGlobal.f0a.setCurrentFragmentProcedure(iProcedure);
+                ProcedureGlobal.PROCEDURE_MANAGER.setCurrentFragmentProcedure(iProcedure);
             }
 
             public void setCurrentLauncherProcedure(IProcedure iProcedure) {
-                ProcedureGlobal.f0a.setLauncherProcedure(iProcedure);
+                ProcedureGlobal.PROCEDURE_MANAGER.setLauncherProcedure(iProcedure);
             }
         });
     }

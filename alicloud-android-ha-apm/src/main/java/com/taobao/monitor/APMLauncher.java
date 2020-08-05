@@ -46,7 +46,7 @@ import com.taobao.monitor.impl.trace.NetworkStageDispatcher;
 import com.taobao.monitor.impl.trace.UsableVisibleDispatcher;
 import com.taobao.monitor.impl.util.TimeUtils;
 import com.taobao.monitor.impl.util.d;
-import com.taobao.monitor.impl.util.e;
+import com.taobao.monitor.impl.util.SafeUtils;
 import com.taobao.monitor.performance.APMAdapterFactoryProxy;
 import com.taobao.network.lifecycle.MtopLifecycleManager;
 import com.taobao.network.lifecycle.NetworkLifecycleManager;
@@ -78,12 +78,12 @@ public class APMLauncher {
 
     private static void initParams(Application var0, Map<String, Object> var1) {
         GlobalStats.launchStartTime = TimeUtils.currentTimeMillis();
-        launchHelper.a("COLD");
-        launchHelper.e(SystemClock.uptimeMillis());
-        launchHelper.d(System.currentTimeMillis());
+        launchHelper.launchType("COLD");
+        launchHelper.startAppOnCreateSystemClockTime(SystemClock.uptimeMillis());
+        launchHelper.startAppOnCreateSystemTime(System.currentTimeMillis());
         String var2 = "ALI_APM/device-id/monitor/procedure";
         if (var1 != null) {
-            GlobalStats.appVersion = e.a(var1.get("appVersion"), "unknown");
+            GlobalStats.appVersion = SafeUtils.transformString(var1.get("appVersion"), "unknown");
             Object var3 = var1.get("deviceId");
             if (var3 instanceof String) {
                 String var4 = (String)var3;
@@ -99,42 +99,42 @@ public class APMLauncher {
 
         Global.instance().setContext(var0).setNamespace(var2);
         Context var10 = Global.instance().context();
-        SharedPreferences var11 = var10.getSharedPreferences("apm", 0);
-        String var5 = var11.getString("appVersion", "");
-        Editor var6 = var11.edit();
+        SharedPreferences sharedPreferences = var10.getSharedPreferences("apm", 0);
+        String var5 = sharedPreferences.getString("appVersion", "");
+        Editor editor = sharedPreferences.edit();
         boolean var7 = false;
         if (TextUtils.isEmpty(var5)) {
             GlobalStats.isFirstInstall = true;
             GlobalStats.isFirstLaunch = true;
             GlobalStats.installType = "NEW";
-            var6.putString("appVersion", GlobalStats.appVersion);
+            editor.putString("appVersion", GlobalStats.appVersion);
             var7 = true;
         } else {
             GlobalStats.isFirstInstall = false;
             GlobalStats.isFirstLaunch = !var5.equals(GlobalStats.appVersion);
             GlobalStats.installType = "UPDATE";
             if (GlobalStats.isFirstLaunch) {
-                var6.putString("appVersion", GlobalStats.appVersion);
+                editor.putString("appVersion", GlobalStats.appVersion);
                 var7 = true;
             }
         }
 
-        GlobalStats.lastTopActivity = var11.getString("LAST_TOP_ACTIVITY", "");
+        GlobalStats.lastTopActivity = sharedPreferences.getString("LAST_TOP_ACTIVITY", "");
         if (!TextUtils.isEmpty(GlobalStats.lastTopActivity)) {
-            var6.putString("LAST_TOP_ACTIVITY", "");
+            editor.putString("LAST_TOP_ACTIVITY", "");
             var7 = true;
         }
 
         if (var7) {
-            var6.apply();
+            editor.apply();
         }
 
-        GlobalStats.lastProcessStartTime = AppLaunchHelperHolder.a();
-        launchHelper.b(GlobalStats.isFirstLaunch);
-        launchHelper.a(GlobalStats.isFirstInstall);
-        launchHelper.a(GlobalStats.lastProcessStartTime);
-        DeviceHelper var8 = new DeviceHelper();
-        var8.setMobileModel(Build.MODEL);
+        GlobalStats.lastProcessStartTime = AppLaunchHelperHolder.lastStartProcessTime();
+        launchHelper.isFirstLaunch(GlobalStats.isFirstLaunch);
+        launchHelper.isFullNewInstall(GlobalStats.isFirstInstall);
+        launchHelper.lastStartProcessTime(GlobalStats.lastProcessStartTime);
+        DeviceHelper deviceHelper = new DeviceHelper();
+        deviceHelper.setMobileModel(Build.MODEL);
     }
 
     private static void initHotCold() {
@@ -144,9 +144,9 @@ public class APMLauncher {
                 Looper.myQueue().addIdleHandler(new IdleHandler() {
                     public boolean queueIdle() {
                         if (GlobalStats.createdPageCount == 0) {
-                            LauncherProcessor.c = "HOT";
+                            LauncherProcessor.sLaunchType = "HOT";
                             LauncherProcessor.isBackgroundLaunch = true;
-                            APMLauncher.launchHelper.a("HOT");
+                            APMLauncher.launchHelper.launchType("HOT");
                         }
 
                         return false;
@@ -191,10 +191,10 @@ public class APMLauncher {
     private static void initProcessStartTime() {
         if (VERSION.SDK_INT >= 24) {
             GlobalStats.processStartTime = TimeUtils.currentTimeMillis() + Process.getStartUptimeMillis() - SystemClock.uptimeMillis();
-            launchHelper.b(System.currentTimeMillis() - (SystemClock.uptimeMillis() - GlobalStats.processStartTime));
+            launchHelper.startProcessSystemTime(System.currentTimeMillis() - (SystemClock.uptimeMillis() - GlobalStats.processStartTime));
         } else {
             long var0 = d.b();
-            launchHelper.b(var0);
+            launchHelper.startProcessSystemTime(var0);
             if (var0 != -1L) {
                 GlobalStats.processStartTime = TimeUtils.currentTimeMillis() - (System.currentTimeMillis() - var0);
             } else {
@@ -202,7 +202,7 @@ public class APMLauncher {
             }
         }
 
-        launchHelper.c(GlobalStats.processStartTime);
+        launchHelper.startProcessSystemClockTime(GlobalStats.processStartTime);
     }
 
     private static void initOppoCPUResource() {

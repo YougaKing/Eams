@@ -61,7 +61,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
         ImageStageDispatcher.StageListener,
         NetworkStageDispatcher.StageListener {
 
-    public static volatile String c = "COLD";
+    public static volatile String sLaunchType = "COLD";
     public static boolean isBackgroundLaunch = false;
     private IDispatcher a;
 
@@ -103,7 +103,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     private IDispatcher f;
 
     /* renamed from: f reason: collision with other field name */
-    private String f82f = c;
+    private String mLaunchType = sLaunchType;
     private IDispatcher g;
     private IDispatcher h;
     private long i;
@@ -144,7 +144,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     public void n() {
         super.n();
         this.f78c = TrafficTracker.traffics();
-        new AppLaunchHelper().a(this.f82f);
+        new AppLaunchHelper().launchType(this.mLaunchType);
         this.f71a = ProcedureManagerProxy.PROXY.getLauncherProcedure();
         if (this.f71a == null || !this.f71a.isAlive()) {
             this.f71a = ProcedureFactoryProxy.PROXY.createProcedure(TopicUtils.getFullTopic("/startup"), new Builder().setIndependent(false).setUpload(true).setParentNeedStats(true).setParent(null).build());
@@ -172,16 +172,16 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
         p();
         StartUpBeginEvent startUpBeginEvent = new StartUpBeginEvent();
         startUpBeginEvent.firstInstall = GlobalStats.isFirstInstall;
-        startUpBeginEvent.launchType = c;
+        startUpBeginEvent.launchType = sLaunchType;
         startUpBeginEvent.isBackgroundLaunch = isBackgroundLaunch;
         DumpManager.getInstance().append(startUpBeginEvent);
         isBackgroundLaunch = false;
     }
 
     private void p() {
-        this.i = "COLD".equals(c) ? GlobalStats.launchStartTime : TimeUtils.currentTimeMillis();
+        this.i = "COLD".equals(sLaunchType) ? GlobalStats.launchStartTime : TimeUtils.currentTimeMillis();
         this.f71a.addProperty("errorCode", Integer.valueOf(1));
-        this.f71a.addProperty("launchType", c);
+        this.f71a.addProperty("launchType", sLaunchType);
         this.f71a.addProperty("isFirstInstall", Boolean.valueOf(GlobalStats.isFirstInstall));
         this.f71a.addProperty("isFirstLaunch", Boolean.valueOf(GlobalStats.isFirstLaunch));
         this.f71a.addProperty("installType", GlobalStats.installType);
@@ -200,7 +200,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
             this.d = activity;
             n();
             this.f71a.addProperty("systemRecovery", Boolean.valueOf(false));
-            if ("COLD".equals(c) && this.f81e.equals(GlobalStats.lastTopActivity)) {
+            if ("COLD".equals(sLaunchType) && this.f81e.equals(GlobalStats.lastTopActivity)) {
                 this.f71a.addProperty("systemRecovery", Boolean.valueOf(true));
                 this.f80d = this.f81e;
                 this.f77c.add(b2);
@@ -218,8 +218,8 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
             }
             this.f71a.addProperty("firstPageName", b2);
             this.f71a.stage("firstPageCreateTime", j);
-            this.f82f = c;
-            c = "HOT";
+            this.mLaunchType = sLaunchType;
+            sLaunchType = "HOT";
             this.f88u = true;
         }
         if (this.f77c.size() < 10 && TextUtils.isEmpty(this.f80d)) {
@@ -310,7 +310,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     }
 
     private int a() {
-        return this.f82f.equals("COLD") ? 0 : 1;
+        return this.mLaunchType.equals("COLD") ? 0 : 1;
     }
 
     public void visiblePercent(Activity activity, float f2, long j) {
@@ -427,7 +427,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
         int i2;
         if (!this.v) {
             IAppLaunchListener iAppLaunchListener = this.b;
-            if (this.f82f.equals("COLD")) {
+            if (this.mLaunchType.equals("COLD")) {
                 i2 = 0;
             } else {
                 i2 = 1;

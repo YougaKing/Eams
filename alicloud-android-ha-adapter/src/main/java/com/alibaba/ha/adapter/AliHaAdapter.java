@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build.VERSION;
 import android.text.TextUtils;
 import android.util.Log;
+
 import com.alibaba.ha.adapter.plugin.CrashReporterPlugin;
 import com.alibaba.ha.adapter.plugin.factory.PluginFactory;
 import com.alibaba.ha.adapter.service.activity.AdapterActivityLifeCycle;
@@ -17,6 +18,7 @@ import com.alibaba.ha.core.AliHaCore;
 import com.alibaba.ha.protocol.AliHaParam;
 import com.alibaba.ha.protocol.AliHaPlugin;
 import com.alibaba.motu.tbrest.SendService;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -117,8 +119,8 @@ public class AliHaAdapter {
     }
 
     public Boolean start(AliHaConfig aliHaConfig) {
-        if (!isLegal(aliHaConfig).booleanValue()) {
-            return Boolean.valueOf(false);
+        if (!isLegal(aliHaConfig)) {
+            return Boolean.FALSE;
         }
         openPublishEmasHa();
         AliHaParam buildParam = buildParam(aliHaConfig);
@@ -170,13 +172,13 @@ public class AliHaAdapter {
             if (VERSION.SDK_INT >= 14) {
                 buildParam.application.registerActivityLifecycleCallbacks(new AdapterActivityLifeCycle());
             } else {
-                Log.w(TAG, String.format("build version %s not suppert, registerActivityLifecycleCallbacks failed", new Object[]{Integer.valueOf(VERSION.SDK_INT)}));
+                Log.w(TAG, String.format("build version %s not suppert, registerActivityLifecycleCallbacks failed", Integer.valueOf(VERSION.SDK_INT)));
             }
             initAppStatus(aliHaConfig);
-            return Boolean.valueOf(true);
+            return Boolean.TRUE;
         } catch (Exception e) {
             Log.e(TAG, "start plugin error ", e);
-            return Boolean.valueOf(false);
+            return Boolean.FALSE;
         }
     }
 
@@ -232,22 +234,22 @@ public class AliHaAdapter {
     private Boolean isLegal(AliHaConfig aliHaConfig) {
         if (aliHaConfig == null) {
             Log.e(TAG, "config is null ");
-            return Boolean.valueOf(false);
+            return Boolean.FALSE;
         } else if (aliHaConfig.application == null) {
             Log.e(TAG, "application is null ");
-            return Boolean.valueOf(false);
+            return Boolean.FALSE;
         } else if (aliHaConfig.context == null) {
             Log.e(TAG, "context is null ");
-            return Boolean.valueOf(false);
+            return Boolean.FALSE;
         } else if (aliHaConfig.appKey == null || aliHaConfig.appSecret == null || aliHaConfig.appVersion == null) {
             Log.e(TAG, "config is unlegal, ha plugin start failure  appKey is " + aliHaConfig.appKey + " appVersion is " + aliHaConfig.appVersion + " appSecret is " + aliHaConfig.appSecret);
-            return Boolean.valueOf(false);
+            return Boolean.FALSE;
         } else if (!this.plugins.contains(Plugin.apm) || !TextUtils.isEmpty(aliHaConfig.rsaPublicKey)) {
             this.context = aliHaConfig.context;
-            return Boolean.valueOf(true);
+            return Boolean.TRUE;
         } else {
             Log.e(TAG, "rsaPublicKey is empty ");
-            return Boolean.valueOf(false);
+            return Boolean.FALSE;
         }
     }
 

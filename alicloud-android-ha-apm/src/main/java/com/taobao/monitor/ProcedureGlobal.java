@@ -8,10 +8,10 @@ import com.taobao.monitor.procedure.ProcedureManager;
 
 /* compiled from: ProcedureGlobal */
 public class ProcedureGlobal {
-    public static final ProcedureFactory a = new ProcedureFactory();
+    public static final ProcedureFactory PROCEDURE_FACTORY = new ProcedureFactory();
 
     /* renamed from: a reason: collision with other field name */
-    public static final ProcedureManager f0a = new ProcedureManager();
+    public static final ProcedureManager PROCEDURE_MANAGER = new ProcedureManager();
     private Context context;
     private final Handler handler;
 
@@ -36,7 +36,7 @@ public class ProcedureGlobal {
     }
 
     /* access modifiers changed from: 0000 */
-    public ProcedureGlobal a(Context context2) {
+    public ProcedureGlobal setContext(Context context2) {
         this.context = context2;
         return this;
     }

@@ -9,15 +9,15 @@ public class Global {
     private Handler handler;
     private String namespace;
 
-    private static class a {
-        static final Global a = new Global();
+    private static class GlobalHolder {
+        static final Global GLOBAL = new Global();
     }
 
     private Global() {
     }
 
     public static Global instance() {
-        return a.a;
+        return GlobalHolder.GLOBAL;
     }
 
     public Context context() {

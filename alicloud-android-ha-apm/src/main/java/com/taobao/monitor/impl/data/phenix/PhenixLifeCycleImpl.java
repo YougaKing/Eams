@@ -4,7 +4,7 @@ import com.taobao.monitor.impl.logger.DataLoggerUtils;
 import com.taobao.monitor.impl.trace.IDispatcher;
 import com.taobao.monitor.impl.trace.DispatcherManager;
 import com.taobao.monitor.impl.trace.ImageStageDispatcher;
-import com.taobao.monitor.impl.util.e;
+import com.taobao.monitor.impl.util.SafeUtils;
 import com.taobao.phenix.lifecycle.IPhenixLifeCycle;
 import java.util.HashMap;
 import java.util.Map;
@@ -79,7 +79,7 @@ public class PhenixLifeCycleImpl implements IPhenixLifeCycle {
     public void onEvent(String str, String str2, Map<String, Object> map) {
         String str3 = null;
         if (map != null) {
-            str3 = e.a(map.get("requestUrl"), "");
+            str3 = SafeUtils.transformString(map.get("requestUrl"), "");
         }
         HashMap hashMap = new HashMap(map);
         hashMap.put("procedureName", "ImageLib");

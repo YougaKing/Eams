@@ -27,7 +27,7 @@ public class APMPlugin implements AliHaPlugin {
             String str3 = aliHaParam.appVersion;
             Application application = aliHaParam.application;
             Context context = aliHaParam.context;
-            if (aliHaParam == null || context == null || application == null || str == null || str2 == null || str3 == null) {
+            if (context == null || application == null || str == null || str2 == null || str3 == null) {
                 Log.e(AliHaAdapter.TAG, "param is unlegal, applicationmonitor plugin start failure ");
                 return;
             }
@@ -41,7 +41,7 @@ public class APMPlugin implements AliHaPlugin {
     }
 
     private void initApplicationMonitor(Application application, AliHaParam aliHaParam) {
-        HashMap hashMap = new HashMap();
+        HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("deviceId", "UTDevice.getUtdid(application.getApplicationContext())");
         hashMap.put("onlineAppKey", aliHaParam.appKey);
         hashMap.put("appVersion", aliHaParam.appVersion);

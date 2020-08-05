@@ -6,12 +6,12 @@ import com.taobao.monitor.procedure.ProcedureConfig.Builder;
 
 public class ProcedureFactory implements IProcedureFactory {
     public IProcedure createProcedure(String str) {
-        return createProcedure(str, new Builder().setUpload(false).setIndependent(true).setParentNeedStats(true).setParent(ProcedureGlobal.f0a.getCurrentProcedure()).build());
+        return createProcedure(str, new Builder().setUpload(false).setIndependent(true).setParentNeedStats(true).setParent(ProcedureGlobal.PROCEDURE_MANAGER.getCurrentProcedure()).build());
     }
 
     public IProcedure createProcedure(String str, ProcedureConfig procedureConfig) {
         if (procedureConfig == null) {
-            procedureConfig = new Builder().setUpload(false).setIndependent(true).setParentNeedStats(true).setParent(ProcedureGlobal.f0a.getCurrentProcedure()).build();
+            procedureConfig = new Builder().setUpload(false).setIndependent(true).setParentNeedStats(true).setParent(ProcedureGlobal.PROCEDURE_MANAGER.getCurrentProcedure()).build();
         }
         return new ProcedureProxy(createProcedureImpl(str, procedureConfig));
     }
@@ -19,7 +19,7 @@ public class ProcedureFactory implements IProcedureFactory {
     private ProcedureImpl createProcedureImpl(String str, ProcedureConfig procedureConfig) {
         IProcedure parent = procedureConfig.getParent();
         if (parent == IProcedure.DEFAULT) {
-            parent = ProcedureGlobal.f0a.getCurrentProcedure();
+            parent = ProcedureGlobal.PROCEDURE_MANAGER.getCurrentProcedure();
         }
         ProcedureImpl procedureImpl = new ProcedureImpl(str, parent, procedureConfig.isIndependent(), procedureConfig.isParentNeedStats());
         if (procedureConfig.isUpload()) {

@@ -12,8 +12,8 @@ import java.util.Map.Entry;
 
 /* compiled from: TBAPMAdapterSubTaskManager */
 public class TBAPMAdapterSubTaskManager {
-    private static Map<String, Property> propertyMap = new HashMap();
-    private static Map<String, IProcedure> b = new HashMap();
+    private static Map<String, Property> propertyMap = new HashMap<>();
+    private static Map<String, IProcedure> b = new HashMap<>();
     /* access modifiers changed from: private */
 
     /* renamed from: b reason: collision with other field name */
@@ -37,7 +37,7 @@ public class TBAPMAdapterSubTaskManager {
         }
     }
 
-    protected static void a() {
+    protected static void asyncRunnable() {
         async(new Runnable() {
             public void run() {
                 Iterator it = TBAPMAdapterSubTaskManager.propertyMap.entrySet().iterator();

@@ -1,5 +1,6 @@
 package com.taobao.monitor.network;
 
+import com.taobao.monitor.log.Logger;
 import com.taobao.monitor.procedure.Header;
 import com.taobao.monitor.procedure.ProcedureImpl.IProcedureLifeCycle;
 import com.taobao.monitor.procedure.Value;
@@ -48,7 +49,7 @@ public class ProcedureLifecycleImpl implements IProcedureLifeCycle {
             e.printStackTrace();
         }
         String jSONObject3 = jSONObject.toString();
-        com.taobao.monitor.log.a.i("NetworkDataUpdate", jSONObject3);
+        Logger.i("NetworkDataUpdate", jSONObject3);
         NetworkSenderProxy.instance().b(value.topic(), jSONObject3);
     }
 

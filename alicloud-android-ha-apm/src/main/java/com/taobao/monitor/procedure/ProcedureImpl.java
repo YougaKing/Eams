@@ -1,7 +1,7 @@
 package com.taobao.monitor.procedure;
 
 import com.taobao.monitor.ProcedureGlobal;
-import com.taobao.monitor.log.a;
+import com.taobao.monitor.log.Logger;
 import com.taobao.monitor.exception.ProcedureException;
 import com.taobao.monitor.procedure.model.Event;
 import com.taobao.monitor.procedure.model.Stage;
@@ -67,7 +67,7 @@ public class ProcedureImpl implements IProcedureGroup, IValueCallback {
                 ((IProcedureGroup) this.parent).addSubProcedure(this);
             }
             this.subProcedures = new LinkedList();
-            a.i(TAG, this.parent, this.topic, "begin()");
+            Logger.i(TAG, this.parent, this.topic, "begin()");
             if (this.lifeCycle != null) {
                 this.lifeCycle.begin(this.value);
             }
@@ -82,7 +82,7 @@ public class ProcedureImpl implements IProcedureGroup, IValueCallback {
             if (this.lifeCycle != null) {
                 this.lifeCycle.event(this.value, event);
             }
-            a.i(TAG, this.parent, this.topic, str);
+            Logger.i(TAG, this.parent, this.topic, str);
         }
         return this;
     }
@@ -94,7 +94,7 @@ public class ProcedureImpl implements IProcedureGroup, IValueCallback {
             if (this.lifeCycle != null) {
                 this.lifeCycle.stage(this.value, stage);
             }
-            a.i(TAG, this.parent, this.topic, stage);
+            Logger.i(TAG, this.parent, this.topic, stage);
         }
         return this;
     }
@@ -102,7 +102,7 @@ public class ProcedureImpl implements IProcedureGroup, IValueCallback {
     public IProcedure addBiz(String str, Map<String, Object> map) {
         if (str != null && isAlive()) {
             this.value.addBiz(str, map);
-            a.i(TAG, this.parent, this.topic, str);
+            Logger.i(TAG, this.parent, this.topic, str);
         }
         return this;
     }
@@ -110,7 +110,7 @@ public class ProcedureImpl implements IProcedureGroup, IValueCallback {
     public IProcedure addBizAbTest(String str, Map<String, Object> map) {
         if (str != null && isAlive()) {
             this.value.addBizAbTest(str, map);
-            a.i(TAG, this.parent, this.topic, str);
+            Logger.i(TAG, this.parent, this.topic, str);
         }
         return this;
     }
@@ -118,7 +118,7 @@ public class ProcedureImpl implements IProcedureGroup, IValueCallback {
     public IProcedure addBizStage(String str, Map<String, Object> map) {
         if (str != null && isAlive()) {
             this.value.addBizStage(str, map);
-            a.i(TAG, this.parent, this.topic, str);
+            Logger.i(TAG, this.parent, this.topic, str);
         }
         return this;
     }
@@ -181,7 +181,7 @@ public class ProcedureImpl implements IProcedureGroup, IValueCallback {
                 this.lifeCycle.end(this.value);
             }
             this.status = Status.STOPPED;
-            a.i(TAG, this.parent, this.topic, "end()");
+            Logger.i(TAG, this.parent, this.topic, "end()");
         }
         return this;
     }
@@ -215,7 +215,7 @@ public class ProcedureImpl implements IProcedureGroup, IValueCallback {
     public void finalize() throws Throwable {
         super.finalize();
         if (this.status == Status.RUNNING) {
-            a.throwException(new ProcedureException("Please call end function first!"));
+            Logger.throwException(new ProcedureException("Please call end function first!"));
         }
     }
 

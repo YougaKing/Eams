@@ -172,23 +172,36 @@ public class SimpleApmInitiator implements Serializable {
     }
 
     private void initLauncherProcedure() {
-        boolean z = true;
-        IProcedure createProcedure = ProcedureFactoryProxy.PROXY.createProcedure(TopicUtils.getFullTopic("/startup"), new Builder().setIndependent(false).setUpload(true).setParentNeedStats(false).setParent(null).build());
-        createProcedure.begin();
-        ProcedureGlobal.PROCEDURE_MANAGER.setLauncherProcedure(createProcedure);
-        IProcedure createProcedure2 = ProcedureFactoryProxy.PROXY.createProcedure("/APMSelf", new Builder().setIndependent(false).setUpload(false).setParentNeedStats(false).setParent(createProcedure).build());
-        createProcedure2.begin();
+        boolean isMainThread = true;
+        IProcedure startupProcedure = ProcedureFactoryProxy.PROXY.createProcedure(TopicUtils.getFullTopic("/startup"), new Builder()
+                .setIndependent(false)
+                .setUpload(true)
+                .setParentNeedStats(false)
+                .setParent(null)
+                .build());
+
+        startupProcedure.begin();
+        ProcedureGlobal.PROCEDURE_MANAGER.setLauncherProcedure(startupProcedure);
+
+        IProcedure aPMSelfProcedure = ProcedureFactoryProxy.PROXY.createProcedure("/APMSelf", new Builder()
+                .setIndependent(false)
+                .setUpload(false)
+                .setParentNeedStats(false)
+                .setParent(startupProcedure)
+                .build());
+
+        aPMSelfProcedure.begin();
         if (Looper.getMainLooper().getThread() != Thread.currentThread()) {
-            z = false;
+            isMainThread = false;
         }
-        createProcedure2.addProperty("isMainThread", Boolean.valueOf(z));
-        createProcedure2.addProperty("threadName", Thread.currentThread().getName());
-        createProcedure2.stage("taskStart", this.apmStartTime);
-        createProcedure2.stage("cpuStartTime", this.cpuStartTime);
-        NetworkSenderProxy.instance();
-        createProcedure2.stage("taskEnd", TimeUtils.currentTimeMillis());
-        createProcedure2.stage("cpuEndTime", SystemClock.currentThreadTimeMillis());
-        createProcedure2.end();
+        aPMSelfProcedure.addProperty("isMainThread", isMainThread);
+        aPMSelfProcedure.addProperty("threadName", Thread.currentThread().getName());
+        aPMSelfProcedure.stage("taskStart", this.apmStartTime);
+        aPMSelfProcedure.stage("cpuStartTime", this.cpuStartTime);
+        TBAPMAdapterSubTaskManager.asyncRunnable();
+        aPMSelfProcedure.stage("taskEnd", TimeUtils.currentTimeMillis());
+        aPMSelfProcedure.stage("cpuEndTime", SystemClock.currentThreadTimeMillis());
+        aPMSelfProcedure.end();
     }
 
     private void initAPMLauncher(Application application, HashMap<String, Object> hashMap) {

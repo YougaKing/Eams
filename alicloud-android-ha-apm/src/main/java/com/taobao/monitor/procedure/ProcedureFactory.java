@@ -5,6 +5,7 @@ import com.taobao.monitor.network.ProcedureLifecycleImpl;
 import com.taobao.monitor.procedure.ProcedureConfig.Builder;
 
 public class ProcedureFactory implements IProcedureFactory {
+
     public IProcedure createProcedure(String str) {
         return createProcedure(str, new Builder().setUpload(false).setIndependent(true).setParentNeedStats(true).setParent(ProcedureGlobal.PROCEDURE_MANAGER.getCurrentProcedure()).build());
     }

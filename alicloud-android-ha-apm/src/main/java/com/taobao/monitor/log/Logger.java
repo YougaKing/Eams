@@ -3,7 +3,7 @@ package com.taobao.monitor.log;
 import android.util.Log;
 
 /* compiled from: Logger */
-public class a {
+public class Logger {
     private static boolean isDebug = false;
 
     public static void i(String str, Object... objArr) {

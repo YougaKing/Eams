@@ -79,7 +79,7 @@ class MainApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallb
     }
 
     /* renamed from: a */
-    public void b(ActivityLifecycleCallbacks activityLifecycleCallbacks) {
+    public void addCallback(ActivityLifecycleCallbacks activityLifecycleCallbacks) {
         if (activityLifecycleCallbacks == null) {
             throw new IllegalArgumentException();
         }
@@ -91,7 +91,7 @@ class MainApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallb
     }
 
     /* renamed from: b */
-    public void a(ActivityLifecycleCallbacks activityLifecycleCallbacks) {
+    public void removeCallback(ActivityLifecycleCallbacks activityLifecycleCallbacks) {
         if (activityLifecycleCallbacks == null) {
             throw new IllegalArgumentException();
         }

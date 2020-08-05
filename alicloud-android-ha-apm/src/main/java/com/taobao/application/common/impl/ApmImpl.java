@@ -65,9 +65,9 @@ public class ApmImpl implements Apm, IApplicationMonitor {
         } else if (((Boolean) this.f6a.put(activityLifecycleCallbacks, Boolean.valueOf(z))) != null) {
             throw new IllegalArgumentException();
         } else if (z) {
-            this.mMainApplicationCallbackGroup.b(activityLifecycleCallbacks);
+            this.mMainApplicationCallbackGroup.addCallback(activityLifecycleCallbacks);
         } else {
-            this.mApplicationCallbackGroup.b(activityLifecycleCallbacks);
+            this.mApplicationCallbackGroup.addCallback(activityLifecycleCallbacks);
         }
     }
 
@@ -80,9 +80,9 @@ public class ApmImpl implements Apm, IApplicationMonitor {
             boolean booleanValue = bool.booleanValue();
             this.f6a.remove(activityLifecycleCallbacks);
             if (booleanValue) {
-                this.mMainApplicationCallbackGroup.a(activityLifecycleCallbacks);
+                this.mMainApplicationCallbackGroup.removeCallback(activityLifecycleCallbacks);
             } else {
-                this.mApplicationCallbackGroup.a(activityLifecycleCallbacks);
+                this.mApplicationCallbackGroup.removeCallback(activityLifecycleCallbacks);
             }
         } else {
             throw new IllegalArgumentException();

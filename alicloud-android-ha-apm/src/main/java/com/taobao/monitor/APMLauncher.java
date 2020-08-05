@@ -18,6 +18,7 @@ import android.os.Build.VERSION;
 import android.os.MessageQueue.IdleHandler;
 import android.text.TextUtils;
 import com.ali.alihadeviceevaluator.AliHAHardware;
+import com.taobao.application.common.ApmHelper;
 import com.taobao.application.common.data.DeviceHelper;
 import com.taobao.application.common.data.AppLaunchHelper;
 import com.taobao.application.common.data.AppLaunchHelper.AppLaunchHelperHolder;
@@ -252,6 +253,6 @@ public class APMLauncher {
     }
 
     private static void initApmImpl() {
-        com.taobao.application.common.a.a();
+        ApmHelper.instance();
     }
 }

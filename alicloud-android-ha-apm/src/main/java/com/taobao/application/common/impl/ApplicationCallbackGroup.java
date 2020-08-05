@@ -94,7 +94,7 @@ class ApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallbackG
     }
 
     /* renamed from: a */
-    public void b(final ActivityLifecycleCallbacks activityLifecycleCallbacks) {
+    public void addCallback(final ActivityLifecycleCallbacks activityLifecycleCallbacks) {
         if (activityLifecycleCallbacks == null) {
             throw new IllegalArgumentException();
         }
@@ -108,7 +108,7 @@ class ApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallbackG
     }
 
     /* renamed from: b */
-    public void a(final ActivityLifecycleCallbacks activityLifecycleCallbacks) {
+    public void removeCallback(final ActivityLifecycleCallbacks activityLifecycleCallbacks) {
         if (activityLifecycleCallbacks == null) {
             throw new IllegalArgumentException();
         }
@@ -120,6 +120,6 @@ class ApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallbackG
     }
 
     private void a(Runnable runnable) {
-        b.a().b(runnable);
+        ApmImpl.instance().b(runnable);
     }
 }

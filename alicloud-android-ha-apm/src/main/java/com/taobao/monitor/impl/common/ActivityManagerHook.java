@@ -7,10 +7,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /* compiled from: ActivityManagerHook */
-class c implements InvocationHandler {
+class ActivityManagerHook implements InvocationHandler {
     private final Object a;
 
-    c(Object obj) {
+    ActivityManagerHook(Object obj) {
         this.a = obj;
     }
 

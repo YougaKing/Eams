@@ -22,6 +22,7 @@ import com.taobao.application.common.ApmHelper;
 import com.taobao.application.common.data.DeviceHelper;
 import com.taobao.application.common.data.AppLaunchHelper;
 import com.taobao.application.common.data.AppLaunchHelper.AppLaunchHelperHolder;
+import com.taobao.monitor.impl.common.ActivityManagerInvoke;
 import com.taobao.monitor.impl.common.DynamicConstants;
 import com.taobao.monitor.impl.common.Global;
 import com.taobao.monitor.impl.data.GlobalStats;
@@ -170,7 +171,7 @@ public class APMLauncher {
         if (VERSION.SDK_INT <= 28) {
             runInMain(new Runnable() {
                 public void run() {
-                    com.taobao.monitor.impl.common.b.start();
+                    ActivityManagerInvoke.start();
                 }
             });
         }

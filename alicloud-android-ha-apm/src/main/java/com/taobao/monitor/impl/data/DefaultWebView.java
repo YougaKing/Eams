@@ -4,10 +4,10 @@ import android.view.View;
 import android.webkit.WebView;
 
 /* compiled from: DefaultWebView */
-public class c extends AbsWebView {
-    public static final c a = new c();
+public class DefaultWebView extends AbsWebView {
+    public static final DefaultWebView DEFAULT_WEB_VIEW = new DefaultWebView();
 
-    private c() {
+    private DefaultWebView() {
     }
 
     public boolean isWebView(View view) {

@@ -2,23 +2,24 @@ package com.taobao.monitor.impl.data.activity;
 
 import com.taobao.application.common.IApmEventListener;
 import com.taobao.application.common.data.AppLaunchHelper;
-import com.taobao.application.common.data.d;
+import com.taobao.application.common.data.BackgroundForegroundHelper;
+import com.taobao.application.common.impl.ApmImpl;
 
 /* compiled from: BackgroundForegroundEventImpl */
 class BackgroundForegroundEventImpl {
-    private final d a = new d();
-    private final IApmEventListener b = b.a().a();
+    private final BackgroundForegroundHelper mBackgroundForegroundHelper = new BackgroundForegroundHelper();
+    private final IApmEventListener mApmEventListener = ApmImpl.instance().apmEventListener();
     private final Runnable d = new Runnable() {
         public void run() {
-            if (BackgroundForegroundEventImpl.a(BackgroundForegroundEventImpl.this)) {
-                BackgroundForegroundEventImpl.a(BackgroundForegroundEventImpl.this).d(true);
+            if (l) {
+                mBackgroundForegroundHelper.d(true);
             }
         }
     };
     private final Runnable e = new Runnable() {
         public void run() {
-            if (BackgroundForegroundEventImpl.a(BackgroundForegroundEventImpl.this)) {
-                BackgroundForegroundEventImpl.a(BackgroundForegroundEventImpl.this).onEvent(50);
+            if (l) {
+                mApmEventListener.onEvent(50);
             }
         }
     };
@@ -31,19 +32,19 @@ class BackgroundForegroundEventImpl {
     /* access modifiers changed from: 0000 */
     public void i() {
         this.l = false;
-        this.a.c(false);
-        this.a.d(false);
-        this.b.onEvent(2);
-        b.a().a().removeCallbacks(this.d);
-        b.a().a().removeCallbacks(this.e);
+        this.mBackgroundForegroundHelper.c(false);
+        this.mBackgroundForegroundHelper.d(false);
+        this.mApmEventListener.onEvent(2);
+        ApmImpl.instance().getAsyncHandler().removeCallbacks(this.d);
+        ApmImpl.instance().getAsyncHandler().removeCallbacks(this.e);
     }
 
     /* access modifiers changed from: 0000 */
     public void j() {
         this.l = true;
-        this.a.c(true);
-        this.b.onEvent(1);
-        b.a().a().postDelayed(this.d, 300000);
-        b.a().a().postDelayed(this.e, 10000);
+        this.mBackgroundForegroundHelper.c(true);
+        this.mApmEventListener.onEvent(1);
+        ApmImpl.instance().getAsyncHandler().postDelayed(this.d, 300000);
+        ApmImpl.instance().getAsyncHandler().postDelayed(this.e, 10000);
     }
 }

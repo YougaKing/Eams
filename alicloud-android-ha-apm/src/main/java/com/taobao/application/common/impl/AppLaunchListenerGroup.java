@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /* compiled from: AppLaunchListenerGroup */
-class c implements IAppLaunchListener, f<IAppLaunchListener> {
+class AppLaunchListenerGroup implements IAppLaunchListener, IListenerGroup<IAppLaunchListener> {
     /* access modifiers changed from: private */
     public final List<IAppLaunchListener> a = new ArrayList(2);
 
-    c() {
+    AppLaunchListenerGroup() {
     }
 
     /* renamed from: a */
@@ -19,8 +19,8 @@ class c implements IAppLaunchListener, f<IAppLaunchListener> {
         }
         a((Runnable) new Runnable() {
             public void run() {
-                if (!c.this.a.contains(iAppLaunchListener)) {
-                    c.this.a.add(iAppLaunchListener);
+                if (!AppLaunchListenerGroup.this.a.contains(iAppLaunchListener)) {
+                    AppLaunchListenerGroup.this.a.add(iAppLaunchListener);
                 }
             }
         });
@@ -33,7 +33,7 @@ class c implements IAppLaunchListener, f<IAppLaunchListener> {
         }
         a((Runnable) new Runnable() {
             public void run() {
-                c.this.a.remove(iAppLaunchListener);
+                AppLaunchListenerGroup.this.a.remove(iAppLaunchListener);
             }
         });
     }
@@ -41,7 +41,7 @@ class c implements IAppLaunchListener, f<IAppLaunchListener> {
     public void onLaunchChanged(final int i, final int i2) {
         a((Runnable) new Runnable() {
             public void run() {
-                for (IAppLaunchListener onLaunchChanged : c.this.a) {
+                for (IAppLaunchListener onLaunchChanged : AppLaunchListenerGroup.this.a) {
                     onLaunchChanged.onLaunchChanged(i, i2);
                 }
             }

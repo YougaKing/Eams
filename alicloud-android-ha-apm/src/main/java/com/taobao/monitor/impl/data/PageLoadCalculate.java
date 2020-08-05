@@ -78,7 +78,7 @@ public class PageLoadCalculate implements IExecutor, Runnable {
 
     private void a(View view, View view2) {
         if (this.mPageLoadCalculateListener != null) {
-            float a2 = new b(view, view2).a();
+            float a2 = new CanvasCalculator(view, view2).a();
             Logger.d("PageLoadCalculate", "calculateDraw percent: " + a2);
             this.mPageLoadCalculateListener.visiblePercent(a2);
         }

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Queue;
 
 /* compiled from: LineTreeCalculator */
-public class g {
+public class LineTreeCalculator {
     private static final boolean g = Boolean.TRUE.booleanValue();
     private static final boolean h = Boolean.FALSE.booleanValue();
     private final int padding;
@@ -87,20 +87,20 @@ public class g {
         }
     }
 
-    public g(int i) {
+    public LineTreeCalculator(int i) {
         this.padding = i;
     }
 
-    public float a(View view, List<k> list, View view2) {
+    public float a(View view, List<ViewInfo> list, View view2) {
         int i = 0;
         if (list == null || list.size() == 0) {
             return 0.0f;
         }
-        int[] a2 = l.a(view, view2);
+        int[] a2 = ViewUtils.point(view, view2);
         int max = Math.max(0, a2[1]);
-        int min = Math.min(l.h, a2[1] + view.getHeight());
+        int min = Math.min(ViewUtils.h, a2[1] + view.getHeight());
         int max2 = Math.max(0, a2[0]);
-        int min2 = Math.min(l.g, a2[0] + view.getWidth());
+        int min2 = Math.min(ViewUtils.g, a2[0] + view.getWidth());
         int i2 = min2 - max2 > 0 ? min2 - max2 : 0;
         if (min - max > 0) {
             i = min - max;
@@ -139,9 +139,9 @@ public class g {
         return i3;
     }
 
-    private List<a> a(int i, int i2, int i3, int i4, List<k> list) {
+    private List<a> a(int i, int i2, int i3, int i4, List<ViewInfo> list) {
         ArrayList arrayList = new ArrayList();
-        for (k kVar : list) {
+        for (ViewInfo kVar : list) {
             int max = Math.max(i, kVar.top - this.padding);
             int min = Math.min(i2, kVar.bottom + this.padding);
             if (max <= min) {

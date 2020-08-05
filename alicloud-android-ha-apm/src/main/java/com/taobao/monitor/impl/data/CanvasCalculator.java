@@ -18,31 +18,32 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
 /* compiled from: CanvasCalculator */
-public class b implements e {
+public class CanvasCalculator implements ICalculator {
     private HashSet<Drawable> a = new HashSet<>();
     private final View b;
     private final View c;
     private boolean f = false;
 
-    public b(View view, View view2) {
+    public CanvasCalculator(View view, View view2) {
         this.b = view;
         this.c = view2;
     }
 
-    private float a(View view, List<k> list) {
+    private float a(View view, List<ViewInfo> list) {
         Drawable drawable;
         byte b2;
         byte b3 = 0;
-        if (!l.a(view, this.c)) {
+        if (!ViewUtils.a(view, this.c)) {
             return 0.0f;
         }
-        if (view.getHeight() < l.h / 20) {
+        if (view.getHeight() < ViewUtils.h / 20) {
             return 1.0f;
         }
         if (view.getVisibility() != 0) {
@@ -54,12 +55,12 @@ public class b implements e {
         if (view instanceof ViewGroup) {
             ViewGroup viewGroup = (ViewGroup) view;
             if (viewGroup instanceof WebView) {
-                if (c.a.isWebViewLoadFinished((WebView) viewGroup)) {
+                if (DefaultWebView.DEFAULT_WEB_VIEW.isWebViewLoadFinished((WebView) viewGroup)) {
                     return 1.0f;
                 }
                 return 0.0f;
             } else if (!WebViewProxy.INSTANCE.isWebView(viewGroup)) {
-                View[] a2 = l.a(viewGroup);
+                View[] a2 = ViewUtils.a(viewGroup);
                 if (a2 == null) {
                     return 0.0f;
                 }
@@ -73,25 +74,25 @@ public class b implements e {
                     ArrayList arrayList = new ArrayList();
                     if (a(view2, arrayList) > 0.8f) {
                         int i3 = i2 + 1;
-                        list.add(k.a(view2, this.c));
+                        list.add(ViewInfo.a(view2, this.c));
                         Iterator it = arrayList.iterator();
                         while (it.hasNext()) {
-                            ((k) it.next()).recycle();
+                            ((ViewInfo) it.next()).recycle();
                         }
                         i2 = i3;
                     } else {
                         list.addAll(arrayList);
                     }
                 }
-                if (view.getHeight() < l.h / 8 && (((viewGroup instanceof LinearLayout) || (viewGroup instanceof RelativeLayout)) && i == i2 && i != 0)) {
+                if (view.getHeight() < ViewUtils.h / 8 && (((viewGroup instanceof LinearLayout) || (viewGroup instanceof RelativeLayout)) && i == i2 && i != 0)) {
                     return 1.0f;
                 }
-                float a3 = new g(com.taobao.monitor.impl.util.b.a(30)).a((View) viewGroup, list, this.c);
+                float a3 = new LineTreeCalculator(com.taobao.monitor.impl.util.b.a(30)).a((View) viewGroup, list, this.c);
                 if (a3 > 0.8f) {
                     return 1.0f;
                 }
-                if (view.getWidth() * view.getHeight() <= ((l.g / 3) * l.h) / 4 && (view.getWidth() < l.g / 3 || view.getHeight() < l.h / 4)) {
-                    k a4 = k.a(viewGroup, this.c);
+                if (view.getWidth() * view.getHeight() <= ((ViewUtils.g / 3) * ViewUtils.h) / 4 && (view.getWidth() < ViewUtils.g / 3 || view.getHeight() < ViewUtils.h / 4)) {
+                    ViewInfo a4 = ViewInfo.a(viewGroup, this.c);
                     int i4 = (a4.top + a4.bottom) / 2;
                     int i5 = (a4.right + a4.left) / 2;
                     Iterator it2 = list.iterator();
@@ -101,7 +102,7 @@ public class b implements e {
                         if (!it2.hasNext()) {
                             break;
                         }
-                        k kVar = (k) it2.next();
+                        ViewInfo kVar = (ViewInfo) it2.next();
                         if (kVar.top < i4 && i4 < kVar.bottom && kVar.left < i5 && i5 < kVar.right) {
                             return 1.0f;
                         }
@@ -178,7 +179,7 @@ public class b implements e {
         float a2 = a(this.b, arrayList);
         Iterator it = arrayList.iterator();
         while (it.hasNext()) {
-            ((k) it.next()).recycle();
+            ((ViewInfo) it.next()).recycle();
         }
         this.a.clear();
         if (this.f) {

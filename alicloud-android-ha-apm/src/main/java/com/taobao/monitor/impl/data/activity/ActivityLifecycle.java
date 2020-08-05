@@ -35,8 +35,8 @@ public class ActivityLifecycle implements ActivityLifecycleCallbacks {
 
     /* renamed from: a reason: collision with other field name */
     private final BackgroundForegroundEventImpl mBackgroundForegroundEvent = new BackgroundForegroundEventImpl();
-    private final ActivityLifecycleCallbacks b = ApmImpl.instance().instance();
-    private final ActivityLifecycleCallbacks c = ApmImpl.instance().b();
+    private final ActivityLifecycleCallbacks b = ApmImpl.instance().mainApplicationLifecycleCallbacks();
+    private final ActivityLifecycleCallbacks c = ApmImpl.instance().applicationLifecycleCallbacks();
     private int count;
     private int i = 0;
     protected Map<Activity, LifecycleListener> map = new HashMap();

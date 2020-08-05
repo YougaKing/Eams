@@ -9,10 +9,10 @@ import java.util.Iterator;
 
 @TargetApi(14)
 /* compiled from: MainApplicationCallbackGroup */
-class g implements ActivityLifecycleCallbacks, e<ActivityLifecycleCallbacks> {
+class MainApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallbackGroup<ActivityLifecycleCallbacks> {
     private final ArrayList<ActivityLifecycleCallbacks> b = new ArrayList<>();
 
-    g() {
+    MainApplicationCallbackGroup() {
     }
 
     public void onActivityCreated(Activity activity, Bundle bundle) {

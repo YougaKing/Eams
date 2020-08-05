@@ -1,6 +1,6 @@
 package com.taobao.monitor.impl.data;
 
 /* compiled from: ICalculator */
-public interface e {
+public interface ICalculator {
     float a();
 }

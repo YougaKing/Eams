@@ -5,14 +5,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /* compiled from: ApmEventListenerGroup */
-public class a implements IApmEventListener, f<IApmEventListener> {
+public class ApmEventListenerGroup implements IApmEventListener, IListenerGroup<IApmEventListener> {
     /* access modifiers changed from: private */
     public final ArrayList<IApmEventListener> a = new ArrayList<>();
 
     public void onEvent(final int i) {
         a((Runnable) new Runnable() {
             public void run() {
-                Iterator it = a.this.a.iterator();
+                Iterator it = ApmEventListenerGroup.this.a.iterator();
                 while (it.hasNext()) {
                     ((IApmEventListener) it.next()).onEvent(i);
                 }
@@ -27,8 +27,8 @@ public class a implements IApmEventListener, f<IApmEventListener> {
         }
         a((Runnable) new Runnable() {
             public void run() {
-                if (!a.this.a.contains(iApmEventListener)) {
-                    a.this.a.add(iApmEventListener);
+                if (!ApmEventListenerGroup.this.a.contains(iApmEventListener)) {
+                    ApmEventListenerGroup.this.a.add(iApmEventListener);
                 }
             }
         });
@@ -41,7 +41,7 @@ public class a implements IApmEventListener, f<IApmEventListener> {
         }
         a((Runnable) new Runnable() {
             public void run() {
-                a.this.a.remove(iApmEventListener);
+                ApmEventListenerGroup.this.a.remove(iApmEventListener);
             }
         });
     }

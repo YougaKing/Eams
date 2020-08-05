@@ -9,7 +9,7 @@ import com.taobao.monitor.impl.common.Global;
 import java.lang.reflect.Field;
 
 /* compiled from: ViewUtils */
-class l {
+class ViewUtils {
     private static Field a;
     static int g;
     static int h;
@@ -43,7 +43,7 @@ class l {
     }
 
     static boolean a(View view, View view2) {
-        int[] a2 = a(view, view2);
+        int[] a2 = point(view, view2);
         int i = a2[1];
         int height = a2[1] + view.getHeight();
         int i2 = a2[0];
@@ -55,7 +55,7 @@ class l {
     }
 
     /* renamed from: a reason: collision with other method in class */
-    static int[] m5a(View view, View view2) {
+    static int[] point(View view, View view2) {
         int[] iArr = {0, 0};
         while (view != view2) {
             iArr[1] = iArr[1] + view.getTop();

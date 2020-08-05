@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /* compiled from: PageListenerGroup */
-class h implements IPageListener, f<IPageListener> {
+class PageListenerGroup implements IPageListener, IListenerGroup<IPageListener> {
     /* access modifiers changed from: private */
     public ArrayList<IPageListener> a = new ArrayList<>();
 
-    h() {
+    PageListenerGroup() {
     }
 
     public void onPageChanged(String str, int i, long j) {
@@ -18,7 +18,7 @@ class h implements IPageListener, f<IPageListener> {
         final long j2 = j;
         a((Runnable) new Runnable() {
             public void run() {
-                Iterator it = h.this.a.iterator();
+                Iterator it = PageListenerGroup.this.a.iterator();
                 while (it.hasNext()) {
                     ((IPageListener) it.next()).onPageChanged(str2, i2, j2);
                 }
@@ -33,8 +33,8 @@ class h implements IPageListener, f<IPageListener> {
         }
         a((Runnable) new Runnable() {
             public void run() {
-                if (!h.this.a.contains(iPageListener)) {
-                    h.this.a.add(iPageListener);
+                if (!PageListenerGroup.this.a.contains(iPageListener)) {
+                    PageListenerGroup.this.a.add(iPageListener);
                 }
             }
         });
@@ -47,7 +47,7 @@ class h implements IPageListener, f<IPageListener> {
         }
         a((Runnable) new Runnable() {
             public void run() {
-                h.this.a.remove(iPageListener);
+                PageListenerGroup.this.a.remove(iPageListener);
             }
         });
     }

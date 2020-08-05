@@ -17,24 +17,24 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /* compiled from: ApmImpl */
 public class ApmImpl implements Apm, IApplicationMonitor {
-    private volatile Activity a;
+    private volatile Activity mActivity;
 
     /* renamed from: a reason: collision with other field name */
-    private final Handler f3a;
+    private final Handler mHandler;
 
     /* renamed from: a reason: collision with other field name */
-    private final e<ActivityLifecycleCallbacks> f4a;
+    private final ICallbackGroup<ActivityLifecycleCallbacks> mMainApplicationCallbackGroup;
 
     /* renamed from: a reason: collision with other field name */
-    private final f<IPageListener> f5a;
+    private final IListenerGroup<IPageListener> f5a;
 
     /* renamed from: a reason: collision with other field name */
     private ConcurrentHashMap<ActivityLifecycleCallbacks, Boolean> f6a;
-    private final e<ActivityLifecycleCallbacks> b;
+    private final ICallbackGroup<ActivityLifecycleCallbacks> mApplicationCallbackGroup;
 
     /* renamed from: b reason: collision with other field name */
-    private final f<IAppLaunchListener> f7b;
-    private final f<IApmEventListener> c;
+    private final IListenerGroup<IAppLaunchListener> f7b;
+    private final IListenerGroup<IApmEventListener> mApmEventListenerGroup;
 
     /* compiled from: ApmImpl */
     private static class ApmImplHolder {
@@ -42,15 +42,15 @@ public class ApmImpl implements Apm, IApplicationMonitor {
     }
 
     private ApmImpl() {
-        this.f4a = new g();
-        this.b = new d();
-        this.f5a = new h();
-        this.f7b = new c();
-        this.c = new a();
+        this.mMainApplicationCallbackGroup = new MainApplicationCallbackGroup();
+        this.mApplicationCallbackGroup = new ApplicationCallbackGroup();
+        this.f5a = new PageListenerGroup();
+        this.f7b = new AppLaunchListenerGroup();
+        this.mApmEventListenerGroup = new ApmEventListenerGroup();
         this.f6a = new ConcurrentHashMap<>();
         HandlerThread handlerThread = new HandlerThread("Apm-Sec");
         handlerThread.start();
-        this.f3a = new Handler(handlerThread.getLooper());
+        this.mHandler = new Handler(handlerThread.getLooper());
         Logger.e("ApmImpl", "init");
     }
 
@@ -65,9 +65,9 @@ public class ApmImpl implements Apm, IApplicationMonitor {
         } else if (((Boolean) this.f6a.put(activityLifecycleCallbacks, Boolean.valueOf(z))) != null) {
             throw new IllegalArgumentException();
         } else if (z) {
-            this.f4a.b(activityLifecycleCallbacks);
+            this.mMainApplicationCallbackGroup.b(activityLifecycleCallbacks);
         } else {
-            this.b.b(activityLifecycleCallbacks);
+            this.mApplicationCallbackGroup.b(activityLifecycleCallbacks);
         }
     }
 
@@ -80,9 +80,9 @@ public class ApmImpl implements Apm, IApplicationMonitor {
             boolean booleanValue = bool.booleanValue();
             this.f6a.remove(activityLifecycleCallbacks);
             if (booleanValue) {
-                this.f4a.a(activityLifecycleCallbacks);
+                this.mMainApplicationCallbackGroup.a(activityLifecycleCallbacks);
             } else {
-                this.b.a(activityLifecycleCallbacks);
+                this.mApplicationCallbackGroup.a(activityLifecycleCallbacks);
             }
         } else {
             throw new IllegalArgumentException();
@@ -106,11 +106,11 @@ public class ApmImpl implements Apm, IApplicationMonitor {
     }
 
     public void addApmEventListener(IApmEventListener iApmEventListener) {
-        this.c.addListener(iApmEventListener);
+        this.mApmEventListenerGroup.addListener(iApmEventListener);
     }
 
     public void removeApmEventListener(IApmEventListener iApmEventListener) {
-        this.c.removeListener(iApmEventListener);
+        this.mApmEventListenerGroup.removeListener(iApmEventListener);
     }
 
     public IAppPreferences getAppPreferences() {
@@ -118,27 +118,27 @@ public class ApmImpl implements Apm, IApplicationMonitor {
     }
 
     public Activity getTopActivity() {
-        return this.a;
+        return this.mActivity;
     }
 
     public Looper getAsyncLooper() {
-        return this.f3a.getLooper();
+        return this.mHandler.getLooper();
     }
 
     /* renamed from: a reason: collision with other method in class */
     public Handler getAsyncHandler() {
-        return this.f3a;
+        return this.mHandler;
     }
 
     @TargetApi(14)
     /* renamed from: a reason: collision with other method in class */
-    public ActivityLifecycleCallbacks m0a() {
-        return (ActivityLifecycleCallbacks) a((Object) this.f4a);
+    public ActivityLifecycleCallbacks mainApplicationLifecycleCallbacks() {
+        return (ActivityLifecycleCallbacks) a((Object) this.mMainApplicationCallbackGroup);
     }
 
     @TargetApi(14)
-    public ActivityLifecycleCallbacks b() {
-        return (ActivityLifecycleCallbacks) a((Object) this.b);
+    public ActivityLifecycleCallbacks applicationLifecycleCallbacks() {
+        return (ActivityLifecycleCallbacks) a((Object) this.mApplicationCallbackGroup);
     }
 
     /* renamed from: a reason: collision with other method in class */
@@ -152,16 +152,16 @@ public class ApmImpl implements Apm, IApplicationMonitor {
     }
 
     /* renamed from: a reason: collision with other method in class */
-    public IApmEventListener m2a() {
-        return (IApmEventListener) a((Object) this.c);
+    public IApmEventListener apmEventListener() {
+        return (IApmEventListener) a((Object) this.mApmEventListenerGroup);
     }
 
     public void a(Activity activity) {
-        this.a = activity;
+        this.mActivity = activity;
     }
 
     public void b(Runnable runnable) {
-        this.f3a.post(runnable);
+        this.mHandler.post(runnable);
     }
 
     private <T> T a(Object obj) {

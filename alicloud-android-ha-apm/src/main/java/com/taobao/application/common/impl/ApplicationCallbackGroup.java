@@ -9,17 +9,17 @@ import java.util.Iterator;
 
 @TargetApi(14)
 /* compiled from: ApplicationCallbackGroup */
-class d implements ActivityLifecycleCallbacks, e<ActivityLifecycleCallbacks> {
+class ApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallbackGroup<ActivityLifecycleCallbacks> {
     /* access modifiers changed from: private */
     public final ArrayList<ActivityLifecycleCallbacks> b = new ArrayList<>();
 
-    d() {
+    ApplicationCallbackGroup() {
     }
 
     public void onActivityCreated(final Activity activity, final Bundle bundle) {
         a((Runnable) new Runnable() {
             public void run() {
-                Iterator it = d.this.b.iterator();
+                Iterator it = ApplicationCallbackGroup.this.b.iterator();
                 while (it.hasNext()) {
                     ((ActivityLifecycleCallbacks) it.next()).onActivityCreated(activity, bundle);
                 }
@@ -30,7 +30,7 @@ class d implements ActivityLifecycleCallbacks, e<ActivityLifecycleCallbacks> {
     public void onActivityStarted(final Activity activity) {
         a((Runnable) new Runnable() {
             public void run() {
-                Iterator it = d.this.b.iterator();
+                Iterator it = ApplicationCallbackGroup.this.b.iterator();
                 while (it.hasNext()) {
                     ((ActivityLifecycleCallbacks) it.next()).onActivityStarted(activity);
                 }
@@ -41,7 +41,7 @@ class d implements ActivityLifecycleCallbacks, e<ActivityLifecycleCallbacks> {
     public void onActivityResumed(final Activity activity) {
         a((Runnable) new Runnable() {
             public void run() {
-                Iterator it = d.this.b.iterator();
+                Iterator it = ApplicationCallbackGroup.this.b.iterator();
                 while (it.hasNext()) {
                     ((ActivityLifecycleCallbacks) it.next()).onActivityResumed(activity);
                 }
@@ -52,7 +52,7 @@ class d implements ActivityLifecycleCallbacks, e<ActivityLifecycleCallbacks> {
     public void onActivityPaused(final Activity activity) {
         a((Runnable) new Runnable() {
             public void run() {
-                Iterator it = d.this.b.iterator();
+                Iterator it = ApplicationCallbackGroup.this.b.iterator();
                 while (it.hasNext()) {
                     ((ActivityLifecycleCallbacks) it.next()).onActivityPaused(activity);
                 }
@@ -63,7 +63,7 @@ class d implements ActivityLifecycleCallbacks, e<ActivityLifecycleCallbacks> {
     public void onActivityStopped(final Activity activity) {
         a((Runnable) new Runnable() {
             public void run() {
-                Iterator it = d.this.b.iterator();
+                Iterator it = ApplicationCallbackGroup.this.b.iterator();
                 while (it.hasNext()) {
                     ((ActivityLifecycleCallbacks) it.next()).onActivityStopped(activity);
                 }
@@ -74,7 +74,7 @@ class d implements ActivityLifecycleCallbacks, e<ActivityLifecycleCallbacks> {
     public void onActivitySaveInstanceState(final Activity activity, final Bundle bundle) {
         a((Runnable) new Runnable() {
             public void run() {
-                Iterator it = d.this.b.iterator();
+                Iterator it = ApplicationCallbackGroup.this.b.iterator();
                 while (it.hasNext()) {
                     ((ActivityLifecycleCallbacks) it.next()).onActivitySaveInstanceState(activity, bundle);
                 }
@@ -85,7 +85,7 @@ class d implements ActivityLifecycleCallbacks, e<ActivityLifecycleCallbacks> {
     public void onActivityDestroyed(final Activity activity) {
         a((Runnable) new Runnable() {
             public void run() {
-                Iterator it = d.this.b.iterator();
+                Iterator it = ApplicationCallbackGroup.this.b.iterator();
                 while (it.hasNext()) {
                     ((ActivityLifecycleCallbacks) it.next()).onActivityDestroyed(activity);
                 }
@@ -100,8 +100,8 @@ class d implements ActivityLifecycleCallbacks, e<ActivityLifecycleCallbacks> {
         }
         a((Runnable) new Runnable() {
             public void run() {
-                if (!d.this.b.contains(activityLifecycleCallbacks)) {
-                    d.this.b.add(activityLifecycleCallbacks);
+                if (!ApplicationCallbackGroup.this.b.contains(activityLifecycleCallbacks)) {
+                    ApplicationCallbackGroup.this.b.add(activityLifecycleCallbacks);
                 }
             }
         });
@@ -114,7 +114,7 @@ class d implements ActivityLifecycleCallbacks, e<ActivityLifecycleCallbacks> {
         }
         a((Runnable) new Runnable() {
             public void run() {
-                d.this.b.remove(activityLifecycleCallbacks);
+                ApplicationCallbackGroup.this.b.remove(activityLifecycleCallbacks);
             }
         });
     }

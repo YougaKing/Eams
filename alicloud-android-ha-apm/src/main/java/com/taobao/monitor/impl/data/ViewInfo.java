@@ -6,15 +6,15 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /* compiled from: ViewInfo */
-class k {
-    private static Queue<k> a = new LinkedList();
+class ViewInfo {
+    private static Queue<ViewInfo> a = new LinkedList();
     public int bottom;
     public boolean k;
     public int left;
     public int right;
     public int top;
 
-    k() {
+    ViewInfo() {
     }
 
     public void recycle() {
@@ -23,17 +23,17 @@ class k {
         }
     }
 
-    public static k a(View view, View view2) {
-        k kVar = (k) a.poll();
+    public static ViewInfo a(View view, View view2) {
+        ViewInfo kVar = (ViewInfo) a.poll();
         if (kVar == null) {
-            kVar = new k();
+            kVar = new ViewInfo();
         }
-        int[] a2 = l.a(view, view2);
+        int[] a2 = ViewUtils.point(view, view2);
         boolean z = view instanceof TextView;
         int max = Math.max(0, a2[0]);
-        int min = Math.min(l.g, a2[0] + view.getWidth());
+        int min = Math.min(ViewUtils.g, a2[0] + view.getWidth());
         int max2 = Math.max(0, a2[1]);
-        int min2 = Math.min(l.h, a2[1] + view.getHeight());
+        int min2 = Math.min(ViewUtils.h, a2[1] + view.getHeight());
         kVar.k = z;
         kVar.left = max;
         kVar.right = min;

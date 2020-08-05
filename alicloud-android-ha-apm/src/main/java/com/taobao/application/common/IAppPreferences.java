@@ -1,6 +1,7 @@
 package com.taobao.application.common;
 
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
 
 public interface IAppPreferences {
     public static final IAppPreferences DEFAULT = new IAppPreferences() {

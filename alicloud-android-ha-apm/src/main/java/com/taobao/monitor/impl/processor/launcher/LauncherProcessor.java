@@ -110,7 +110,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
 
     /* renamed from: i reason: collision with other field name */
     private boolean f83i = false;
-    private int l = 0;
+    private int mGcCount = 0;
     private int n;
     private int o;
 
@@ -141,8 +141,8 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     }
 
     /* access modifiers changed from: protected */
-    public void n() {
-        super.n();
+    public void procedureBegin() {
+        super.procedureBegin();
         this.f78c = TrafficTracker.traffics();
         new AppLaunchHelper().launchType(this.mLaunchType);
         this.mStartupProcedure = ProcedureManagerProxy.PROXY.getLauncherProcedure();
@@ -203,7 +203,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
         this.f81e = ActivityUtils.getName(activity);
         if (!this.f88u) {
             this.d = activity;
-            n();
+            procedureBegin();
             this.mStartupProcedure.addProperty("systemRecovery", Boolean.valueOf(false));
             if ("COLD".equals(sLaunchType) && this.f81e.equals(GlobalStats.lastTopActivity)) {
                 this.mStartupProcedure.addProperty("systemRecovery", Boolean.valueOf(true));
@@ -266,7 +266,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
         hashMap.put("pageName", ActivityUtils.getSimpleName(activity));
         this.mStartupProcedure.event("onActivityStopped", hashMap);
         if (activity == this.d) {
-            o();
+            procedureEnd();
         }
     }
 
@@ -277,7 +277,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
         this.mStartupProcedure.event("onActivityDestroyed", hashMap);
         if (activity == this.d) {
             this.f85r = true;
-            o();
+            procedureEnd();
         }
     }
 
@@ -361,7 +361,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     }
 
     /* access modifiers changed from: protected */
-    public void o() {
+    public void procedureEnd() {
         if (!this.f83i) {
             this.f83i = true;
             q();
@@ -371,23 +371,23 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
             }
             this.mStartupProcedure.addProperty("linkPageName", this.f77c.toString());
             this.f77c.clear();
-            this.mStartupProcedure.addProperty("hasSplash", Boolean.valueOf(GlobalStats.hasSplash));
-            this.mStartupProcedure.addStatistic("gcCount", Integer.valueOf(this.l));
+            this.mStartupProcedure.addProperty("hasSplash", GlobalStats.hasSplash);
+            this.mStartupProcedure.addStatistic("gcCount", this.mGcCount);
             this.mStartupProcedure.addStatistic("fps", this.f74b.toString());
-            this.mStartupProcedure.addStatistic("jankCount", Integer.valueOf(this.f75c));
-            this.mStartupProcedure.addStatistic("image", Integer.valueOf(this.n));
-            this.mStartupProcedure.addStatistic("imageOnRequest", Integer.valueOf(this.n));
-            this.mStartupProcedure.addStatistic("imageSuccessCount", Integer.valueOf(this.o));
-            this.mStartupProcedure.addStatistic("imageFailedCount", Integer.valueOf(this.p));
-            this.mStartupProcedure.addStatistic("imageCanceledCount", Integer.valueOf(this.q));
-            this.mStartupProcedure.addStatistic("network", Integer.valueOf(this.r));
-            this.mStartupProcedure.addStatistic("networkOnRequest", Integer.valueOf(this.r));
-            this.mStartupProcedure.addStatistic("networkSuccessCount", Integer.valueOf(this.s));
-            this.mStartupProcedure.addStatistic("networkFailedCount", Integer.valueOf(this.t));
-            this.mStartupProcedure.addStatistic("networkCanceledCount", Integer.valueOf(this.u));
+            this.mStartupProcedure.addStatistic("jankCount", this.f75c);
+            this.mStartupProcedure.addStatistic("image", this.n);
+            this.mStartupProcedure.addStatistic("imageOnRequest", this.n);
+            this.mStartupProcedure.addStatistic("imageSuccessCount", this.o);
+            this.mStartupProcedure.addStatistic("imageFailedCount", this.p);
+            this.mStartupProcedure.addStatistic("imageCanceledCount", this.q);
+            this.mStartupProcedure.addStatistic("network", this.r);
+            this.mStartupProcedure.addStatistic("networkOnRequest", this.r);
+            this.mStartupProcedure.addStatistic("networkSuccessCount", this.s);
+            this.mStartupProcedure.addStatistic("networkFailedCount", this.t);
+            this.mStartupProcedure.addStatistic("networkCanceledCount", this.u);
             long[] a2 = TrafficTracker.traffics();
-            this.mStartupProcedure.addStatistic("totalRx", Long.valueOf(a2[0] - this.f78c[0]));
-            this.mStartupProcedure.addStatistic("totalTx", Long.valueOf(a2[1] - this.f78c[1]));
+            this.mStartupProcedure.addStatistic("totalRx", a2[0] - this.f78c[0]);
+            this.mStartupProcedure.addStatistic("totalTx", a2[1] - this.f78c[1]);
             this.mStartupProcedure.stage("procedureEndTime", TimeUtils.currentTimeMillis());
             GlobalStats.hasSplash = false;
             this.f.removeListener(this);
@@ -401,7 +401,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
             FragmentFunctionDispatcher.FRAGMENT_FUNCTION_DISPATCHER.removeListener(this);
             this.mStartupProcedure.end();
             DumpManager.getInstance().append(new StartUpEndEvent());
-            super.o();
+            super.procedureEnd();
         }
     }
 
@@ -416,7 +416,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     }
 
     public void gc() {
-        this.l++;
+        this.mGcCount++;
     }
 
     public void backgroundChanged(int i2, long j) {
@@ -424,7 +424,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
             HashMap hashMap = new HashMap(1);
             hashMap.put("timestamp", Long.valueOf(j));
             this.mStartupProcedure.event("foreground2Background", hashMap);
-            o();
+            procedureEnd();
         }
     }
 

@@ -46,7 +46,13 @@ public class TBAPMAdapterSubTaskManager {
                     String str = (String) entry.getKey();
                     Property property = (Property) entry.getValue();
                     if (property.taskEnd != 0) {
-                        IProcedure createProcedure = ProcedureFactoryProxy.PROXY.createProcedure("/" + str, new Builder().setIndependent(false).setUpload(false).setParentNeedStats(false).setParent(ProcedureManagerProxy.PROXY.getLauncherProcedure()).build());
+                        IProcedure createProcedure = ProcedureFactoryProxy.PROXY.createProcedure("/" + str, new Builder()
+                                .setIndependent(false)
+                                .setUpload(false)
+                                .setParentNeedStats(false)
+                                .setParent(ProcedureManagerProxy.PROXY.getLauncherProcedure())
+                                .build());
+
                         createProcedure.begin();
                         createProcedure.stage("taskStart", property.startTime);
                         createProcedure.stage("cpuStartTime", property.cpuStartTime);

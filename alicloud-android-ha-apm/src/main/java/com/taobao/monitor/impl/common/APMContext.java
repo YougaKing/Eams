@@ -20,7 +20,7 @@ public class APMContext {
         return APMContextHolder.APM_CONTEXT;
     }
 
-    public static IDispatcher getDispatcher(String str) {
-        return DispatcherManager.getDispatcher(str);
+    public static IDispatcher getDispatcher(String key) {
+        return DispatcherManager.getDispatcher(key);
     }
 }

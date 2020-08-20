@@ -31,19 +31,19 @@ public class ProcedureProxy implements IProcedureGroup, IValueCallback {
         return this;
     }
 
-    public IProcedure event(final String str, final Map<String, Object> map) {
+    public IProcedure event(final String key, final Map<String, Object> map) {
         async(new Runnable() {
             public void run() {
-                ProcedureProxy.this.base.event(str, map);
+                ProcedureProxy.this.base.event(key, map);
             }
         });
         return this;
     }
 
-    public IProcedure stage(final String str, final long j) {
+    public IProcedure stage(final String key, final long timestamp) {
         async(new Runnable() {
             public void run() {
-                ProcedureProxy.this.base.stage(str, j);
+                ProcedureProxy.this.base.stage(key, timestamp);
             }
         });
         return this;

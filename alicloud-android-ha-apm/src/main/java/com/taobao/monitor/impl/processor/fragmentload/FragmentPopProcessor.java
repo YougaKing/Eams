@@ -65,8 +65,8 @@ class FragmentPopProcessor extends AbsProcessor implements FragmentModelLifecycl
     }
 
     /* access modifiers changed from: protected */
-    public void n() {
-        super.n();
+    public void procedureBegin() {
+        super.procedureBegin();
         this.mPageLoadProcedure = ProcedureFactoryProxy.PROXY.createProcedure(TopicUtils.getFullTopic("/pageLoad"), new Builder()
                 .setIndependent(false)
                 .setUpload(true)
@@ -116,7 +116,7 @@ class FragmentPopProcessor extends AbsProcessor implements FragmentModelLifecycl
     }
 
     public void onFragmentStarted(Fragment fragment) {
-        n();
+        procedureBegin();
         o(fragment);
         this.f = TimeUtils.currentTimeMillis();
         this.g = this.f;
@@ -150,7 +150,7 @@ class FragmentPopProcessor extends AbsProcessor implements FragmentModelLifecycl
         this.mPageLoadProcedure.addProperty("errorCode", Integer.valueOf(0));
         this.mPageLoadProcedure.addStatistic("totalRx", Long.valueOf(this.f53b[0]));
         this.mPageLoadProcedure.addStatistic("totalTx", Long.valueOf(this.f53b[1]));
-        o();
+        procedureEnd();
     }
 
     public void onLowMemory() {
@@ -168,7 +168,7 @@ class FragmentPopProcessor extends AbsProcessor implements FragmentModelLifecycl
     }
 
     /* access modifiers changed from: protected */
-    public void o() {
+    public void procedureEnd() {
         this.mPageLoadProcedure.stage("procedureEndTime", TimeUtils.currentTimeMillis());
         this.mPageLoadProcedure.addStatistic("gcCount", Integer.valueOf(this.l));
         this.mPageLoadProcedure.addStatistic("fps", this.f52b.toString());
@@ -178,7 +178,7 @@ class FragmentPopProcessor extends AbsProcessor implements FragmentModelLifecycl
         this.mActivityFpsDispatcher.removeListener(this);
         this.mApplicationGcDispatcher.removeListener(this);
         this.mPageLoadProcedure.end();
-        super.o();
+        super.procedureEnd();
     }
 
     public void fps(int i) {

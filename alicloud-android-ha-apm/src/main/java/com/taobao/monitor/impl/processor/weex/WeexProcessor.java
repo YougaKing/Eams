@@ -75,8 +75,8 @@ public class WeexProcessor extends AbsProcessor implements OnUsableVisibleListen
     }
 
     /* access modifiers changed from: protected */
-    public void n() {
-        super.n();
+    public void procedureBegin() {
+        super.procedureBegin();
         this.f = TimeUtils.currentTimeMillis();
         this.mTypeProcedure = ProcedureFactoryProxy.PROXY.createProcedure(TopicUtils.getFullTopic("/" + this.type), new Builder()
                 .setIndependent(true)
@@ -102,7 +102,7 @@ public class WeexProcessor extends AbsProcessor implements OnUsableVisibleListen
     }
 
     /* access modifiers changed from: protected */
-    public void o() {
+    public void procedureEnd() {
         if (!this.f42d) {
             this.mTypeProcedure.stage("procedureEndTime", TimeUtils.currentTimeMillis());
             this.mTypeProcedure.addStatistic("gcCount", Integer.valueOf(this.l));
@@ -123,18 +123,18 @@ public class WeexProcessor extends AbsProcessor implements OnUsableVisibleListen
             this.f43f.removeListener(this);
             this.i.removeListener(this);
             this.mTypeProcedure.end();
-            super.o();
+            super.procedureEnd();
         }
         this.f42d = true;
     }
 
     public void onStart(String str) {
-        n();
+        procedureBegin();
         this.mTypeProcedure.addProperty("instanceId", str);
     }
 
     public void onEnd() {
-        o();
+        procedureEnd();
     }
 
     public void onEvent(String str, Object obj) {
@@ -204,7 +204,7 @@ public class WeexProcessor extends AbsProcessor implements OnUsableVisibleListen
             this.mTypeProcedure.event("foreground2Background", hashMap);
             Global.instance().handler().post(new Runnable() {
                 public void run() {
-                    WeexProcessor.this.o();
+                    WeexProcessor.this.procedureEnd();
                 }
             });
             return;

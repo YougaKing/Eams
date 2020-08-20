@@ -3,7 +3,7 @@ package com.taobao.monitor.procedure;
 import java.util.Map;
 
 public interface IProcedure {
-    public static final IProcedure DEFAULT = new Default();
+    IProcedure DEFAULT = new Default();
 
     IProcedure addBiz(String str, Map<String, Object> map);
 
@@ -21,13 +21,13 @@ public interface IProcedure {
 
     IProcedure end(boolean z);
 
-    IProcedure event(String str, Map<String, Object> map);
+    IProcedure event(String key, Map<String, Object> map);
 
     boolean isAlive();
 
     IProcedure parent();
 
-    IProcedure stage(String str, long j);
+    IProcedure stage(String key, long timestamp);
 
     String topic();
 

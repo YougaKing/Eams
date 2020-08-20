@@ -124,8 +124,8 @@ class FragmentProcessor extends AbsProcessor implements OnUsableVisibleListener<
     }
 
     /* access modifiers changed from: protected */
-    public void n() {
-        super.n();
+    public void procedureBegin() {
+        super.procedureBegin();
         this.mPageLoadProcedure = ProcedureFactoryProxy.PROXY.createProcedure(TopicUtils.getFullTopic("/pageLoad"), new Builder()
                 .setIndependent(false)
                 .setUpload(true)
@@ -264,7 +264,7 @@ class FragmentProcessor extends AbsProcessor implements OnUsableVisibleListener<
     }
 
     /* access modifiers changed from: protected */
-    public void o() {
+    public void procedureEnd() {
         if (!this.i) {
             this.i = true;
             this.mPageLoadProcedure.addProperty("totalVisibleDuration", this.mTotalVisibleDuration);
@@ -291,7 +291,7 @@ class FragmentProcessor extends AbsProcessor implements OnUsableVisibleListener<
             this.mImageStageDispatcher.removeListener(this);
             this.mNetworkStageDispatcher.removeListener(this);
             this.mPageLoadProcedure.end();
-            super.o();
+            super.procedureEnd();
         }
     }
 
@@ -318,7 +318,7 @@ class FragmentProcessor extends AbsProcessor implements OnUsableVisibleListener<
             HashMap hashMap = new HashMap(1);
             hashMap.put("timestamp", Long.valueOf(j));
             this.mPageLoadProcedure.event("foreground2Background", hashMap);
-            o();
+            procedureEnd();
             return;
         }
         HashMap hashMap2 = new HashMap(1);
@@ -355,7 +355,7 @@ class FragmentProcessor extends AbsProcessor implements OnUsableVisibleListener<
     }
 
     public void onFragmentPreAttached(Fragment fragment, long j) {
-        n();
+        procedureBegin();
         ProcedureManagerSetter.instance().setCurrentFragmentProcedure(this.mPageLoadProcedure);
         this.mPageLoadProcedure.stage("loadStartTime", j);
         HashMap hashMap = new HashMap(1);
@@ -521,6 +521,6 @@ class FragmentProcessor extends AbsProcessor implements OnUsableVisibleListener<
         FinishLoadPageEvent finishLoadPageEvent = new FinishLoadPageEvent();
         finishLoadPageEvent.pageName = fragment.getClass().getSimpleName();
         DumpManager.getInstance().append(finishLoadPageEvent);
-        o();
+        procedureEnd();
     }
 }

@@ -19,11 +19,11 @@ class Default implements IProcedure {
         return this;
     }
 
-    public IProcedure event(String str, Map<String, Object> map) {
+    public IProcedure event(String key, Map<String, Object> map) {
         return this;
     }
 
-    public IProcedure stage(String str, long j) {
+    public IProcedure stage(String key, long timestamp) {
         return this;
     }
 

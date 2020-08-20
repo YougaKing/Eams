@@ -7,12 +7,12 @@ import java.util.Map;
 public class DispatcherManager {
     private static Map<String, IDispatcher> dispatcherMap = new HashMap<>();
 
-    public static void putDispatcher(String str, IDispatcher iDispatcher) {
-        dispatcherMap.put(str, iDispatcher);
+    public static void putDispatcher(String key, IDispatcher iDispatcher) {
+        dispatcherMap.put(key, iDispatcher);
     }
 
-    public static IDispatcher getDispatcher(String str) {
-        IDispatcher iDispatcher = (IDispatcher) dispatcherMap.get(str);
+    public static IDispatcher getDispatcher(String key) {
+        IDispatcher iDispatcher = dispatcherMap.get(key);
         return iDispatcher == null ? EmptyDispatcher.emptyDispatcher : iDispatcher;
     }
 

@@ -75,21 +75,21 @@ public class ProcedureImpl implements IProcedureGroup, IValueCallback {
         return this;
     }
 
-    public IProcedure event(String str, Map<String, Object> map) {
-        if (str != null && isAlive()) {
-            Event event = new Event(str, map);
+    public IProcedure event(String key, Map<String, Object> map) {
+        if (key != null && isAlive()) {
+            Event event = new Event(key, map);
             this.value.event(event);
             if (this.lifeCycle != null) {
                 this.lifeCycle.event(this.value, event);
             }
-            Logger.i(TAG, this.parent, this.topic, str);
+            Logger.i(TAG, this.parent, this.topic, key);
         }
         return this;
     }
 
-    public IProcedure stage(String str, long j) {
-        if (str != null && isAlive()) {
-            Stage stage = new Stage(str, j);
+    public IProcedure stage(String key, long timestamp) {
+        if (key != null && isAlive()) {
+            Stage stage = new Stage(key, timestamp);
             this.value.stage(stage);
             if (this.lifeCycle != null) {
                 this.lifeCycle.stage(this.value, stage);

@@ -8,7 +8,7 @@ import com.taobao.monitor.impl.processor.IProcessorFactory;
 import com.taobao.monitor.impl.trace.ActivityLifeCycleDispatcher;
 
 /* compiled from: LauncherModelLifeCycle */
-public class LauncherModelLifeCycle implements com.taobao.monitor.impl.processor.IProcessor.a,
+public class LauncherModelLifeCycle implements IProcessor.ProcessorCallback,
         ActivityLifeCycleDispatcher.LifeCycleListener {
     private LauncherProcessor mLauncherProcessor = null;
     private final IProcessorFactory<LauncherProcessor> mLauncherProcessorFactory = new LauncherProcessorFactory();
@@ -18,7 +18,7 @@ public class LauncherModelLifeCycle implements com.taobao.monitor.impl.processor
         if (this.count == 0) {
             this.mLauncherProcessor = this.mLauncherProcessorFactory.createProcessor();
             if (this.mLauncherProcessor != null) {
-                this.mLauncherProcessor.a(this);
+                this.mLauncherProcessor.setProcessorCallback(this);
             }
         }
         if (this.mLauncherProcessor != null) {
@@ -58,10 +58,10 @@ public class LauncherModelLifeCycle implements com.taobao.monitor.impl.processor
         this.count--;
     }
 
-    public void a(IProcessor iProcessor) {
+    public void onProcedureBegin(IProcessor iProcessor) {
     }
 
-    public void b(IProcessor iProcessor) {
+    public void onProcedureEnd(IProcessor iProcessor) {
         this.mLauncherProcessor = null;
     }
 }

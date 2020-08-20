@@ -41,23 +41,23 @@ class DataHubProcedureGroupHelper {
             throw new UnsupportedOperationException();
         }
 
-        public IProcedure event(String var1, Map<String, Object> var2) {
+        public IProcedure event(String key, Map<String, Object> var2) {
             Iterator var3 = this.mProcedures.iterator();
 
             while(var3.hasNext()) {
                 IProcedure var4 = (IProcedure)var3.next();
-                var4.event(var1, var2);
+                var4.event(key, var2);
             }
 
             return this;
         }
 
-        public IProcedure stage(String var1, long var2) {
+        public IProcedure stage(String key, long timestamp) {
             Iterator var4 = this.mProcedures.iterator();
 
             while(var4.hasNext()) {
                 IProcedure var5 = (IProcedure)var4.next();
-                var5.stage(var1, var2);
+                var5.stage(key, timestamp);
             }
 
             return this;

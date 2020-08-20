@@ -141,8 +141,8 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
     }
 
     /* access modifiers changed from: protected */
-    public void n() {
-        super.n();
+    public void procedureBegin() {
+        super.procedureBegin();
         this.mPageLoadProcedure = ProcedureFactoryProxy.PROXY.createProcedure(TopicUtils.getFullTopic("/pageLoad"), new Builder()
                 .setIndependent(false)
                 .setUpload(true)
@@ -182,7 +182,7 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
 
     public void a(Activity activity, Bundle bundle, long j) {
         this.f = j;
-        n();
+        procedureBegin();
         this.mPageLoadProcedure.stage("loadStartTime", this.f);
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(this.f));
@@ -297,7 +297,7 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
         FinishLoadPageEvent finishLoadPageEvent = new FinishLoadPageEvent();
         finishLoadPageEvent.pageName = ActivityUtils.getSimpleName(activity);
         DumpManager.getInstance().append(finishLoadPageEvent);
-        o();
+        procedureEnd();
     }
 
     public void onLowMemory() {
@@ -382,7 +382,7 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
     }
 
     /* access modifiers changed from: protected */
-    public void o() {
+    public void procedureEnd() {
         if (!this.i) {
             this.i = true;
             this.mPageLoadProcedure.addProperty("totalVisibleDuration", Long.valueOf(this.h));
@@ -414,7 +414,7 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
             this.f105g.removeListener(this);
             FragmentFunctionDispatcher.FRAGMENT_FUNCTION_DISPATCHER.removeListener(this);
             this.mPageLoadProcedure.end();
-            super.o();
+            super.procedureEnd();
         }
     }
 
@@ -443,7 +443,7 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
             HashMap hashMap = new HashMap(1);
             hashMap.put("timestamp", Long.valueOf(j));
             this.mPageLoadProcedure.event("foreground2Background", hashMap);
-            o();
+            procedureEnd();
             return;
         }
         HashMap hashMap2 = new HashMap(1);

@@ -50,7 +50,7 @@ public class ProcedureLifecycleImpl implements IProcedureLifeCycle {
         }
         String jSONObject3 = jSONObject.toString();
         Logger.i("NetworkDataUpdate", jSONObject3);
-        NetworkSenderProxy.instance().b(value.topic(), jSONObject3);
+        NetworkSenderProxy.instance().send(value.topic(), jSONObject3);
     }
 
     /* access modifiers changed from: private */

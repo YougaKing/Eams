@@ -20,13 +20,13 @@ public class TBRestSender implements INetworkSender {
     private final String host = null;
 
     @Override
-    public void b(final String str, final String str2) {
-        if (TBAPMConstants.d) {
+    public void send(final String topic, final String json) {
+        if (TBAPMConstants.sender) {
             ThreadUtils.start(new Runnable() {
                 public void run() {
                     int i2 = 0;
                     try {
-                        Logger.i("TBRestSender", str2);
+                        Logger.i("TBRestSender", json);
                         boolean z = false;
                         while (true) {
                             int i3 = i2;
@@ -34,14 +34,14 @@ public class TBRestSender implements INetworkSender {
                             if (i3 >= 2) {
                                 break;
                             }
-                            z = TBRestSender.this.sendRequest(str, str2);
+                            z = TBRestSender.this.sendRequest(topic, json);
                             if (z) {
                                 Logger.i("TBRestSender", "send success" + i2);
                                 break;
                             }
                         }
                         if (!z) {
-                            TBRestSender.this.c(str, str2);
+                            TBRestSender.this.c(topic, json);
                             TBRestSender.this.e = true;
                         }
                         if (z && TBRestSender.this.e) {

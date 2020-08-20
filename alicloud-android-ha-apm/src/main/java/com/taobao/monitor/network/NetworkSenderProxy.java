@@ -12,7 +12,7 @@ public class NetworkSenderProxy implements INetworkSender {
     private NetworkSenderProxy() {
         this.mNetworkSender = new INetworkSender() {
             @Override
-            public void b(String str, String str2) {
+            public void send(String topic, String json) {
             }
         };
     }
@@ -27,9 +27,9 @@ public class NetworkSenderProxy implements INetworkSender {
     }
 
     @Override
-    public void b(String str, String str2) {
+    public void send(String topic, String json) {
         if (this.mNetworkSender != null) {
-            this.mNetworkSender.b(str, str2);
+            this.mNetworkSender.send(topic, json);
         }
     }
 }

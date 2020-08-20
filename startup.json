@@ -1,0 +1,130 @@
+{
+  "version": "0.0.1",
+  "topic": "ALI_APM\/UTDevice.getUtdid%28application.getApplicationContext%28%29%29\/monitor\/procedure\/startup",
+  "headers": {
+    "X-timestamp": 215079458,
+    "X-appId": "com.example.eams",
+    "X-appKey": "28125247",
+    "X-appBuild": "",
+    "X-appPatch": "",
+    "X-channel": "",
+    "X-utdid": "UTDevice.getUtdid(application.getApplicationContext())",
+    "X-brand": "Xiaomi",
+    "X-deviceModel": "MI CC 9",
+    "X-os": "android",
+    "X-osVersion": "10",
+    "X-userId": "",
+    "X-userNick": "",
+    "X-session": "1597895386132",
+    "X-processName": "com.example.eams",
+    "X-appVersion": "1.0_debug",
+    "X-launcherMode": "normal"
+  },
+  "value": {
+    "properties": {
+      "isFirstInstall": false,
+      "runtimeLevel": 0,
+      "session": "1597895386153",
+      "oppoCPUResource": "false",
+      "memoryRuntimeLevel": 1,
+      "errorCode": 0,
+      "fullPageName": "com.example.eams.MainActivity",
+      "interactiveDuration": 394,
+      "leaveType": "back",
+      "launchDuration": 394,
+      "lastProcessStartTime": 1597895232958,
+      "currentPageName": "MainActivity",
+      "isFirstLaunch": false,
+      "launchType": "COLD",
+      "hasSplash": false,
+      "linkPageName": "[MainActivity]",
+      "appInitDuration": 198,
+      "systemInitDuration": 204,
+      "firstPageName": "MainActivity",
+      "displayDuration": 346,
+      "cpuUsageOfDevcie": -1,
+      "installType": "UPDATE",
+      "systemRecovery": false,
+      "deviceLevel": -1,
+      "usableChangeType": 2
+    },
+    "stats": {
+      "imageOnRequest": 0,
+      "image": 0,
+      "imageCanceledCount": 0,
+      "totalTx": 0,
+      "gcCount": 1,
+      "totalRx": 0,
+      "fps": "[]",
+      "jankCount": 0,
+      "networkSuccessCount": 0,
+      "network": 0,
+      "imageFailedCount": 0,
+      "networkCanceledCount": 0,
+      "networkFailedCount": 0,
+      "imageSuccessCount": 0,
+      "networkOnRequest": 0,
+      "APMSelf": 1
+    },
+    "events": [
+      {
+        "timestamp": 215079522,
+        "name": "onActivityCreated",
+        "pageName": "MainActivity"
+      },
+      {
+        "timestamp": 215079641,
+        "name": "onActivityResumed",
+        "pageName": "MainActivity"
+      },
+      {
+        "timestamp": 215079641,
+        "name": "onActivityStarted",
+        "pageName": "MainActivity"
+      },
+      {
+        "timestamp": 215181361,
+        "name": "keyEvent",
+        "key": 4
+      },
+      {
+        "timestamp": 215181450,
+        "name": "onActivityPaused",
+        "pageName": "MainActivity"
+      },
+      {
+        "timestamp": 215181870,
+        "name": "onActivityStopped",
+        "pageName": "MainActivity"
+      }
+    ],
+    "stages": {
+      "procedureStartTime": 215079531,
+      "processStartTime": 215079235,
+      "launchStartTime": 215079439,
+      "firstPageCreateTime": 215079522,
+      "renderStartTime": 215079637,
+      "displayedTime": 215079785,
+      "interactiveTime": 215079833,
+      "procedureEndTime": 215181874
+    },
+    "subProcedures": [
+      {
+        "APMSelf": {
+          "properties": {
+            "parentSession": "1597895386153",
+            "isMainThread": true,
+            "session": "1597895386154",
+            "threadName": "main"
+          },
+          "stages": {
+            "taskStart": 215079435,
+            "cpuStartTime": 241,
+            "taskEnd": 215079459,
+            "cpuEndTime": 263
+          }
+        }
+      }
+    ]
+  }
+}

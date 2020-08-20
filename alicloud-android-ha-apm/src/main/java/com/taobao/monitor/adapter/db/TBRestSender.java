@@ -26,7 +26,7 @@ public class TBRestSender implements INetworkSender {
                 public void run() {
                     int i2 = 0;
                     try {
-                        Logger.i("TBRestSender", new Object[]{str2});
+                        Logger.i("TBRestSender", str2);
                         boolean z = false;
                         while (true) {
                             int i3 = i2;
@@ -36,7 +36,7 @@ public class TBRestSender implements INetworkSender {
                             }
                             z = TBRestSender.this.sendRequest(str, str2);
                             if (z) {
-                                Logger.i("TBRestSender", new Object[]{"send success" + i2});
+                                Logger.i("TBRestSender", "send success" + i2);
                                 break;
                             }
                         }

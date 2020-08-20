@@ -47,7 +47,7 @@ import com.taobao.monitor.impl.trace.ImageStageDispatcher;
 import com.taobao.monitor.impl.trace.NetworkStageDispatcher;
 import com.taobao.monitor.impl.trace.UsableVisibleDispatcher;
 import com.taobao.monitor.impl.util.TimeUtils;
-import com.taobao.monitor.impl.util.d;
+import com.taobao.monitor.impl.util.ProcessUtils;
 import com.taobao.monitor.impl.util.SafeUtils;
 import com.taobao.monitor.performance.APMAdapterFactoryProxy;
 import com.taobao.network.lifecycle.MtopLifecycleManager;
@@ -195,10 +195,10 @@ public class APMLauncher {
             GlobalStats.processStartTime = TimeUtils.currentTimeMillis() + Process.getStartUptimeMillis() - SystemClock.uptimeMillis();
             launchHelper.startProcessSystemTime(System.currentTimeMillis() - (SystemClock.uptimeMillis() - GlobalStats.processStartTime));
         } else {
-            long var0 = d.b();
-            launchHelper.startProcessSystemTime(var0);
-            if (var0 != -1L) {
-                GlobalStats.processStartTime = TimeUtils.currentTimeMillis() - (System.currentTimeMillis() - var0);
+            long processSystemTime = ProcessUtils.getProcessSystemTime();
+            launchHelper.startProcessSystemTime(processSystemTime);
+            if (processSystemTime != -1L) {
+                GlobalStats.processStartTime = TimeUtils.currentTimeMillis() - (System.currentTimeMillis() - processSystemTime);
             } else {
                 GlobalStats.processStartTime = TimeUtils.currentTimeMillis() - Process.getElapsedCpuTime();
             }

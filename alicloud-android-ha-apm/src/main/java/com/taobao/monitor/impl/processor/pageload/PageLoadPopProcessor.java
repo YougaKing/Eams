@@ -37,7 +37,7 @@ public class PageLoadPopProcessor extends AbsProcessor implements ModelPairLifec
     private IDispatcher a;
 
     /* renamed from: a reason: collision with other field name */
-    private IProcedure f89a;
+    private IProcedure mPageLoadProcedure;
     private IDispatcher b;
 
     /* renamed from: b reason: collision with other field name */
@@ -67,8 +67,13 @@ public class PageLoadPopProcessor extends AbsProcessor implements ModelPairLifec
     /* access modifiers changed from: protected */
     public void n() {
         super.n();
-        this.f89a = ProcedureFactoryProxy.PROXY.createProcedure(TopicUtils.getFullTopic("/pageLoad"), new Builder().setIndependent(false).setUpload(true).setParentNeedStats(false).setParent(null).build());
-        this.f89a.begin();
+        this.mPageLoadProcedure = ProcedureFactoryProxy.PROXY.createProcedure(TopicUtils.getFullTopic("/pageLoad"), new Builder()
+                .setIndependent(false)
+                .setUpload(true)
+                .setParentNeedStats(false)
+                .setParent(null)
+                .build());
+        this.mPageLoadProcedure.begin();
         this.a = getDispatcher("ACTIVITY_EVENT_DISPATCHER");
         this.b = getDispatcher("APPLICATION_LOW_MEMORY_DISPATCHER");
         this.f92c = getDispatcher("ACTIVITY_FPS_DISPATCHER");
@@ -81,29 +86,29 @@ public class PageLoadPopProcessor extends AbsProcessor implements ModelPairLifec
     }
 
     private void p() {
-        this.f89a.stage("procedureStartTime", TimeUtils.currentTimeMillis());
-        this.f89a.addProperty("errorCode", Integer.valueOf(1));
-        this.f89a.addProperty("installType", GlobalStats.installType);
+        this.mPageLoadProcedure.stage("procedureStartTime", TimeUtils.currentTimeMillis());
+        this.mPageLoadProcedure.addProperty("errorCode", Integer.valueOf(1));
+        this.mPageLoadProcedure.addProperty("installType", GlobalStats.installType);
     }
 
     private void b(Activity activity) {
         this.pageName = ActivityUtils.getSimpleName(activity);
-        this.f89a.addProperty("pageName", this.pageName);
-        this.f89a.addProperty("fullPageName", activity.getClass().getName());
+        this.mPageLoadProcedure.addProperty("pageName", this.pageName);
+        this.mPageLoadProcedure.addProperty("fullPageName", activity.getClass().getName());
         Intent intent = activity.getIntent();
         if (intent != null) {
             String dataString = intent.getDataString();
             if (TextUtils.isEmpty(dataString)) {
-                this.f89a.addProperty("schemaUrl", dataString);
+                this.mPageLoadProcedure.addProperty("schemaUrl", dataString);
             }
         }
-        this.f89a.addProperty("isInterpretiveExecution", Boolean.valueOf(false));
-        this.f89a.addProperty("isFirstLaunch", Boolean.valueOf(GlobalStats.isFirstLaunch));
-        this.f89a.addProperty("isFirstLoad", Boolean.valueOf(GlobalStats.activityStatusManager.get(ActivityUtils.getName(activity))));
-        this.f89a.addProperty("jumpTime", Long.valueOf(GlobalStats.jumpTime));
-        this.f89a.addProperty("lastValidTime", Long.valueOf(GlobalStats.lastValidTime));
-        this.f89a.addProperty("lastValidPage", GlobalStats.lastValidPage);
-        this.f89a.addProperty("loadType", "pop");
+        this.mPageLoadProcedure.addProperty("isInterpretiveExecution", Boolean.valueOf(false));
+        this.mPageLoadProcedure.addProperty("isFirstLaunch", Boolean.valueOf(GlobalStats.isFirstLaunch));
+        this.mPageLoadProcedure.addProperty("isFirstLoad", Boolean.valueOf(GlobalStats.activityStatusManager.get(ActivityUtils.getName(activity))));
+        this.mPageLoadProcedure.addProperty("jumpTime", Long.valueOf(GlobalStats.jumpTime));
+        this.mPageLoadProcedure.addProperty("lastValidTime", Long.valueOf(GlobalStats.lastValidTime));
+        this.mPageLoadProcedure.addProperty("lastValidPage", GlobalStats.lastValidPage);
+        this.mPageLoadProcedure.addProperty("loadType", "pop");
     }
 
     public void onActivityStarted(Activity activity) {
@@ -113,62 +118,62 @@ public class PageLoadPopProcessor extends AbsProcessor implements ModelPairLifec
         this.g = this.f;
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(TimeUtils.currentTimeMillis()));
-        this.f89a.event("onActivityStarted", hashMap);
+        this.mPageLoadProcedure.event("onActivityStarted", hashMap);
         long[] a2 = TrafficTracker.traffics();
         this.f91b[0] = a2[0];
         this.f91b[1] = a2[1];
-        this.f89a.stage("loadStartTime", this.f);
+        this.mPageLoadProcedure.stage("loadStartTime", this.f);
         long currentTimeMillis = TimeUtils.currentTimeMillis();
-        this.f89a.addProperty("pageInitDuration", Long.valueOf(currentTimeMillis - this.f));
-        this.f89a.stage("renderStartTime", currentTimeMillis);
+        this.mPageLoadProcedure.addProperty("pageInitDuration", Long.valueOf(currentTimeMillis - this.f));
+        this.mPageLoadProcedure.stage("renderStartTime", currentTimeMillis);
         long currentTimeMillis2 = TimeUtils.currentTimeMillis();
-        this.f89a.addProperty("interactiveDuration", Long.valueOf(currentTimeMillis2 - this.f));
-        this.f89a.addProperty("loadDuration", Long.valueOf(currentTimeMillis2 - this.f));
-        this.f89a.stage("interactiveTime", currentTimeMillis2);
-        this.f89a.addProperty("displayDuration", Long.valueOf(TimeUtils.currentTimeMillis() - this.f));
-        this.f89a.stage("displayedTime", this.f);
+        this.mPageLoadProcedure.addProperty("interactiveDuration", Long.valueOf(currentTimeMillis2 - this.f));
+        this.mPageLoadProcedure.addProperty("loadDuration", Long.valueOf(currentTimeMillis2 - this.f));
+        this.mPageLoadProcedure.stage("interactiveTime", currentTimeMillis2);
+        this.mPageLoadProcedure.addProperty("displayDuration", Long.valueOf(TimeUtils.currentTimeMillis() - this.f));
+        this.mPageLoadProcedure.stage("displayedTime", this.f);
     }
 
     public void onActivityStopped(Activity activity) {
         this.h += TimeUtils.currentTimeMillis() - this.g;
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(TimeUtils.currentTimeMillis()));
-        this.f89a.event("onActivityStopped", hashMap);
+        this.mPageLoadProcedure.event("onActivityStopped", hashMap);
         long[] a2 = TrafficTracker.traffics();
         this.f91b[0] = a2[0] - this.f91b[0];
         this.f91b[1] = a2[1] - this.f91b[1];
-        this.f89a.addProperty("totalVisibleDuration", Long.valueOf(this.h));
-        this.f89a.addProperty("errorCode", Integer.valueOf(0));
-        this.f89a.addStatistic("totalRx", Long.valueOf(this.f91b[0]));
-        this.f89a.addStatistic("totalTx", Long.valueOf(this.f91b[1]));
+        this.mPageLoadProcedure.addProperty("totalVisibleDuration", Long.valueOf(this.h));
+        this.mPageLoadProcedure.addProperty("errorCode", Integer.valueOf(0));
+        this.mPageLoadProcedure.addStatistic("totalRx", Long.valueOf(this.f91b[0]));
+        this.mPageLoadProcedure.addStatistic("totalTx", Long.valueOf(this.f91b[1]));
         o();
     }
 
     public void onLowMemory() {
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(TimeUtils.currentTimeMillis()));
-        this.f89a.event("onLowMemory", hashMap);
+        this.mPageLoadProcedure.event("onLowMemory", hashMap);
     }
 
     public void onMotionEvent(Activity activity, MotionEvent motionEvent, long j) {
         if (activity == this.d && this.o) {
-            this.f89a.stage("firstInteractiveTime", j);
-            this.f89a.addProperty("firstInteractiveDuration", Long.valueOf(j - this.f));
+            this.mPageLoadProcedure.stage("firstInteractiveTime", j);
+            this.mPageLoadProcedure.addProperty("firstInteractiveDuration", Long.valueOf(j - this.f));
             this.o = false;
         }
     }
 
     /* access modifiers changed from: protected */
     public void o() {
-        this.f89a.stage("procedureEndTime", TimeUtils.currentTimeMillis());
-        this.f89a.addStatistic("gcCount", Integer.valueOf(this.l));
-        this.f89a.addStatistic("fps", this.f90b.toString());
-        this.f89a.addStatistic("jankCount", Integer.valueOf(this.c));
+        this.mPageLoadProcedure.stage("procedureEndTime", TimeUtils.currentTimeMillis());
+        this.mPageLoadProcedure.addStatistic("gcCount", Integer.valueOf(this.l));
+        this.mPageLoadProcedure.addStatistic("fps", this.f90b.toString());
+        this.mPageLoadProcedure.addStatistic("jankCount", Integer.valueOf(this.c));
         this.b.removeListener(this);
         this.a.removeListener(this);
         this.f92c.removeListener(this);
         this.f93d.removeListener(this);
-        this.f89a.end();
+        this.mPageLoadProcedure.end();
         super.o();
     }
 
@@ -194,7 +199,7 @@ public class PageLoadPopProcessor extends AbsProcessor implements ModelPairLifec
             HashMap hashMap = new HashMap(2);
             hashMap.put("timestamp", Long.valueOf(j));
             hashMap.put("key", Integer.valueOf(keyEvent.getKeyCode()));
-            this.f89a.event("keyEvent", hashMap);
+            this.mPageLoadProcedure.event("keyEvent", hashMap);
         }
     }
 }

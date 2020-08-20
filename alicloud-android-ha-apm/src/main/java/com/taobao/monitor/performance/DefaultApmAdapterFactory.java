@@ -5,7 +5,7 @@ public class DefaultApmAdapterFactory implements IApmAdapterFactory {
         return new DefaultWXApmAdapter();
     }
 
-    public IWXApmAdapter createApmAdapterByType(String str) {
+    public IWXApmAdapter createApmAdapterByType(String type) {
         return createApmAdapter();
     }
 }

@@ -11,8 +11,8 @@ public class APMAdapterFactoryProxy implements IApmAdapterFactory {
         return this.remoteFactory.createApmAdapter();
     }
 
-    public IWXApmAdapter createApmAdapterByType(String str) {
-        return this.remoteFactory.createApmAdapterByType(str);
+    public IWXApmAdapter createApmAdapterByType(String type) {
+        return this.remoteFactory.createApmAdapterByType(type);
     }
 
     public void setFactory(IApmAdapterFactory iApmAdapterFactory) {

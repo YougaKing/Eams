@@ -150,7 +150,7 @@ public class WeexApmAdapterFactory implements IApmAdapterFactory {
         return createApmAdapterByType("weex_page");
     }
 
-    public IWXApmAdapter createApmAdapterByType(String str) {
-        return new C0001a(DynamicConstants.needWeex ? new WeexProcessor(str) : this.a);
+    public IWXApmAdapter createApmAdapterByType(String type) {
+        return new C0001a(DynamicConstants.needWeex ? new WeexProcessor(type) : this.a);
     }
 }

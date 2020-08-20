@@ -66,7 +66,7 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
     private IDispatcher f94a;
 
     /* renamed from: a reason: collision with other field name */
-    private IProcedure f95a;
+    private IProcedure mPageLoadProcedure;
     private IDispatcher b;
 
     /* renamed from: b reason: collision with other field name */
@@ -143,8 +143,14 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
     /* access modifiers changed from: protected */
     public void n() {
         super.n();
-        this.f95a = ProcedureFactoryProxy.PROXY.createProcedure(TopicUtils.getFullTopic("/pageLoad"), new Builder().setIndependent(false).setUpload(true).setParentNeedStats(true).setParent(null).build());
-        this.f95a.begin();
+        this.mPageLoadProcedure = ProcedureFactoryProxy.PROXY.createProcedure(TopicUtils.getFullTopic("/pageLoad"), new Builder()
+                .setIndependent(false)
+                .setUpload(true)
+                .setParentNeedStats(true)
+                .setParent(null)
+                .build());
+
+        this.mPageLoadProcedure.begin();
         this.f94a = getDispatcher("ACTIVITY_EVENT_DISPATCHER");
         this.b = getDispatcher("APPLICATION_LOW_MEMORY_DISPATCHER");
         this.e = getDispatcher("ACTIVITY_USABLE_VISIBLE_DISPATCHER");
@@ -168,21 +174,21 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
     }
 
     private void p() {
-        this.f95a.stage("procedureStartTime", TimeUtils.currentTimeMillis());
-        this.f95a.addProperty("errorCode", Integer.valueOf(1));
-        this.f95a.addProperty("installType", GlobalStats.installType);
-        this.f95a.addProperty("leaveType", "other");
+        this.mPageLoadProcedure.stage("procedureStartTime", TimeUtils.currentTimeMillis());
+        this.mPageLoadProcedure.addProperty("errorCode", Integer.valueOf(1));
+        this.mPageLoadProcedure.addProperty("installType", GlobalStats.installType);
+        this.mPageLoadProcedure.addProperty("leaveType", "other");
     }
 
     public void a(Activity activity, Bundle bundle, long j) {
         this.f = j;
         n();
-        this.f95a.stage("loadStartTime", this.f);
+        this.mPageLoadProcedure.stage("loadStartTime", this.f);
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(this.f));
-        this.f95a.event("onActivityCreated", hashMap);
+        this.mPageLoadProcedure.event("onActivityCreated", hashMap);
         this.f101d = activity;
-        ProcedureManagerSetter.instance().setCurrentActivityProcedure(this.f95a);
+        ProcedureManagerSetter.instance().setCurrentActivityProcedure(this.mPageLoadProcedure);
         b(activity);
         this.f100c = TrafficTracker.traffics();
         OpenPageEvent openPageEvent = new OpenPageEvent();
@@ -195,26 +201,26 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
         if (d.size() < 10) {
             d.add(this.pageName);
         }
-        this.f95a.addProperty("pageName", this.pageName);
-        this.f95a.addProperty("fullPageName", ActivityUtils.getName(activity));
+        this.mPageLoadProcedure.addProperty("pageName", this.pageName);
+        this.mPageLoadProcedure.addProperty("fullPageName", ActivityUtils.getName(activity));
         if (!TextUtils.isEmpty(g)) {
-            this.f95a.addProperty("fromPageName", g);
+            this.mPageLoadProcedure.addProperty("fromPageName", g);
         }
         Intent intent = activity.getIntent();
         if (intent != null) {
             String dataString = intent.getDataString();
             if (!TextUtils.isEmpty(dataString)) {
-                this.f95a.addProperty("schemaUrl", dataString);
+                this.mPageLoadProcedure.addProperty("schemaUrl", dataString);
             }
         }
-        this.f95a.addProperty("isFirstLaunch", Boolean.valueOf(GlobalStats.isFirstLaunch));
-        this.f95a.addProperty("isFirstLoad", Boolean.valueOf(GlobalStats.activityStatusManager.get(ActivityUtils.getName(activity))));
-        this.f95a.addProperty("jumpTime", Long.valueOf(GlobalStats.jumpTime));
+        this.mPageLoadProcedure.addProperty("isFirstLaunch", Boolean.valueOf(GlobalStats.isFirstLaunch));
+        this.mPageLoadProcedure.addProperty("isFirstLoad", Boolean.valueOf(GlobalStats.activityStatusManager.get(ActivityUtils.getName(activity))));
+        this.mPageLoadProcedure.addProperty("jumpTime", Long.valueOf(GlobalStats.jumpTime));
         GlobalStats.jumpTime = -1;
-        this.f95a.addProperty("lastValidTime", Long.valueOf(GlobalStats.lastValidTime));
-        this.f95a.addProperty("lastValidLinksPage", d.toString());
-        this.f95a.addProperty("lastValidPage", GlobalStats.lastValidPage);
-        this.f95a.addProperty("loadType", "push");
+        this.mPageLoadProcedure.addProperty("lastValidTime", Long.valueOf(GlobalStats.lastValidTime));
+        this.mPageLoadProcedure.addProperty("lastValidLinksPage", d.toString());
+        this.mPageLoadProcedure.addProperty("lastValidPage", GlobalStats.lastValidPage);
+        this.mPageLoadProcedure.addProperty("loadType", "push");
     }
 
     public void onResume(Activity activity, long j) {
@@ -222,8 +228,8 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
         this.f104g = j;
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
-        this.f95a.event("onActivityStarted", hashMap);
-        ProcedureManagerSetter.instance().setCurrentActivityProcedure(this.f95a);
+        this.mPageLoadProcedure.event("onActivityStarted", hashMap);
+        ProcedureManagerSetter.instance().setCurrentActivityProcedure(this.mPageLoadProcedure);
         g = this.pageName;
         if (this.f108p) {
             this.f108p = false;
@@ -239,24 +245,24 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
     }
 
     public void onActivityResumed(Activity activity, long j) {
-        ProcedureManagerSetter.instance().setCurrentActivityProcedure(this.f95a);
+        ProcedureManagerSetter.instance().setCurrentActivityProcedure(this.mPageLoadProcedure);
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
-        this.f95a.event("onActivityResumed", hashMap);
+        this.mPageLoadProcedure.event("onActivityResumed", hashMap);
     }
 
     public void onActivityPaused(Activity activity, long j) {
         this.f109q = false;
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
-        this.f95a.event("onActivityPaused", hashMap);
+        this.mPageLoadProcedure.event("onActivityPaused", hashMap);
     }
 
     public void onActivityStopped(Activity activity, long j) {
         this.h += j - this.f104g;
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
-        this.f95a.event("onActivityStopped", hashMap);
+        this.mPageLoadProcedure.event("onActivityStopped", hashMap);
         long[] a2 = TrafficTracker.traffics();
         long[] jArr = this.f98b;
         jArr[0] = jArr[0] + (a2[0] - this.f100c[0]);
@@ -282,7 +288,7 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
     public void onActivityDestroyed(Activity activity, long j) {
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(j));
-        this.f95a.event("onActivityDestroyed", hashMap);
+        this.mPageLoadProcedure.event("onActivityDestroyed", hashMap);
         long[] a2 = TrafficTracker.traffics();
         long[] jArr = this.f98b;
         jArr[0] = jArr[0] + (a2[0] - this.f100c[0]);
@@ -297,7 +303,7 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
     public void onLowMemory() {
         HashMap hashMap = new HashMap(1);
         hashMap.put("timestamp", Long.valueOf(TimeUtils.currentTimeMillis()));
-        this.f95a.event("onLowMemory", hashMap);
+        this.mPageLoadProcedure.event("onLowMemory", hashMap);
         ReceiverLowMemoryEvent receiverLowMemoryEvent = new ReceiverLowMemoryEvent();
         receiverLowMemoryEvent.level = 1.0f;
         DumpManager.getInstance().append(receiverLowMemoryEvent);
@@ -306,11 +312,11 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
     public void onMotionEvent(Activity activity, MotionEvent motionEvent, long j) {
         if (activity == this.f101d) {
             if (this.f107o) {
-                this.f95a.stage("firstInteractiveTime", j);
-                this.f95a.addProperty("firstInteractiveDuration", Long.valueOf(j - this.f));
-                this.f95a.addProperty("leaveType", "touch");
+                this.mPageLoadProcedure.stage("firstInteractiveTime", j);
+                this.mPageLoadProcedure.addProperty("firstInteractiveDuration", Long.valueOf(j - this.f));
+                this.mPageLoadProcedure.addProperty("leaveType", "touch");
                 this.f107o = false;
-                this.f95a.addProperty("errorCode", Integer.valueOf(0));
+                this.mPageLoadProcedure.addProperty("errorCode", Integer.valueOf(0));
             }
             d.clear();
             d.add(this.pageName);
@@ -322,28 +328,28 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
     /* renamed from: f */
     public void onActivityStarted(Activity activity, long j) {
         if (this.f110r && activity == this.f101d) {
-            this.f95a.addProperty("pageInitDuration", Long.valueOf(j - this.f));
-            this.f95a.stage("renderStartTime", j);
+            this.mPageLoadProcedure.addProperty("pageInitDuration", Long.valueOf(j - this.f));
+            this.mPageLoadProcedure.stage("renderStartTime", j);
             this.f110r = false;
         }
     }
 
     public void visiblePercent(Activity activity, float f2, long j) {
         if (activity == this.f101d) {
-            this.f95a.addProperty("onRenderPercent", Float.valueOf(f2));
-            this.f95a.addProperty("drawPercentTime", Long.valueOf(j));
+            this.mPageLoadProcedure.addProperty("onRenderPercent", Float.valueOf(f2));
+            this.mPageLoadProcedure.addProperty("drawPercentTime", Long.valueOf(j));
         }
     }
 
     public void usable(Activity activity, int i2, int i3, long j) {
         if (this.f111s && activity == this.f101d && i2 == 2) {
-            this.f95a.addProperty("interactiveDuration", Long.valueOf(j - this.f));
-            this.f95a.addProperty("loadDuration", Long.valueOf(j - this.f));
-            this.f95a.addProperty("usableChangeType", Integer.valueOf(i3));
-            this.f95a.stage("interactiveTime", j);
-            this.f95a.addProperty("errorCode", Integer.valueOf(0));
-            this.f95a.addStatistic("totalRx", Long.valueOf(this.f98b[0]));
-            this.f95a.addStatistic("totalTx", Long.valueOf(this.f98b[1]));
+            this.mPageLoadProcedure.addProperty("interactiveDuration", Long.valueOf(j - this.f));
+            this.mPageLoadProcedure.addProperty("loadDuration", Long.valueOf(j - this.f));
+            this.mPageLoadProcedure.addProperty("usableChangeType", Integer.valueOf(i3));
+            this.mPageLoadProcedure.stage("interactiveTime", j);
+            this.mPageLoadProcedure.addProperty("errorCode", Integer.valueOf(0));
+            this.mPageLoadProcedure.addStatistic("totalRx", Long.valueOf(this.f98b[0]));
+            this.mPageLoadProcedure.addStatistic("totalTx", Long.valueOf(this.f98b[1]));
             this.f111s = false;
             UsableEvent usableEvent = new UsableEvent();
             usableEvent.duration = (float) (j - this.f);
@@ -368,8 +374,8 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
 
     public void display(Activity activity, int i2, long j) {
         if (this.f112t && activity == this.f101d && i2 == 2) {
-            this.f95a.addProperty("displayDuration", Long.valueOf(j - this.f));
-            this.f95a.stage("displayedTime", j);
+            this.mPageLoadProcedure.addProperty("displayDuration", Long.valueOf(j - this.f));
+            this.mPageLoadProcedure.stage("displayedTime", j);
             DumpManager.getInstance().append(new DisplayedEvent());
             this.f112t = false;
         }
@@ -379,25 +385,25 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
     public void o() {
         if (!this.i) {
             this.i = true;
-            this.f95a.addProperty("totalVisibleDuration", Long.valueOf(this.h));
-            this.f95a.addProperty("deviceLevel", Integer.valueOf(AliHAHardware.getInstance().getOutlineInfo().deviceLevel));
-            this.f95a.addProperty("runtimeLevel", Integer.valueOf(AliHAHardware.getInstance().getOutlineInfo().runtimeLevel));
-            this.f95a.addProperty("cpuUsageOfDevcie", Float.valueOf(AliHAHardware.getInstance().getCpuInfo().cpuUsageOfDevcie));
-            this.f95a.addProperty("memoryRuntimeLevel", Integer.valueOf(AliHAHardware.getInstance().getMemoryInfo().runtimeLevel));
-            this.f95a.stage("procedureEndTime", TimeUtils.currentTimeMillis());
-            this.f95a.addStatistic("gcCount", Integer.valueOf(this.l));
-            this.f95a.addStatistic("fps", this.f97b.toString());
-            this.f95a.addStatistic("jankCount", Integer.valueOf(this.c));
-            this.f95a.addStatistic("image", Integer.valueOf(this.n));
-            this.f95a.addStatistic("imageOnRequest", Integer.valueOf(this.n));
-            this.f95a.addStatistic("imageSuccessCount", Integer.valueOf(this.o));
-            this.f95a.addStatistic("imageFailedCount", Integer.valueOf(this.p));
-            this.f95a.addStatistic("imageCanceledCount", Integer.valueOf(this.q));
-            this.f95a.addStatistic("network", Integer.valueOf(this.r));
-            this.f95a.addStatistic("networkOnRequest", Integer.valueOf(this.r));
-            this.f95a.addStatistic("networkSuccessCount", Integer.valueOf(this.s));
-            this.f95a.addStatistic("networkFailedCount", Integer.valueOf(this.t));
-            this.f95a.addStatistic("networkCanceledCount", Integer.valueOf(this.u));
+            this.mPageLoadProcedure.addProperty("totalVisibleDuration", Long.valueOf(this.h));
+            this.mPageLoadProcedure.addProperty("deviceLevel", Integer.valueOf(AliHAHardware.getInstance().getOutlineInfo().deviceLevel));
+            this.mPageLoadProcedure.addProperty("runtimeLevel", Integer.valueOf(AliHAHardware.getInstance().getOutlineInfo().runtimeLevel));
+            this.mPageLoadProcedure.addProperty("cpuUsageOfDevcie", Float.valueOf(AliHAHardware.getInstance().getCpuInfo().cpuUsageOfDevcie));
+            this.mPageLoadProcedure.addProperty("memoryRuntimeLevel", Integer.valueOf(AliHAHardware.getInstance().getMemoryInfo().runtimeLevel));
+            this.mPageLoadProcedure.stage("procedureEndTime", TimeUtils.currentTimeMillis());
+            this.mPageLoadProcedure.addStatistic("gcCount", Integer.valueOf(this.l));
+            this.mPageLoadProcedure.addStatistic("fps", this.f97b.toString());
+            this.mPageLoadProcedure.addStatistic("jankCount", Integer.valueOf(this.c));
+            this.mPageLoadProcedure.addStatistic("image", Integer.valueOf(this.n));
+            this.mPageLoadProcedure.addStatistic("imageOnRequest", Integer.valueOf(this.n));
+            this.mPageLoadProcedure.addStatistic("imageSuccessCount", Integer.valueOf(this.o));
+            this.mPageLoadProcedure.addStatistic("imageFailedCount", Integer.valueOf(this.p));
+            this.mPageLoadProcedure.addStatistic("imageCanceledCount", Integer.valueOf(this.q));
+            this.mPageLoadProcedure.addStatistic("network", Integer.valueOf(this.r));
+            this.mPageLoadProcedure.addStatistic("networkOnRequest", Integer.valueOf(this.r));
+            this.mPageLoadProcedure.addStatistic("networkSuccessCount", Integer.valueOf(this.s));
+            this.mPageLoadProcedure.addStatistic("networkFailedCount", Integer.valueOf(this.t));
+            this.mPageLoadProcedure.addStatistic("networkCanceledCount", Integer.valueOf(this.u));
             this.b.removeListener(this);
             this.f94a.removeListener(this);
             this.e.removeListener(this);
@@ -407,7 +413,7 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
             this.f106h.removeListener(this);
             this.f105g.removeListener(this);
             FragmentFunctionDispatcher.FRAGMENT_FUNCTION_DISPATCHER.removeListener(this);
-            this.f95a.end();
+            this.mPageLoadProcedure.end();
             super.o();
         }
     }
@@ -436,13 +442,13 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
         if (i2 == 1) {
             HashMap hashMap = new HashMap(1);
             hashMap.put("timestamp", Long.valueOf(j));
-            this.f95a.event("foreground2Background", hashMap);
+            this.mPageLoadProcedure.event("foreground2Background", hashMap);
             o();
             return;
         }
         HashMap hashMap2 = new HashMap(1);
         hashMap2.put("timestamp", Long.valueOf(j));
-        this.f95a.event("background2Foreground", hashMap2);
+        this.mPageLoadProcedure.event("background2Foreground", hashMap2);
     }
 
     public void onKeyEvent(Activity activity, KeyEvent keyEvent, long j) {
@@ -454,14 +460,14 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
             }
             if (keyCode == 4 || keyCode == 3) {
                 if (keyCode == 3) {
-                    this.f95a.addProperty("leaveType", "home");
+                    this.mPageLoadProcedure.addProperty("leaveType", "home");
                 } else {
-                    this.f95a.addProperty("leaveType", "back");
+                    this.mPageLoadProcedure.addProperty("leaveType", "back");
                 }
                 HashMap hashMap = new HashMap(2);
                 hashMap.put("timestamp", Long.valueOf(j));
                 hashMap.put("key", Integer.valueOf(keyEvent.getKeyCode()));
-                this.f95a.event("keyEvent", hashMap);
+                this.mPageLoadProcedure.event("keyEvent", hashMap);
             }
         }
     }
@@ -507,7 +513,7 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
                 valueOf = Integer.valueOf(num.intValue() + 1);
             }
             this.f96b.put(str2, valueOf);
-            this.f95a.stage(str2 + valueOf, j);
+            this.mPageLoadProcedure.stage(str2 + valueOf, j);
         }
     }
 }

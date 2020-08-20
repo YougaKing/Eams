@@ -502,10 +502,10 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
         }
     }
 
-    public void onFragmentAttached(Activity activity, Fragment fragment, String str, long j) {
+    public void onFragmentAttached(Activity activity, Fragment fragment, String methodName, long timeMillis) {
         Integer valueOf;
         if (fragment != null && activity == this.f101d) {
-            String str2 = fragment.getClass().getSimpleName() + "_" + str;
+            String str2 = fragment.getClass().getSimpleName() + "_" + methodName;
             Integer num = (Integer) this.f96b.get(str2);
             if (num == null) {
                 valueOf = Integer.valueOf(0);
@@ -513,7 +513,7 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
                 valueOf = Integer.valueOf(num.intValue() + 1);
             }
             this.f96b.put(str2, valueOf);
-            this.mPageLoadProcedure.stage(str2 + valueOf, j);
+            this.mPageLoadProcedure.stage(str2 + valueOf, timeMillis);
         }
     }
 }

@@ -81,7 +81,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     private IDispatcher<ApplicationLowMemoryDispatcher.LowMemoryListener> mApplicationLowMemoryDispatcher;
 
     /* renamed from: b reason: collision with other field name */
-    private HashMap<String, Integer> f73b = new HashMap<>();
+    private HashMap<String, Integer> mFragmentLifeMethodName = new HashMap<>();
 
     /* renamed from: b reason: collision with other field name */
     private List<Integer> mFpsList = new ArrayList<>();
@@ -182,7 +182,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
         this.mNetworkStageDispatcher.addListener(this);
         this.mImageStageDispatcher.addListener(this);
         FragmentFunctionDispatcher.FRAGMENT_FUNCTION_DISPATCHER.addListener(this);
-        p();
+        addBeginProperty();
         StartUpBeginEvent startUpBeginEvent = new StartUpBeginEvent();
         startUpBeginEvent.firstInstall = GlobalStats.isFirstInstall;
         startUpBeginEvent.launchType = sLaunchType;
@@ -191,7 +191,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
         isBackgroundLaunch = false;
     }
 
-    private void p() {
+    private void addBeginProperty() {
         this.mLaunchTime = "COLD".equals(sLaunchType) ? GlobalStats.launchStartTime : TimeUtils.currentTimeMillis();
         this.mStartupProcedure.addProperty("errorCode", 1);
         this.mStartupProcedure.addProperty("launchType", sLaunchType);
@@ -516,18 +516,18 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     }
 
     @Override
-    public void onFragmentAttached(Activity activity, Fragment fragment, String str, long j) {
+    public void onFragmentAttached(Activity activity, Fragment fragment, String methodName, long timeMillis) {
         Integer valueOf;
         if (fragment != null && activity != null && activity == this.mLauncherActivity) {
-            String str2 = fragment.getClass().getSimpleName() + "_" + str;
-            Integer num = this.f73b.get(str2);
+            String lifeMethodName = fragment.getClass().getSimpleName() + "_" + methodName;
+            Integer num = this.mFragmentLifeMethodName.get(lifeMethodName);
             if (num == null) {
                 valueOf = 0;
             } else {
                 valueOf = num + 1;
             }
-            this.f73b.put(str2, valueOf);
-            this.mStartupProcedure.stage(str2 + valueOf, j);
+            this.mFragmentLifeMethodName.put(lifeMethodName, valueOf);
+            this.mStartupProcedure.stage(lifeMethodName + valueOf, timeMillis);
         }
     }
 }

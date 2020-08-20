@@ -8,11 +8,11 @@ import androidx.fragment.app.Fragment;
 public class FragmentFunctionDispatcher extends AbsDispatcher<FragmentFunctionListener> implements FragmentFunctionListener {
     public static final FragmentFunctionDispatcher FRAGMENT_FUNCTION_DISPATCHER = new FragmentFunctionDispatcher();
 
-    public void onFragmentAttached(Activity activity, Fragment fragment, String str, long j) {
+    public void onFragmentAttached(Activity activity, Fragment fragment, String methodName, long timeMillis) {
         final Activity activity2 = activity;
         final Fragment fragment2 = fragment;
-        final String str2 = str;
-        final long j2 = j;
+        final String str2 = methodName;
+        final long j2 = timeMillis;
         dispatchRunnable(new DispatcherRunnable<FragmentFunctionListener>() {
             /* renamed from: a */
             public void run(FragmentFunctionListener kVar) {

@@ -103,11 +103,11 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     private IDispatcher<ApplicationGcDispatcher.GcListener> mApplicationGcDispatcher;
 
     /* renamed from: d reason: collision with other field name */
-    private String f80d;
+    private String mCurrentActivityName;
     private IDispatcher<OnUsableVisibleListener> mActivityUsableVisibleDispatcher;
 
     /* renamed from: e reason: collision with other field name */
-    private String f81e;
+    private String mActivityName;
     private IDispatcher<ApplicationBackgroundChangedDispatcher.BackgroundChangedListener> mApplicationBackgroundChangedDispatcher;
 
     /* renamed from: f reason: collision with other field name */
@@ -208,14 +208,14 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
 
     public void onActivityCreated(Activity activity, Bundle bundle, long j) {
         String simpleName = ActivityUtils.getSimpleName(activity);
-        this.f81e = ActivityUtils.getName(activity);
+        this.mActivityName = ActivityUtils.getName(activity);
         if (!this.mIsLauncherActivity) {
             this.mLauncherActivity = activity;
             procedureBegin();
             this.mStartupProcedure.addProperty("systemRecovery", Boolean.FALSE);
-            if ("COLD".equals(sLaunchType) && this.f81e.equals(GlobalStats.lastTopActivity)) {
+            if ("COLD".equals(sLaunchType) && this.mActivityName.equals(GlobalStats.lastTopActivity)) {
                 this.mStartupProcedure.addProperty("systemRecovery", Boolean.TRUE);
-                this.f80d = this.f81e;
+                this.mCurrentActivityName = this.mActivityName;
                 this.mActivitySimpleNameList.add(simpleName);
             }
             Intent intent = activity.getIntent();
@@ -235,11 +235,11 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
             sLaunchType = "HOT";
             this.mIsLauncherActivity = true;
         }
-        if (this.mActivitySimpleNameList.size() < 10 && TextUtils.isEmpty(this.f80d)) {
+        if (this.mActivitySimpleNameList.size() < 10 && TextUtils.isEmpty(this.mCurrentActivityName)) {
             this.mActivitySimpleNameList.add(simpleName);
         }
-        if (TextUtils.isEmpty(this.f80d) && (PageList.isWhiteListEmpty() || PageList.inWhiteList(this.f81e))) {
-            this.f80d = this.f81e;
+        if (TextUtils.isEmpty(this.mCurrentActivityName) && (PageList.isWhiteListEmpty() || PageList.inWhiteList(this.mActivityName))) {
+            this.mCurrentActivityName = this.mActivityName;
         }
         Map<String, Object> hashMap = new HashMap<>(2);
         hashMap.put("timestamp", j);
@@ -304,8 +304,8 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     @Override
     public void onMotionEvent(Activity activity, MotionEvent motionEvent, long timeMillis) {
         if (this.mMotionEvent && !PageList.inBlackList(ActivityUtils.getName(activity))) {
-            if (TextUtils.isEmpty(this.f80d)) {
-                this.f80d = ActivityUtils.getName(activity);
+            if (TextUtils.isEmpty(this.mCurrentActivityName)) {
+                this.mCurrentActivityName = ActivityUtils.getName(activity);
             }
             if (activity == this.mLauncherActivity) {
                 this.mStartupProcedure.stage("firstInteractiveTime", timeMillis);
@@ -365,8 +365,8 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     @Override
     public void display(Activity activity, int i2, long j) {
         if (this.mDisplay) {
-            if (i2 == 2 && !PageList.inBlackList(this.f81e) && TextUtils.isEmpty(this.f80d)) {
-                this.f80d = this.f81e;
+            if (i2 == 2 && !PageList.inBlackList(this.mActivityName) && TextUtils.isEmpty(this.mCurrentActivityName)) {
+                this.mCurrentActivityName = this.mActivityName;
             }
             if (activity == this.mLauncherActivity && i2 == 2) {
                 this.mStartupProcedure.addProperty("displayDuration", j - this.mLaunchTime);
@@ -383,9 +383,9 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
         if (!this.mEnd) {
             this.mEnd = true;
             onLaunchCompleted();
-            if (!TextUtils.isEmpty(this.f80d)) {
-                this.mStartupProcedure.addProperty("currentPageName", this.f80d.substring(this.f80d.lastIndexOf(".") + 1));
-                this.mStartupProcedure.addProperty("fullPageName", this.f80d);
+            if (!TextUtils.isEmpty(this.mCurrentActivityName)) {
+                this.mStartupProcedure.addProperty("currentPageName", this.mCurrentActivityName.substring(this.mCurrentActivityName.lastIndexOf(".") + 1));
+                this.mStartupProcedure.addProperty("fullPageName", this.mCurrentActivityName);
             }
             this.mStartupProcedure.addProperty("linkPageName", this.mActivitySimpleNameList.toString());
             this.mActivitySimpleNameList.clear();
@@ -473,8 +473,8 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
                 return;
             }
             if (keyCode == 4 || keyCode == 3) {
-                if (TextUtils.isEmpty(this.f80d)) {
-                    this.f80d = ActivityUtils.getName(activity);
+                if (TextUtils.isEmpty(this.mCurrentActivityName)) {
+                    this.mCurrentActivityName = ActivityUtils.getName(activity);
                 }
                 if (keyCode == 3) {
                     this.mStartupProcedure.addProperty("leaveType", "home");

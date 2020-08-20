@@ -33,7 +33,7 @@ public class ApmImpl implements Apm, IApplicationMonitor {
     private final ICallbackGroup<ActivityLifecycleCallbacks> mApplicationCallbackGroup;
 
     /* renamed from: b reason: collision with other field name */
-    private final IListenerGroup<IAppLaunchListener> f7b;
+    private final IListenerGroup<IAppLaunchListener> mAppLaunchListenerGroup;
     private final IListenerGroup<IApmEventListener> mApmEventListenerGroup;
 
     /* compiled from: ApmImpl */
@@ -45,7 +45,7 @@ public class ApmImpl implements Apm, IApplicationMonitor {
         this.mMainApplicationCallbackGroup = new MainApplicationCallbackGroup();
         this.mApplicationCallbackGroup = new ApplicationCallbackGroup();
         this.f5a = new PageListenerGroup();
-        this.f7b = new AppLaunchListenerGroup();
+        this.mAppLaunchListenerGroup = new AppLaunchListenerGroup();
         this.mApmEventListenerGroup = new ApmEventListenerGroup();
         this.f6a = new ConcurrentHashMap<>();
         HandlerThread handlerThread = new HandlerThread("Apm-Sec");
@@ -98,11 +98,11 @@ public class ApmImpl implements Apm, IApplicationMonitor {
     }
 
     public void addAppLaunchListener(IAppLaunchListener iAppLaunchListener) {
-        this.f7b.addListener(iAppLaunchListener);
+        this.mAppLaunchListenerGroup.addListener(iAppLaunchListener);
     }
 
     public void removeAppLaunchListener(IAppLaunchListener iAppLaunchListener) {
-        this.f7b.removeListener(iAppLaunchListener);
+        this.mAppLaunchListenerGroup.removeListener(iAppLaunchListener);
     }
 
     public void addApmEventListener(IApmEventListener iApmEventListener) {
@@ -147,8 +147,8 @@ public class ApmImpl implements Apm, IApplicationMonitor {
     }
 
     /* renamed from: a reason: collision with other method in class */
-    public IAppLaunchListener m3a() {
-        return (IAppLaunchListener) a((Object) this.f7b);
+    public IAppLaunchListener appLaunchListener() {
+        return (IAppLaunchListener) a((Object) this.mAppLaunchListenerGroup);
     }
 
     /* renamed from: a reason: collision with other method in class */
@@ -160,7 +160,7 @@ public class ApmImpl implements Apm, IApplicationMonitor {
         this.mActivity = activity;
     }
 
-    public void b(Runnable runnable) {
+    public void postRunnable(Runnable runnable) {
         this.mHandler.post(runnable);
     }
 

@@ -38,7 +38,7 @@ import com.taobao.monitor.impl.processor.weex.WeexApmAdapterFactory;
 import com.taobao.monitor.impl.trace.ActivityEventDispatcher;
 import com.taobao.monitor.impl.trace.ActivityLifeCycleDispatcher;
 import com.taobao.monitor.impl.trace.ApplicationBackgroundChangedDispatcher;
-import com.taobao.monitor.impl.trace.ApplicationGCDispatcher;
+import com.taobao.monitor.impl.trace.ApplicationGcDispatcher;
 import com.taobao.monitor.impl.trace.ApplicationLowMemoryDispatcher;
 import com.taobao.monitor.impl.trace.DispatcherManager;
 import com.taobao.monitor.impl.trace.FPSDispatcher;
@@ -229,7 +229,7 @@ public class APMLauncher {
 
     private static void initDispatcher() {
         DispatcherManager.putDispatcher("APPLICATION_LOW_MEMORY_DISPATCHER", new ApplicationLowMemoryDispatcher());
-        DispatcherManager.putDispatcher("APPLICATION_GC_DISPATCHER", new ApplicationGCDispatcher());
+        DispatcherManager.putDispatcher("APPLICATION_GC_DISPATCHER", new ApplicationGcDispatcher());
 
         ApplicationBackgroundChangedDispatcher applicationBackgroundChangedDispatcher = new ApplicationBackgroundChangedDispatcher();
         DispatcherManager.putDispatcher("APPLICATION_BACKGROUND_CHANGED_DISPATCHER", applicationBackgroundChangedDispatcher);

@@ -59,6 +59,7 @@ class ActivityDataCollector extends AbstractDataCollector<Activity> implements A
         }
     }
 
+    @Override
     public void onActivityCreated(Activity activity, Bundle bundle) {
         initDispatcher();
         if (!DispatcherManager.isEmpty((IDispatcher) this.mActivityLifeCycleDispatcher)) {
@@ -66,12 +67,14 @@ class ActivityDataCollector extends AbstractDataCollector<Activity> implements A
         }
     }
 
+    @Override
     public void onActivityStarted(Activity activity) {
         if (!DispatcherManager.isEmpty((IDispatcher) this.mActivityLifeCycleDispatcher)) {
             this.mActivityLifeCycleDispatcher.onActivityStarted(activity, TimeUtils.currentTimeMillis());
         }
     }
 
+    @Override
     public void onActivityResumed(Activity activity) {
         if (!DispatcherManager.isEmpty((IDispatcher) this.mActivityLifeCycleDispatcher)) {
             this.mActivityLifeCycleDispatcher.onActivityResumed(activity, TimeUtils.currentTimeMillis());
@@ -101,6 +104,7 @@ class ActivityDataCollector extends AbstractDataCollector<Activity> implements A
         }
     }
 
+    @Override
     public void onActivityPaused(Activity activity) {
         if (!DispatcherManager.isEmpty((IDispatcher) this.mActivityLifeCycleDispatcher)) {
             this.mActivityLifeCycleDispatcher.onActivityPaused(activity, TimeUtils.currentTimeMillis());
@@ -110,6 +114,7 @@ class ActivityDataCollector extends AbstractDataCollector<Activity> implements A
         }
     }
 
+    @Override
     public void onActivityStopped(Activity activity) {
         if (!DispatcherManager.isEmpty((IDispatcher) this.mActivityLifeCycleDispatcher)) {
             if (!PageList.inBlackList(ActivityUtils.getName(activity))) {
@@ -122,12 +127,14 @@ class ActivityDataCollector extends AbstractDataCollector<Activity> implements A
         }
     }
 
+    @Override
     public void onActivityDestroyed(Activity activity) {
         if (!DispatcherManager.isEmpty((IDispatcher) this.mActivityLifeCycleDispatcher)) {
             this.mActivityLifeCycleDispatcher.onActivityDestroyed(activity, TimeUtils.currentTimeMillis());
         }
     }
 
+    @Override
     public void dispatchTouchEvent(MotionEvent motionEvent) {
         if (!DispatcherManager.isEmpty((IDispatcher) this.mActivityEventDispatcher)) {
             this.mActivityEventDispatcher.onMotionEvent(this.mActivity, motionEvent, TimeUtils.currentTimeMillis());
@@ -138,6 +145,7 @@ class ActivityDataCollector extends AbstractDataCollector<Activity> implements A
         }
     }
 
+    @Override
     public void dispatchKeyEvent(KeyEvent keyEvent) {
         if (!DispatcherManager.isEmpty((IDispatcher) this.mActivityEventDispatcher)) {
             this.mActivityEventDispatcher.onKeyEvent(this.mActivity, keyEvent, TimeUtils.currentTimeMillis());

@@ -6,7 +6,7 @@ import com.taobao.monitor.impl.data.OnUsableVisibleListener;
 import com.taobao.monitor.impl.processor.AbsProcessor;
 import com.taobao.monitor.impl.trace.IDispatcher;
 import com.taobao.monitor.impl.trace.ApplicationBackgroundChangedDispatcher;
-import com.taobao.monitor.impl.trace.ApplicationGCDispatcher;
+import com.taobao.monitor.impl.trace.ApplicationGcDispatcher;
 import com.taobao.monitor.impl.trace.ApplicationLowMemoryDispatcher;
 import com.taobao.monitor.impl.trace.FPSDispatcher;
 import com.taobao.monitor.impl.trace.ImageStageDispatcher;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 /* compiled from: WeexProcessor */
-public class WeexProcessor extends AbsProcessor implements OnUsableVisibleListener<Activity>, ApplicationBackgroundChangedDispatcher.BackgroundChangedListener, ApplicationGCDispatcher.GCListener, ApplicationLowMemoryDispatcher.LowMemoryListener, FPSDispatcher.FPSListener, ImageStageDispatcher.StageListener, NetworkStageDispatcher.StageListener, IWXApmAdapter {
+public class WeexProcessor extends AbsProcessor implements OnUsableVisibleListener<Activity>, ApplicationBackgroundChangedDispatcher.BackgroundChangedListener, ApplicationGcDispatcher.GcListener, ApplicationLowMemoryDispatcher.LowMemoryListener, FPSDispatcher.FPSListener, ImageStageDispatcher.StageListener, NetworkStageDispatcher.StageListener, IWXApmAdapter {
     private IDispatcher a;
 
     /* renamed from: a reason: collision with other field name */

@@ -120,6 +120,6 @@ class ApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallbackG
     }
 
     private void a(Runnable runnable) {
-        ApmImpl.instance().b(runnable);
+        ApmImpl.instance().postRunnable(runnable);
     }
 }

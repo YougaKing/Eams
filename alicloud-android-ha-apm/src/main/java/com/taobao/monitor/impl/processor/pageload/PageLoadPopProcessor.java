@@ -12,7 +12,7 @@ import com.taobao.monitor.impl.data.traffic.TrafficTracker;
 import com.taobao.monitor.impl.processor.AbsProcessor;
 import com.taobao.monitor.impl.processor.pageload.PageModelLifecycle.ModelPairLifecycleListener;
 import com.taobao.monitor.impl.trace.ActivityEventDispatcher;
-import com.taobao.monitor.impl.trace.ApplicationGCDispatcher;
+import com.taobao.monitor.impl.trace.ApplicationGcDispatcher;
 import com.taobao.monitor.impl.trace.ApplicationLowMemoryDispatcher;
 import com.taobao.monitor.impl.trace.FPSDispatcher;
 import com.taobao.monitor.impl.trace.IDispatcher;
@@ -31,7 +31,7 @@ import java.util.List;
 /* compiled from: PageLoadPopProcessor */
 public class PageLoadPopProcessor extends AbsProcessor implements ModelPairLifecycleListener,
         ActivityEventDispatcher.EventListener,
-        ApplicationGCDispatcher.GCListener,
+        ApplicationGcDispatcher.GcListener,
         ApplicationLowMemoryDispatcher.LowMemoryListener,
         FPSDispatcher.FPSListener {
     private IDispatcher a;

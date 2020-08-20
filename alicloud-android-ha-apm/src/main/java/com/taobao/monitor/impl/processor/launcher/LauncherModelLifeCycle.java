@@ -14,6 +14,7 @@ public class LauncherModelLifeCycle implements IProcessor.ProcessorCallback,
     private final IProcessorFactory<LauncherProcessor> mLauncherProcessorFactory = new LauncherProcessorFactory();
     private int count = 0;
 
+    @Override
     public void onActivityCreated(Activity activity, Bundle bundle, long j) {
         if (this.count == 0) {
             this.mLauncherProcessor = this.mLauncherProcessorFactory.createProcessor();
@@ -27,30 +28,35 @@ public class LauncherModelLifeCycle implements IProcessor.ProcessorCallback,
         this.count++;
     }
 
+    @Override
     public void onActivityStarted(Activity activity, long j) {
         if (this.mLauncherProcessor != null) {
             this.mLauncherProcessor.onActivityStarted(activity, j);
         }
     }
 
+    @Override
     public void onActivityResumed(Activity activity, long j) {
         if (this.mLauncherProcessor != null) {
             this.mLauncherProcessor.onActivityResumed(activity, j);
         }
     }
 
+    @Override
     public void onActivityPaused(Activity activity, long j) {
         if (this.mLauncherProcessor != null) {
             this.mLauncherProcessor.onActivityPaused(activity, j);
         }
     }
 
+    @Override
     public void onActivityStopped(Activity activity, long j) {
         if (this.mLauncherProcessor != null) {
             this.mLauncherProcessor.onActivityStopped(activity, j);
         }
     }
 
+    @Override
     public void onActivityDestroyed(Activity activity, long j) {
         if (this.mLauncherProcessor != null) {
             this.mLauncherProcessor.onActivityDestroyed(activity, j);
@@ -58,9 +64,11 @@ public class LauncherModelLifeCycle implements IProcessor.ProcessorCallback,
         this.count--;
     }
 
+    @Override
     public void onProcedureBegin(IProcessor iProcessor) {
     }
 
+    @Override
     public void onProcedureEnd(IProcessor iProcessor) {
         this.mLauncherProcessor = null;
     }

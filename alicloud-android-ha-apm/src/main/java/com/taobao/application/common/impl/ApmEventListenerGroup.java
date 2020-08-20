@@ -47,6 +47,6 @@ public class ApmEventListenerGroup implements IApmEventListener, IListenerGroup<
     }
 
     private void a(Runnable runnable) {
-        ApmImpl.instance().b(runnable);
+        ApmImpl.instance().postRunnable(runnable);
     }
 }

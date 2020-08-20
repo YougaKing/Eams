@@ -1,10 +1,10 @@
 package com.taobao.monitor.impl.data.gc;
 
 import com.taobao.monitor.impl.trace.ApplicationBackgroundChangedDispatcher.BackgroundChangedListener;
-import com.taobao.monitor.impl.trace.ApplicationGCDispatcher;
+import com.taobao.monitor.impl.trace.ApplicationGcDispatcher;
 
 /* compiled from: GCSwitcher */
-public class GCSwitcher implements BackgroundChangedListener, ApplicationGCDispatcher.GCListener {
+public class GCSwitcher implements BackgroundChangedListener, ApplicationGcDispatcher.GcListener {
     private volatile boolean m = false;
 
     public void gc() {

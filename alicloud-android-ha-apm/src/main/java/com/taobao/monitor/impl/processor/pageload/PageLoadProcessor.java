@@ -24,7 +24,7 @@ import com.taobao.monitor.impl.data.GlobalStats;
 import com.taobao.monitor.impl.data.OnUsableVisibleListener;
 import com.taobao.monitor.impl.data.traffic.TrafficTracker;
 import com.taobao.monitor.impl.processor.AbsProcessor;
-import com.taobao.monitor.impl.trace.ApplicationGCDispatcher;
+import com.taobao.monitor.impl.trace.ApplicationGcDispatcher;
 import com.taobao.monitor.impl.trace.IDispatcher;
 import com.taobao.monitor.impl.trace.ActivityEventDispatcher;
 import com.taobao.monitor.impl.trace.ApplicationBackgroundChangedDispatcher;
@@ -52,7 +52,7 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
         PageModelLifecycle.ModelLifecycleListener,
         ActivityEventDispatcher.EventListener,
         ApplicationBackgroundChangedDispatcher.BackgroundChangedListener,
-        ApplicationGCDispatcher.GCListener,
+        ApplicationGcDispatcher.GcListener,
         ApplicationLowMemoryDispatcher.LowMemoryListener,
         FPSDispatcher.FPSListener,
         FragmentFunctionListener,

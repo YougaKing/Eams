@@ -1,17 +1,17 @@
 package com.taobao.monitor.impl.trace;
 
 /* compiled from: ApplicationGCDispatcher */
-public class ApplicationGCDispatcher extends AbsDispatcher<ApplicationGCDispatcher.GCListener> {
+public class ApplicationGcDispatcher extends AbsDispatcher<ApplicationGcDispatcher.GcListener> {
 
     /* compiled from: ApplicationGCDispatcher */
-    public interface GCListener {
+    public interface GcListener {
         void gc();
     }
 
     public void gc() {
-        dispatchRunnable(new DispatcherRunnable<GCListener>() {
+        dispatchRunnable(new DispatcherRunnable<GcListener>() {
             /* renamed from: a */
-            public void run(GCListener aVar) {
+            public void run(GcListener aVar) {
                 aVar.gc();
             }
         });

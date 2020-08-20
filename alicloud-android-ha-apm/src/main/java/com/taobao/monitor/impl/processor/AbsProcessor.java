@@ -12,7 +12,7 @@ public abstract class AbsProcessor implements IProcessor {
     }
 
     /* access modifiers changed from: protected */
-    public IDispatcher getDispatcher(String key) {
+    public <T> IDispatcher<T> getDispatcher(String key) {
         return APMContext.getDispatcher(key);
     }
 

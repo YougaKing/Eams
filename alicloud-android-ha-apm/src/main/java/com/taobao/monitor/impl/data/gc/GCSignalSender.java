@@ -4,7 +4,7 @@ import com.taobao.monitor.impl.common.APMContext;
 import com.taobao.monitor.impl.common.Global;
 import com.taobao.monitor.impl.logger.DataLoggerUtils;
 import com.taobao.monitor.impl.trace.IDispatcher;
-import com.taobao.monitor.impl.trace.ApplicationGCDispatcher;
+import com.taobao.monitor.impl.trace.ApplicationGcDispatcher;
 
 /* compiled from: GCSignalSender */
 class GCSignalSender {
@@ -19,8 +19,8 @@ class GCSignalSender {
         public void run() {
             Global.instance().handler().removeCallbacks(GCSignalSender.runnable);
             IDispatcher a = APMContext.getDispatcher("APPLICATION_GC_DISPATCHER");
-            if (a instanceof ApplicationGCDispatcher) {
-                ((ApplicationGCDispatcher) a).gc();
+            if (a instanceof ApplicationGcDispatcher) {
+                ((ApplicationGcDispatcher) a).gc();
             }
             DataLoggerUtils.log("gc");
         }

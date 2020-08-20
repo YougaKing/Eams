@@ -23,7 +23,7 @@ import com.taobao.monitor.impl.processor.fragmentload.FragmentModelLifecycle.Mod
 import com.taobao.monitor.impl.processor.pageload.ProcedureManagerSetter;
 import com.taobao.monitor.impl.trace.ActivityEventDispatcher;
 import com.taobao.monitor.impl.trace.ApplicationBackgroundChangedDispatcher;
-import com.taobao.monitor.impl.trace.ApplicationGCDispatcher;
+import com.taobao.monitor.impl.trace.ApplicationGcDispatcher;
 import com.taobao.monitor.impl.trace.ApplicationLowMemoryDispatcher;
 import com.taobao.monitor.impl.trace.FPSDispatcher;
 import com.taobao.monitor.impl.trace.IDispatcher;
@@ -45,7 +45,7 @@ class FragmentProcessor extends AbsProcessor implements OnUsableVisibleListener<
         ModelLifecycleListener,
         ActivityEventDispatcher.EventListener,
         ApplicationBackgroundChangedDispatcher.BackgroundChangedListener,
-        ApplicationGCDispatcher.GCListener,
+        ApplicationGcDispatcher.GcListener,
         ApplicationLowMemoryDispatcher.LowMemoryListener,
         FPSDispatcher.FPSListener,
         ImageStageDispatcher.StageListener,

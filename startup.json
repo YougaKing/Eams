@@ -2,7 +2,7 @@
   "version": "0.0.1",
   "topic": "ALI_APM\/UTDevice.getUtdid%28application.getApplicationContext%28%29%29\/monitor\/procedure\/startup",
   "headers": {
-    "X-timestamp": 215079458,
+    "X-timestamp": 233218484,
     "X-appId": "com.example.eams",
     "X-appKey": "28125247",
     "X-appBuild": "",
@@ -15,7 +15,7 @@
     "X-osVersion": "10",
     "X-userId": "",
     "X-userNick": "",
-    "X-session": "1597895386132",
+    "X-session": "1597913525151",
     "X-processName": "com.example.eams",
     "X-appVersion": "1.0_debug",
     "X-launcherMode": "normal"
@@ -24,24 +24,24 @@
     "properties": {
       "isFirstInstall": false,
       "runtimeLevel": 0,
-      "session": "1597895386153",
+      "session": "1597913525179",
       "oppoCPUResource": "false",
       "memoryRuntimeLevel": 1,
       "errorCode": 0,
       "fullPageName": "com.example.eams.MainActivity",
-      "interactiveDuration": 394,
+      "interactiveDuration": 561,
       "leaveType": "back",
-      "launchDuration": 394,
-      "lastProcessStartTime": 1597895232958,
+      "launchDuration": 561,
+      "lastProcessStartTime": 1597895870728,
       "currentPageName": "MainActivity",
       "isFirstLaunch": false,
       "launchType": "COLD",
       "hasSplash": false,
       "linkPageName": "[MainActivity]",
-      "appInitDuration": 198,
-      "systemInitDuration": 204,
+      "appInitDuration": 348,
+      "systemInitDuration": 380,
       "firstPageName": "MainActivity",
-      "displayDuration": 346,
+      "displayDuration": 512,
       "cpuUsageOfDevcie": -1,
       "installType": "UPDATE",
       "systemRecovery": false,
@@ -68,60 +68,60 @@
     },
     "events": [
       {
-        "timestamp": 215079522,
+        "timestamp": 233218576,
         "name": "onActivityCreated",
         "pageName": "MainActivity"
       },
       {
-        "timestamp": 215079641,
+        "timestamp": 233218811,
         "name": "onActivityResumed",
         "pageName": "MainActivity"
       },
       {
-        "timestamp": 215079641,
+        "timestamp": 233218812,
         "name": "onActivityStarted",
         "pageName": "MainActivity"
       },
       {
-        "timestamp": 215181361,
+        "timestamp": 233227669,
         "name": "keyEvent",
         "key": 4
       },
       {
-        "timestamp": 215181450,
+        "timestamp": 233227748,
         "name": "onActivityPaused",
         "pageName": "MainActivity"
       },
       {
-        "timestamp": 215181870,
+        "timestamp": 233228161,
         "name": "onActivityStopped",
         "pageName": "MainActivity"
       }
     ],
     "stages": {
-      "procedureStartTime": 215079531,
-      "processStartTime": 215079235,
-      "launchStartTime": 215079439,
-      "firstPageCreateTime": 215079522,
-      "renderStartTime": 215079637,
-      "displayedTime": 215079785,
-      "interactiveTime": 215079833,
-      "procedureEndTime": 215181874
+      "procedureStartTime": 233218594,
+      "processStartTime": 233218079,
+      "launchStartTime": 233218459,
+      "firstPageCreateTime": 233218576,
+      "renderStartTime": 233218807,
+      "displayedTime": 233218971,
+      "interactiveTime": 233219020,
+      "procedureEndTime": 233228166
     },
     "subProcedures": [
       {
         "APMSelf": {
           "properties": {
-            "parentSession": "1597895386153",
+            "parentSession": "1597913525179",
             "isMainThread": true,
-            "session": "1597895386154",
+            "session": "1597913525180",
             "threadName": "main"
           },
           "stages": {
-            "taskStart": 215079435,
-            "cpuStartTime": 241,
-            "taskEnd": 215079459,
-            "cpuEndTime": 263
+            "taskStart": 233218454,
+            "cpuStartTime": 338,
+            "taskEnd": 233218485,
+            "cpuEndTime": 364
           }
         }
       }

@@ -9,15 +9,15 @@ public class ActivityEventDispatcher extends AbsDispatcher<ActivityEventDispatch
 
     /* compiled from: ActivityEventDispatcher */
     public interface EventListener {
-        void onKeyEvent(Activity activity, KeyEvent keyEvent, long j);
+        void onKeyEvent(Activity activity, KeyEvent keyEvent, long timeMillis);
 
-        void onMotionEvent(Activity activity, MotionEvent motionEvent, long j);
+        void onMotionEvent(Activity activity, MotionEvent motionEvent, long timeMillis);
     }
 
-    public void onKeyEvent(Activity activity, KeyEvent keyEvent, long j) {
+    public void onKeyEvent(Activity activity, KeyEvent keyEvent, long timeMillis) {
         final Activity activity2 = activity;
         final KeyEvent keyEvent2 = keyEvent;
-        final long j2 = j;
+        final long j2 = timeMillis;
         dispatchRunnable(new DispatcherRunnable<EventListener>() {
             /* renamed from: a */
             public void run(EventListener aVar) {
@@ -26,10 +26,10 @@ public class ActivityEventDispatcher extends AbsDispatcher<ActivityEventDispatch
         });
     }
 
-    public void onMotionEvent(Activity activity, MotionEvent motionEvent, long j) {
+    public void onMotionEvent(Activity activity, MotionEvent motionEvent, long timeMillis) {
         final Activity activity2 = activity;
         final MotionEvent motionEvent2 = motionEvent;
-        final long j2 = j;
+        final long j2 = timeMillis;
         dispatchRunnable(new DispatcherRunnable<EventListener>() {
             /* renamed from: a */
             public void run(EventListener aVar) {

@@ -155,10 +155,10 @@ public class PageLoadPopProcessor extends AbsProcessor implements ModelPairLifec
         this.mPageLoadProcedure.event("onLowMemory", hashMap);
     }
 
-    public void onMotionEvent(Activity activity, MotionEvent motionEvent, long j) {
+    public void onMotionEvent(Activity activity, MotionEvent motionEvent, long timeMillis) {
         if (activity == this.d && this.o) {
-            this.mPageLoadProcedure.stage("firstInteractiveTime", j);
-            this.mPageLoadProcedure.addProperty("firstInteractiveDuration", Long.valueOf(j - this.f));
+            this.mPageLoadProcedure.stage("firstInteractiveTime", timeMillis);
+            this.mPageLoadProcedure.addProperty("firstInteractiveDuration", Long.valueOf(timeMillis - this.f));
             this.o = false;
         }
     }
@@ -191,13 +191,13 @@ public class PageLoadPopProcessor extends AbsProcessor implements ModelPairLifec
         this.l++;
     }
 
-    public void onKeyEvent(Activity activity, KeyEvent keyEvent, long j) {
+    public void onKeyEvent(Activity activity, KeyEvent keyEvent, long timeMillis) {
         if (keyEvent.getAction() != 0) {
             return;
         }
         if (keyEvent.getKeyCode() == 4 || keyEvent.getKeyCode() == 3) {
             HashMap hashMap = new HashMap(2);
-            hashMap.put("timestamp", Long.valueOf(j));
+            hashMap.put("timestamp", Long.valueOf(timeMillis));
             hashMap.put("key", Integer.valueOf(keyEvent.getKeyCode()));
             this.mPageLoadProcedure.event("keyEvent", hashMap);
         }

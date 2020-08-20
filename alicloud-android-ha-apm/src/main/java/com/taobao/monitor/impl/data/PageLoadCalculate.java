@@ -18,7 +18,7 @@ public class PageLoadCalculate implements IExecutor, Runnable {
 
     /* compiled from: PageLoadCalculate */
     public interface PageLoadCalculateListener {
-        void visiblePercent(float f);
+        void visiblePercent(float percent);
     }
 
     public PageLoadCalculate(View view) {

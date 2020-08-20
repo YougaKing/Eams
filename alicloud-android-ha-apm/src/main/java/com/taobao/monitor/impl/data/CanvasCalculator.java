@@ -175,7 +175,7 @@ public class CanvasCalculator implements ICalculator {
     }
 
     public float a() {
-        ArrayList arrayList = new ArrayList();
+        ArrayList<ViewInfo> arrayList = new ArrayList<>();
         float a2 = a(this.b, arrayList);
         Iterator it = arrayList.iterator();
         while (it.hasNext()) {

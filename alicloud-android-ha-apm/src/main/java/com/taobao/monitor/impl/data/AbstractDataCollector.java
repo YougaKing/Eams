@@ -135,18 +135,18 @@ public class AbstractDataCollector<T> implements PageLoadCalculate.PageLoadCalcu
     }
 
     @Override
-    public void visiblePercent(float f) {
-        Logger.i("AbstractDataCollector", "visiblePercent", Float.valueOf(f), this.pageName);
-        if (Math.abs(f - this.a) > 0.05f || f > 0.8f) {
+    public void visiblePercent(float percent) {
+        Logger.i("AbstractDataCollector", "visiblePercent", Float.valueOf(percent), this.pageName);
+        if (Math.abs(percent - this.a) > 0.05f || percent > 0.8f) {
             if (!DispatcherManager.isEmpty((IDispatcher) this.mUsableVisibleDispatcher)) {
-                this.mUsableVisibleDispatcher.visiblePercent((Object) this.mT, f, TimeUtils.currentTimeMillis());
+                this.mUsableVisibleDispatcher.visiblePercent(this.mT, percent, TimeUtils.currentTimeMillis());
             }
-            DataLoggerUtils.log("AbstractDataCollector", "visiblePercent", Float.valueOf(f), this.pageName);
-            if (f > 0.8f) {
+            DataLoggerUtils.log("AbstractDataCollector", "visiblePercent", Float.valueOf(percent), this.pageName);
+            if (percent > 0.8f) {
                 display(TimeUtils.currentTimeMillis());
                 run();
             }
-            this.a = f;
+            this.a = percent;
         }
     }
 

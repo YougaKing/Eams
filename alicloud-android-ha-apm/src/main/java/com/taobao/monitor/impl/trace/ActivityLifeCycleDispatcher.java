@@ -8,17 +8,17 @@ public class ActivityLifeCycleDispatcher extends AbsDispatcher<ActivityLifeCycle
 
     /* compiled from: ActivityLifeCycleDispatcher */
     public interface LifeCycleListener {
-        void onActivityCreated(Activity activity, Bundle bundle, long j);
+        void onActivityCreated(Activity activity, Bundle bundle, long timeMillis);
 
-        void onActivityStarted(Activity activity, long j);
+        void onActivityStarted(Activity activity, long timeMillis);
 
-        void onActivityResumed(Activity activity, long j);
+        void onActivityResumed(Activity activity, long timeMillis);
 
-        void onActivityPaused(Activity activity, long j);
+        void onActivityPaused(Activity activity, long timeMillis);
 
-        void onActivityStopped(Activity activity, long j);
+        void onActivityStopped(Activity activity, long timeMillis);
 
-        void onActivityDestroyed(Activity activity, long j);
+        void onActivityDestroyed(Activity activity, long timeMillis);
     }
 
     public void onActivityCreated(Activity activity, Bundle bundle, long j) {
@@ -33,11 +33,11 @@ public class ActivityLifeCycleDispatcher extends AbsDispatcher<ActivityLifeCycle
         });
     }
 
-    public void onActivityStarted(final Activity activity, final long j) {
+    public void onActivityStarted(final Activity activity, final long timeMillis) {
         dispatchRunnable(new DispatcherRunnable<LifeCycleListener>() {
             /* renamed from: a */
             public void run(LifeCycleListener aVar) {
-                aVar.onActivityStarted(activity, j);
+                aVar.onActivityStarted(activity, timeMillis);
             }
         });
     }

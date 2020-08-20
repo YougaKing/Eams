@@ -50,6 +50,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.taobao.application.common.IAppLaunchListener.COLD;
+import static com.taobao.application.common.IAppLaunchListener.HOT;
+import static com.taobao.application.common.IAppLaunchListener.LAUNCH_COMPLETED;
+import static com.taobao.application.common.IAppLaunchListener.LAUNCH_DRAW_START;
+import static com.taobao.application.common.IAppLaunchListener.LAUNCH_INTERACTIVE;
+import static com.taobao.application.common.IAppLaunchListener.LAUNCH_VISIBLE;
+
 /* compiled from: LauncherProcessor */
 public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleListener<Activity>,
         PageModelLifecycle.ModelLifecycleListener,
@@ -77,19 +84,19 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     private HashMap<String, Integer> f73b = new HashMap<>();
 
     /* renamed from: b reason: collision with other field name */
-    private List<Integer> f74b = new ArrayList<>();
+    private List<Integer> mFpsList = new ArrayList<>();
 
     /* renamed from: c reason: collision with other field name */
-    private int f75c = 0;
+    private int mJankCount = 0;
 
     /* renamed from: c reason: collision with other field name */
     private IDispatcher<FPSDispatcher.FPSListener> mActivityFpsDispatcher;
 
     /* renamed from: c reason: collision with other field name */
-    private List<String> f77c = new ArrayList<>(4);
+    private List<String> mActivitySimpleNameList = new ArrayList<>(4);
 
     /* renamed from: c reason: collision with other field name */
-    private long[] f78c;
+    private long[] mTraffics;
     private Activity mLauncherActivity = null;
 
     /* renamed from: d reason: collision with other field name */
@@ -107,35 +114,35 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     private String mLaunchType = sLaunchType;
     private IDispatcher<NetworkStageDispatcher.StageListener> mNetworkStageDispatcher;
     private IDispatcher<ImageStageDispatcher.StageListener> mImageStageDispatcher;
-    private long i;
+    private long mLaunchTime;
 
     /* renamed from: i reason: collision with other field name */
-    private boolean f83i = false;
+    private boolean mEnd = false;
     private int mGcCount = 0;
-    private int n;
-    private int o;
+    private int mImageCount;
+    private int mImageSuccessCount;
 
     /* renamed from: o reason: collision with other field name */
-    private boolean f84o = true;
-    private int p;
-    private int q;
-    private int r;
+    private boolean mMotionEvent = true;
+    private int mImageFailedCount;
+    private int mImageCanceledCount;
+    private int mNetworkCount;
 
     /* renamed from: r reason: collision with other field name */
-    private boolean f85r = true;
-    private int s;
+    private boolean mLauncherActivityDestroyed = true;
+    private int mNetworkSuccessCount;
 
     /* renamed from: s reason: collision with other field name */
-    private boolean f86s = true;
-    private int t;
+    private boolean mUsable = true;
+    private int mNetworkFailedCount;
 
     /* renamed from: t reason: collision with other field name */
-    private boolean f87t = true;
-    private int u;
+    private boolean mDisplay = true;
+    private int mNetworkCanceledCount;
 
     /* renamed from: u reason: collision with other field name */
     private boolean mIsLauncherActivity = false;
-    private volatile boolean v = false;
+    private volatile boolean mLaunchCompleted = false;
 
     public LauncherProcessor() {
         super(false);
@@ -144,7 +151,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     @Override
     public void procedureBegin() {
         super.procedureBegin();
-        this.f78c = TrafficTracker.traffics();
+        this.mTraffics = TrafficTracker.traffics();
         new AppLaunchHelper().launchType(this.mLaunchType);
         this.mStartupProcedure = ProcedureManagerProxy.PROXY.getLauncherProcedure();
         if (this.mStartupProcedure == null || !this.mStartupProcedure.isAlive()) {
@@ -185,7 +192,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     }
 
     private void p() {
-        this.i = "COLD".equals(sLaunchType) ? GlobalStats.launchStartTime : TimeUtils.currentTimeMillis();
+        this.mLaunchTime = "COLD".equals(sLaunchType) ? GlobalStats.launchStartTime : TimeUtils.currentTimeMillis();
         this.mStartupProcedure.addProperty("errorCode", 1);
         this.mStartupProcedure.addProperty("launchType", sLaunchType);
         this.mStartupProcedure.addProperty("isFirstInstall", GlobalStats.isFirstInstall);
@@ -209,7 +216,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
             if ("COLD".equals(sLaunchType) && this.f81e.equals(GlobalStats.lastTopActivity)) {
                 this.mStartupProcedure.addProperty("systemRecovery", Boolean.TRUE);
                 this.f80d = this.f81e;
-                this.f77c.add(simpleName);
+                this.mActivitySimpleNameList.add(simpleName);
             }
             Intent intent = activity.getIntent();
             if (intent != null) {
@@ -228,8 +235,8 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
             sLaunchType = "HOT";
             this.mIsLauncherActivity = true;
         }
-        if (this.f77c.size() < 10 && TextUtils.isEmpty(this.f80d)) {
-            this.f77c.add(simpleName);
+        if (this.mActivitySimpleNameList.size() < 10 && TextUtils.isEmpty(this.f80d)) {
+            this.mActivitySimpleNameList.add(simpleName);
         }
         if (TextUtils.isEmpty(this.f80d) && (PageList.isWhiteListEmpty() || PageList.inWhiteList(this.f81e))) {
             this.f80d = this.f81e;
@@ -282,7 +289,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
         hashMap.put("pageName", ActivityUtils.getSimpleName(activity));
         this.mStartupProcedure.event("onActivityDestroyed", hashMap);
         if (activity == this.mLauncherActivity) {
-            this.f85r = true;
+            this.mLauncherActivityDestroyed = true;
             procedureEnd();
         }
     }
@@ -295,51 +302,51 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     }
 
     @Override
-    public void onMotionEvent(Activity activity, MotionEvent motionEvent, long j) {
-        if (this.f84o && !PageList.inBlackList(ActivityUtils.getName(activity))) {
+    public void onMotionEvent(Activity activity, MotionEvent motionEvent, long timeMillis) {
+        if (this.mMotionEvent && !PageList.inBlackList(ActivityUtils.getName(activity))) {
             if (TextUtils.isEmpty(this.f80d)) {
                 this.f80d = ActivityUtils.getName(activity);
             }
             if (activity == this.mLauncherActivity) {
-                this.mStartupProcedure.stage("firstInteractiveTime", j);
-                this.mStartupProcedure.addProperty("firstInteractiveDuration", j - this.i);
+                this.mStartupProcedure.stage("firstInteractiveTime", timeMillis);
+                this.mStartupProcedure.addProperty("firstInteractiveDuration", timeMillis - this.mLaunchTime);
                 this.mStartupProcedure.addProperty("leaveType", "touch");
                 this.mStartupProcedure.addProperty("errorCode", 0);
                 DumpManager.getInstance().append(new FirstInteractionEvent());
-                this.f84o = false;
+                this.mMotionEvent = false;
             }
         }
     }
 
     @Override
-    public void onActivityStarted(Activity activity, long j) {
-        if (this.f85r && activity == this.mLauncherActivity) {
-            this.mStartupProcedure.addProperty("appInitDuration", j - this.i);
-            this.mStartupProcedure.stage("renderStartTime", j);
+    public void onActivityStarted(Activity activity, long timeMillis) {
+        if (this.mLauncherActivityDestroyed && activity == this.mLauncherActivity) {
+            this.mStartupProcedure.addProperty("appInitDuration", timeMillis - this.mLaunchTime);
+            this.mStartupProcedure.stage("renderStartTime", timeMillis);
             DumpManager.getInstance().append(new FirstDrawEvent());
-            this.f85r = false;
-            this.mAppLaunchListener.onLaunchChanged(a(), 0);
+            this.mLauncherActivityDestroyed = false;
+            this.mAppLaunchListener.onLaunchChanged(getLaunchType(), LAUNCH_DRAW_START);
         }
     }
 
-    private int a() {
-        return this.mLaunchType.equals("COLD") ? 0 : 1;
+    private int getLaunchType() {
+        return this.mLaunchType.equals("COLD") ? COLD : HOT;
     }
 
     @Override
-    public void visiblePercent(Activity activity, float f2, long j) {
+    public void visiblePercent(Activity activity, float percent, long timeMillis) {
         if (activity == this.mLauncherActivity) {
-            this.mStartupProcedure.addProperty("onRenderPercent", f2);
-            this.mStartupProcedure.addProperty("drawPercentTime", j);
+            this.mStartupProcedure.addProperty("onRenderPercent", percent);
+            this.mStartupProcedure.addProperty("drawPercentTime", timeMillis);
         }
     }
 
     @Override
     public void usable(Activity activity, int i2, int i3, long j) {
-        if (this.f86s && activity == this.mLauncherActivity && i2 == 2) {
+        if (this.mUsable && activity == this.mLauncherActivity && i2 == 2) {
             this.mStartupProcedure.addProperty("errorCode", 0);
-            this.mStartupProcedure.addProperty("interactiveDuration", j - this.i);
-            this.mStartupProcedure.addProperty("launchDuration", j - this.i);
+            this.mStartupProcedure.addProperty("interactiveDuration", j - this.mLaunchTime);
+            this.mStartupProcedure.addProperty("launchDuration", j - this.mLaunchTime);
             this.mStartupProcedure.addProperty("deviceLevel", AliHAHardware.getInstance().getOutlineInfo().deviceLevel);
             this.mStartupProcedure.addProperty("runtimeLevel", AliHAHardware.getInstance().getOutlineInfo().runtimeLevel);
             this.mStartupProcedure.addProperty("cpuUsageOfDevcie", AliHAHardware.getInstance().getCpuInfo().cpuUsageOfDevcie);
@@ -347,58 +354,58 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
             this.mStartupProcedure.addProperty("usableChangeType", i3);
             this.mStartupProcedure.stage("interactiveTime", j);
             LauncherUsableEvent launcherUsableEvent = new LauncherUsableEvent();
-            launcherUsableEvent.duration = (float) (j - this.i);
+            launcherUsableEvent.duration = (float) (j - this.mLaunchTime);
             DumpManager.getInstance().append(launcherUsableEvent);
-            this.mAppLaunchListener.onLaunchChanged(a(), 2);
-            q();
-            this.f86s = false;
+            this.mAppLaunchListener.onLaunchChanged(getLaunchType(), LAUNCH_INTERACTIVE);
+            onLaunchCompleted();
+            this.mUsable = false;
         }
     }
 
     @Override
     public void display(Activity activity, int i2, long j) {
-        if (this.f87t) {
+        if (this.mDisplay) {
             if (i2 == 2 && !PageList.inBlackList(this.f81e) && TextUtils.isEmpty(this.f80d)) {
                 this.f80d = this.f81e;
             }
             if (activity == this.mLauncherActivity && i2 == 2) {
-                this.mStartupProcedure.addProperty("displayDuration", j - this.i);
+                this.mStartupProcedure.addProperty("displayDuration", j - this.mLaunchTime);
                 this.mStartupProcedure.stage("displayedTime", j);
                 DumpManager.getInstance().append(new DisplayedEvent());
-                this.mAppLaunchListener.onLaunchChanged(a(), 1);
-                this.f87t = false;
+                this.mAppLaunchListener.onLaunchChanged(getLaunchType(), LAUNCH_VISIBLE);
+                this.mDisplay = false;
             }
         }
     }
 
     @Override
     public void procedureEnd() {
-        if (!this.f83i) {
-            this.f83i = true;
-            q();
+        if (!this.mEnd) {
+            this.mEnd = true;
+            onLaunchCompleted();
             if (!TextUtils.isEmpty(this.f80d)) {
                 this.mStartupProcedure.addProperty("currentPageName", this.f80d.substring(this.f80d.lastIndexOf(".") + 1));
                 this.mStartupProcedure.addProperty("fullPageName", this.f80d);
             }
-            this.mStartupProcedure.addProperty("linkPageName", this.f77c.toString());
-            this.f77c.clear();
+            this.mStartupProcedure.addProperty("linkPageName", this.mActivitySimpleNameList.toString());
+            this.mActivitySimpleNameList.clear();
             this.mStartupProcedure.addProperty("hasSplash", GlobalStats.hasSplash);
             this.mStartupProcedure.addStatistic("gcCount", this.mGcCount);
-            this.mStartupProcedure.addStatistic("fps", this.f74b.toString());
-            this.mStartupProcedure.addStatistic("jankCount", this.f75c);
-            this.mStartupProcedure.addStatistic("image", this.n);
-            this.mStartupProcedure.addStatistic("imageOnRequest", this.n);
-            this.mStartupProcedure.addStatistic("imageSuccessCount", this.o);
-            this.mStartupProcedure.addStatistic("imageFailedCount", this.p);
-            this.mStartupProcedure.addStatistic("imageCanceledCount", this.q);
-            this.mStartupProcedure.addStatistic("network", this.r);
-            this.mStartupProcedure.addStatistic("networkOnRequest", this.r);
-            this.mStartupProcedure.addStatistic("networkSuccessCount", this.s);
-            this.mStartupProcedure.addStatistic("networkFailedCount", this.t);
-            this.mStartupProcedure.addStatistic("networkCanceledCount", this.u);
-            long[] a2 = TrafficTracker.traffics();
-            this.mStartupProcedure.addStatistic("totalRx", a2[0] - this.f78c[0]);
-            this.mStartupProcedure.addStatistic("totalTx", a2[1] - this.f78c[1]);
+            this.mStartupProcedure.addStatistic("fps", this.mFpsList.toString());
+            this.mStartupProcedure.addStatistic("jankCount", this.mJankCount);
+            this.mStartupProcedure.addStatistic("image", this.mImageCount);
+            this.mStartupProcedure.addStatistic("imageOnRequest", this.mImageCount);
+            this.mStartupProcedure.addStatistic("imageSuccessCount", this.mImageSuccessCount);
+            this.mStartupProcedure.addStatistic("imageFailedCount", this.mImageFailedCount);
+            this.mStartupProcedure.addStatistic("imageCanceledCount", this.mImageCanceledCount);
+            this.mStartupProcedure.addStatistic("network", this.mNetworkCount);
+            this.mStartupProcedure.addStatistic("networkOnRequest", this.mNetworkCount);
+            this.mStartupProcedure.addStatistic("networkSuccessCount", this.mNetworkSuccessCount);
+            this.mStartupProcedure.addStatistic("networkFailedCount", this.mNetworkFailedCount);
+            this.mStartupProcedure.addStatistic("networkCanceledCount", this.mNetworkCanceledCount);
+            long[] traffics = TrafficTracker.traffics();
+            this.mStartupProcedure.addStatistic("totalRx", traffics[0] - this.mTraffics[0]);
+            this.mStartupProcedure.addStatistic("totalTx", traffics[1] - this.mTraffics[1]);
             this.mStartupProcedure.stage("procedureEndTime", TimeUtils.currentTimeMillis());
             GlobalStats.hasSplash = false;
             this.mApplicationBackgroundChangedDispatcher.removeListener(this);
@@ -417,15 +424,15 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     }
 
     @Override
-    public void fps(int i2) {
-        if (this.f74b.size() < 200) {
-            this.f74b.add(i2);
+    public void fps(int fps) {
+        if (this.mFpsList.size() < 200) {
+            this.mFpsList.add(fps);
         }
     }
 
     @Override
-    public void jank(int i2) {
-        this.f75c += i2;
+    public void jank(int jankCount) {
+        this.mJankCount += jankCount;
     }
 
     @Override
@@ -443,22 +450,22 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
         }
     }
 
-    private void q() {
-        int i2;
-        if (!this.v) {
+    private void onLaunchCompleted() {
+        if (!this.mLaunchCompleted) {
             IAppLaunchListener iAppLaunchListener = this.mAppLaunchListener;
+            int launchType;
             if (this.mLaunchType.equals("COLD")) {
-                i2 = 0;
+                launchType = 0;
             } else {
-                i2 = 1;
+                launchType = 1;
             }
-            iAppLaunchListener.onLaunchChanged(i2, 4);
-            this.v = true;
+            iAppLaunchListener.onLaunchChanged(launchType, LAUNCH_COMPLETED);
+            this.mLaunchCompleted = true;
         }
     }
 
     @Override
-    public void onKeyEvent(Activity activity, KeyEvent keyEvent, long j) {
+    public void onKeyEvent(Activity activity, KeyEvent keyEvent, long timeMillis) {
         if (!PageList.inBlackList(ActivityUtils.getName(activity)) && activity == this.mLauncherActivity) {
             int action = keyEvent.getAction();
             int keyCode = keyEvent.getKeyCode();
@@ -475,7 +482,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
                     this.mStartupProcedure.addProperty("leaveType", "back");
                 }
                 Map<String, Object> hashMap = new HashMap<>(2);
-                hashMap.put("timestamp", j);
+                hashMap.put("timestamp", timeMillis);
                 hashMap.put("key", keyEvent.getKeyCode());
                 this.mStartupProcedure.event("keyEvent", hashMap);
             }
@@ -485,26 +492,26 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     @Override
     public void imageStage(int i2) {
         if (i2 == 0) {
-            this.n++;
+            this.mImageCount++;
         } else if (i2 == 1) {
-            this.o++;
+            this.mImageSuccessCount++;
         } else if (i2 == 2) {
-            this.p++;
+            this.mImageFailedCount++;
         } else if (i2 == 3) {
-            this.q++;
+            this.mImageCanceledCount++;
         }
     }
 
     @Override
     public void networkStage(int i2) {
         if (i2 == 0) {
-            this.r++;
+            this.mNetworkCount++;
         } else if (i2 == 1) {
-            this.s++;
+            this.mNetworkSuccessCount++;
         } else if (i2 == 2) {
-            this.t++;
+            this.mNetworkFailedCount++;
         } else if (i2 == 3) {
-            this.u++;
+            this.mNetworkCanceledCount++;
         }
     }
 

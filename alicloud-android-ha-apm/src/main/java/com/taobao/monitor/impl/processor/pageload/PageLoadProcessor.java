@@ -309,11 +309,11 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
         DumpManager.getInstance().append(receiverLowMemoryEvent);
     }
 
-    public void onMotionEvent(Activity activity, MotionEvent motionEvent, long j) {
+    public void onMotionEvent(Activity activity, MotionEvent motionEvent, long timeMillis) {
         if (activity == this.f101d) {
             if (this.f107o) {
-                this.mPageLoadProcedure.stage("firstInteractiveTime", j);
-                this.mPageLoadProcedure.addProperty("firstInteractiveDuration", Long.valueOf(j - this.f));
+                this.mPageLoadProcedure.stage("firstInteractiveTime", timeMillis);
+                this.mPageLoadProcedure.addProperty("firstInteractiveDuration", Long.valueOf(timeMillis - this.f));
                 this.mPageLoadProcedure.addProperty("leaveType", "touch");
                 this.f107o = false;
                 this.mPageLoadProcedure.addProperty("errorCode", Integer.valueOf(0));
@@ -321,23 +321,23 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
             d.clear();
             d.add(this.pageName);
             GlobalStats.lastValidPage = this.pageName;
-            GlobalStats.lastValidTime = j;
+            GlobalStats.lastValidTime = timeMillis;
         }
     }
 
     /* renamed from: f */
-    public void onActivityStarted(Activity activity, long j) {
+    public void onActivityStarted(Activity activity, long timeMillis) {
         if (this.f110r && activity == this.f101d) {
-            this.mPageLoadProcedure.addProperty("pageInitDuration", Long.valueOf(j - this.f));
-            this.mPageLoadProcedure.stage("renderStartTime", j);
+            this.mPageLoadProcedure.addProperty("pageInitDuration", Long.valueOf(timeMillis - this.f));
+            this.mPageLoadProcedure.stage("renderStartTime", timeMillis);
             this.f110r = false;
         }
     }
 
-    public void visiblePercent(Activity activity, float f2, long j) {
+    public void visiblePercent(Activity activity, float percent, long timeMillis) {
         if (activity == this.f101d) {
-            this.mPageLoadProcedure.addProperty("onRenderPercent", Float.valueOf(f2));
-            this.mPageLoadProcedure.addProperty("drawPercentTime", Long.valueOf(j));
+            this.mPageLoadProcedure.addProperty("onRenderPercent", Float.valueOf(percent));
+            this.mPageLoadProcedure.addProperty("drawPercentTime", Long.valueOf(timeMillis));
         }
     }
 
@@ -451,7 +451,7 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
         this.mPageLoadProcedure.event("background2Foreground", hashMap2);
     }
 
-    public void onKeyEvent(Activity activity, KeyEvent keyEvent, long j) {
+    public void onKeyEvent(Activity activity, KeyEvent keyEvent, long timeMillis) {
         if (activity == this.f101d) {
             int action = keyEvent.getAction();
             int keyCode = keyEvent.getKeyCode();
@@ -465,7 +465,7 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
                     this.mPageLoadProcedure.addProperty("leaveType", "back");
                 }
                 HashMap hashMap = new HashMap(2);
-                hashMap.put("timestamp", Long.valueOf(j));
+                hashMap.put("timestamp", Long.valueOf(timeMillis));
                 hashMap.put("key", Integer.valueOf(keyEvent.getKeyCode()));
                 this.mPageLoadProcedure.event("keyEvent", hashMap);
             }

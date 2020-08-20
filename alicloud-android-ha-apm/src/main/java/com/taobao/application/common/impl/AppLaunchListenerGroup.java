@@ -39,11 +39,11 @@ class AppLaunchListenerGroup implements IAppLaunchListener, IListenerGroup<IAppL
     }
 
     @Override
-    public void onLaunchChanged(final int i, final int i2) {
+    public void onLaunchChanged(final int launchType, final int launchStatus) {
         postRunnable((Runnable) new Runnable() {
             public void run() {
                 for (IAppLaunchListener onLaunchChanged : AppLaunchListenerGroup.this.mAppLaunchListeners) {
-                    onLaunchChanged.onLaunchChanged(i, i2);
+                    onLaunchChanged.onLaunchChanged(launchType, launchStatus);
                 }
             }
         });

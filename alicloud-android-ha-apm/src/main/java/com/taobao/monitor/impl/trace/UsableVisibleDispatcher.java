@@ -38,10 +38,10 @@ public class UsableVisibleDispatcher<T> extends AbsDispatcher<OnUsableVisibleLis
         });
     }
 
-    public void visiblePercent(Object obj, float f, long j) {
+    public void visiblePercent(Object obj, float percent, long timeMillis) {
         final Object obj2 = obj;
-        final float f2 = f;
-        final long j2 = j;
+        final float f2 = percent;
+        final long j2 = timeMillis;
         dispatchRunnable(new DispatcherRunnable<OnUsableVisibleListener>() {
             /* renamed from: a */
             public void run(OnUsableVisibleListener hVar) {

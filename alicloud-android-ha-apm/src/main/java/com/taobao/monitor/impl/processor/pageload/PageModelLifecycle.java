@@ -21,7 +21,7 @@ public class PageModelLifecycle implements ActivityLifeCycleDispatcher.LifeCycle
 
     /* compiled from: PageModelLifecycle */
     public interface ModelLifecycleListener {
-        void onActivityStarted(Activity activity, long j);
+        void onActivityStarted(Activity activity, long timeMillis);
 
         void onActivityResumed(Activity activity, long j);
 
@@ -39,20 +39,22 @@ public class PageModelLifecycle implements ActivityLifeCycleDispatcher.LifeCycle
         void onActivityStopped(Activity activity);
     }
 
-    public void onActivityCreated(Activity activity, Bundle bundle, long j) {
+    @Override
+    public void onActivityCreated(Activity activity, Bundle bundle, long timeMillis) {
         PageLoadProcessor cVar = (PageLoadProcessor) this.mPageLoadProcessorFactory.createProcessor();
         if (cVar != null) {
             this.mModelLifecycleListenerMap.put(activity, cVar);
-            cVar.a(activity, bundle, j);
+            cVar.a(activity, bundle, timeMillis);
         }
         this.mActivity = activity;
     }
 
-    public void onActivityStarted(Activity activity, long j) {
+    @Override
+    public void onActivityStarted(Activity activity, long timeMillis) {
         this.v++;
         ModelLifecycleListener aVar = (ModelLifecycleListener) this.mModelLifecycleListenerMap.get(activity);
         if (aVar != null) {
-            aVar.onActivityStarted(activity, j);
+            aVar.onActivityStarted(activity, timeMillis);
         }
         if (this.mActivity != activity) {
             ModelPairLifecycleListener bVar = (ModelPairLifecycleListener) this.mPageLoadPopProcessorFactory.createProcessor();
@@ -64,25 +66,28 @@ public class PageModelLifecycle implements ActivityLifeCycleDispatcher.LifeCycle
         this.mActivity = activity;
     }
 
-    public void onActivityResumed(Activity activity, long j) {
+    @Override
+    public void onActivityResumed(Activity activity, long timeMillis) {
         ModelLifecycleListener aVar = (ModelLifecycleListener) this.mModelLifecycleListenerMap.get(activity);
         if (aVar != null) {
-            aVar.onActivityResumed(activity, j);
+            aVar.onActivityResumed(activity, timeMillis);
         }
     }
 
-    public void onActivityPaused(Activity activity, long j) {
+    @Override
+    public void onActivityPaused(Activity activity, long timeMillis) {
         ModelLifecycleListener aVar = (ModelLifecycleListener) this.mModelLifecycleListenerMap.get(activity);
         if (aVar != null) {
-            aVar.onActivityPaused(activity, j);
+            aVar.onActivityPaused(activity, timeMillis);
         }
     }
 
-    public void onActivityStopped(Activity activity, long j) {
+    @Override
+    public void onActivityStopped(Activity activity, long timeMillis) {
         this.v--;
         ModelLifecycleListener aVar = (ModelLifecycleListener) this.mModelLifecycleListenerMap.get(activity);
         if (aVar != null) {
-            aVar.onActivityStopped(activity, j);
+            aVar.onActivityStopped(activity, timeMillis);
         }
         ModelPairLifecycleListener bVar = (ModelPairLifecycleListener) this.mModelPairLifecycleListenerMap.get(activity);
         if (bVar != null) {
@@ -94,10 +99,11 @@ public class PageModelLifecycle implements ActivityLifeCycleDispatcher.LifeCycle
         }
     }
 
-    public void onActivityDestroyed(Activity activity, long j) {
+    @Override
+    public void onActivityDestroyed(Activity activity, long timeMillis) {
         ModelLifecycleListener aVar = (ModelLifecycleListener) this.mModelLifecycleListenerMap.get(activity);
         if (aVar != null) {
-            aVar.onActivityDestroyed(activity, j);
+            aVar.onActivityDestroyed(activity, timeMillis);
         }
         this.mModelLifecycleListenerMap.remove(activity);
         if (activity == this.mActivity) {

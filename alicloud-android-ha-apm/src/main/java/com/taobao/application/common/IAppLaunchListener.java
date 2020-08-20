@@ -7,13 +7,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 public interface IAppLaunchListener {
-    public static final int COLD = 0;
-    public static final int HOT = 1;
-    public static final int LAUNCH_COMPLETED = 4;
-    public static final int LAUNCH_DRAW_START = 0;
-    public static final int LAUNCH_INTERACTIVE = 2;
+    int COLD = 0;
+    int HOT = 1;
+    int LAUNCH_COMPLETED = 4;
+    int LAUNCH_DRAW_START = 0;
+    int LAUNCH_INTERACTIVE = 2;
     public static final int LAUNCH_SKI_INTERACTIVE = 3;
-    public static final int LAUNCH_VISIBLE = 1;
+    int LAUNCH_VISIBLE = 1;
 
     @Documented
     @Target({ElementType.PARAMETER})
@@ -21,5 +21,5 @@ public interface IAppLaunchListener {
     public @interface LaunchStatus {
     }
 
-    void onLaunchChanged(int i, int i2);
+    void onLaunchChanged(int launchType, int launchStatus);
 }

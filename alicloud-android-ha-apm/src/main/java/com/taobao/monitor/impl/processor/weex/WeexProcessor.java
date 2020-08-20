@@ -271,10 +271,10 @@ public class WeexProcessor extends AbsProcessor implements OnUsableVisibleListen
         }
     }
 
-    public void visiblePercent(Activity activity, float f2, long j) {
+    public void visiblePercent(Activity activity, float percent, long timeMillis) {
         if (this.f44q) {
-            this.mTypeProcedure.addProperty("onRenderPercent", Float.valueOf(f2));
-            this.mTypeProcedure.addProperty("drawPercentTime", Long.valueOf(j));
+            this.mTypeProcedure.addProperty("onRenderPercent", Float.valueOf(percent));
+            this.mTypeProcedure.addProperty("drawPercentTime", Long.valueOf(timeMillis));
         }
     }
 }

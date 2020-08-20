@@ -4,9 +4,9 @@ import java.util.List;
 
 /* compiled from: ILiteDb */
 public interface ILiteDb {
-    List<String> a();
+    List<String> getAll();
 
-    void a(String str);
+    void save(String str);
 
     void delete();
 }

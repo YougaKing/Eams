@@ -17,7 +17,7 @@ class SenderLiteDb implements ILiteDb {
     public SenderLiteDb() {
     }
 
-    public void a(String var1) {
+    public void save(String var1) {
         try {
             this.b();
             long var2 = this.file.length();
@@ -40,7 +40,7 @@ class SenderLiteDb implements ILiteDb {
 
     }
 
-    public List<String> a() {
+    public List<String> getAll() {
         try {
             this.b();
             long var1 = this.file.length();

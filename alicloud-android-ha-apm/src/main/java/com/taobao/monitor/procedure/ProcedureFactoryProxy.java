@@ -12,11 +12,11 @@ public class ProcedureFactoryProxy implements IProcedureFactory {
         return this;
     }
 
-    public IProcedure createProcedure(String str) {
-        return this.real.createProcedure(str);
+    public IProcedure createProcedure(String topic) {
+        return this.real.createProcedure(topic);
     }
 
-    public IProcedure createProcedure(String str, ProcedureConfig procedureConfig) {
-        return this.real.createProcedure(str, procedureConfig);
+    public IProcedure createProcedure(String topic, ProcedureConfig procedureConfig) {
+        return this.real.createProcedure(topic, procedureConfig);
     }
 }

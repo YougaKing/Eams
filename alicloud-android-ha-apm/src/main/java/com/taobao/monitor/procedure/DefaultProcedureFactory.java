@@ -5,11 +5,11 @@ class DefaultProcedureFactory implements IProcedureFactory {
     DefaultProcedureFactory() {
     }
 
-    public IProcedure createProcedure(String str) {
+    public IProcedure createProcedure(String topic) {
         return IProcedure.DEFAULT;
     }
 
-    public IProcedure createProcedure(String str, ProcedureConfig procedureConfig) {
+    public IProcedure createProcedure(String topic, ProcedureConfig procedureConfig) {
         return IProcedure.DEFAULT;
     }
 }

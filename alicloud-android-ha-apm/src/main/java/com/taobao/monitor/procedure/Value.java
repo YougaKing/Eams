@@ -2,9 +2,11 @@ package com.taobao.monitor.procedure;
 
 import android.os.SystemClock;
 import android.text.TextUtils;
+
 import com.taobao.monitor.procedure.model.Biz;
 import com.taobao.monitor.procedure.model.Event;
 import com.taobao.monitor.procedure.model.Stage;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -26,28 +28,28 @@ public class Value {
     private long timestamp = SystemClock.uptimeMillis();
     private final String topic;
 
-    Value(String str, boolean z, boolean z2) {
-        this.topic = str;
-        int lastIndexOf = str.lastIndexOf("/");
-        if (lastIndexOf == -1 || str.length() <= lastIndexOf + 1) {
-            this.simpleTopic = str;
+    Value(String topic, boolean independent, boolean parentNeedStats) {
+        this.topic = topic;
+        int lastIndexOf = topic.lastIndexOf("/");
+        if (lastIndexOf == -1 || topic.length() <= lastIndexOf + 1) {
+            this.simpleTopic = topic;
         } else {
-            this.simpleTopic = str.substring(lastIndexOf + 1);
+            this.simpleTopic = topic.substring(lastIndexOf + 1);
         }
-        this.independent = z;
-        this.parentNeedStats = z2;
+        this.independent = independent;
+        this.parentNeedStats = parentNeedStats;
         initialize();
     }
 
     private void initialize() {
-        this.subValues = new LinkedList();
-        this.events = new LinkedList();
-        this.stages = new LinkedList();
-        this.statistics = new ConcurrentHashMap();
-        this.counters = new ConcurrentHashMap();
-        this.properties = new ConcurrentHashMap();
-        this.bizs = new LinkedList();
-        this.bizIndex = new ConcurrentHashMap();
+        this.subValues = new LinkedList<>();
+        this.events = new LinkedList<>();
+        this.stages = new LinkedList<>();
+        this.statistics = new ConcurrentHashMap<>();
+        this.counters = new ConcurrentHashMap<>();
+        this.properties = new ConcurrentHashMap<>();
+        this.bizs = new LinkedList<>();
+        this.bizIndex = new ConcurrentHashMap<>();
     }
 
     public String topic() {

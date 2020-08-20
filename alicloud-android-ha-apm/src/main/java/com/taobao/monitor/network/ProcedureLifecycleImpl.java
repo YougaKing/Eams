@@ -18,6 +18,7 @@ import java.util.Map.Entry;
 
 /* compiled from: ProcedureLifecycleImpl */
 public class ProcedureLifecycleImpl implements IProcedureLifeCycle {
+
     public void begin(Value value) {
     }
 
@@ -30,27 +31,45 @@ public class ProcedureLifecycleImpl implements IProcedureLifeCycle {
     public void end(final Value value) {
         ThreadUtils.start(new Runnable() {
             public void run() {
-                ProcedureLifecycleImpl.this.m0a(value);
+                ProcedureLifecycleImpl.this.send(value);
             }
         });
     }
 
     /* renamed from: a reason: collision with other method in class */
-    private void m0a(Value value) {
+    private void send(Value value) {
         JSONObject jSONObject = new JSONObject();
         try {
             jSONObject.put("version", Header.apmVersion);
             jSONObject.put("topic", value.topic());
-            JSONObject jSONObject2 = new JSONObject();
-            jSONObject2.put("X-timestamp", value.timestamp()).put("X-appId", Header.appId).put("X-appKey", Header.appKey).put("X-appBuild", Header.appBuild).put("X-appPatch", Header.appPatch).put("X-channel", Header.channel).put("X-utdid", Header.utdid).put("X-brand", Header.brand).put("X-deviceModel", Header.deviceModel).put("X-os", Header.os).put("X-osVersion", Header.osVersion).put("X-userId", Header.userId).put("X-userNick", Header.userNick).put("X-session", Header.session).put("X-processName", Header.processName).put("X-appVersion", Header.appVersion).put("X-launcherMode", Header.launcherMode);
-            jSONObject.put("headers", jSONObject2);
+
+            JSONObject headerObject = new JSONObject();
+            headerObject.put("X-timestamp", value.timestamp())
+                    .put("X-appId", Header.appId)
+                    .put("X-appKey", Header.appKey)
+                    .put("X-appBuild", Header.appBuild)
+                    .put("X-appPatch", Header.appPatch)
+                    .put("X-channel", Header.channel)
+                    .put("X-utdid", Header.utdid)
+                    .put("X-brand", Header.brand)
+                    .put("X-deviceModel", Header.deviceModel)
+                    .put("X-os", Header.os)
+                    .put("X-osVersion", Header.osVersion)
+                    .put("X-userId", Header.userId)
+                    .put("X-userNick", Header.userNick)
+                    .put("X-session", Header.session)
+                    .put("X-processName", Header.processName)
+                    .put("X-appVersion", Header.appVersion)
+                    .put("X-launcherMode", Header.launcherMode);
+
+            jSONObject.put("headers", headerObject);
             jSONObject.put("value", a(value));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String jSONObject3 = jSONObject.toString();
-        Logger.i("NetworkDataUpdate", jSONObject3);
-        NetworkSenderProxy.instance().send(value.topic(), jSONObject3);
+        String json = jSONObject.toString();
+        Logger.i("NetworkDataUpdate", json);
+        NetworkSenderProxy.instance().send(value.topic(), json);
     }
 
     /* access modifiers changed from: private */

@@ -38,14 +38,14 @@ public class ProcedureImpl implements IProcedureGroup, IValueCallback {
         STOPPED
     }
 
-    ProcedureImpl(String str, IProcedure iProcedure, boolean z, boolean z2) {
+    ProcedureImpl(String topic, IProcedure iProcedure, boolean independent, boolean parentNeedStats) {
         long j = count;
         count = 1 + j;
         this.session = String.valueOf(j);
-        this.topic = str;
+        this.topic = topic;
         this.parent = iProcedure;
-        this.independent = z;
-        this.value = new Value(str, z, z2);
+        this.independent = independent;
+        this.value = new Value(topic, independent, parentNeedStats);
         if (iProcedure != null) {
             this.value.addProperty("parentSession", iProcedure.topicSession());
         }

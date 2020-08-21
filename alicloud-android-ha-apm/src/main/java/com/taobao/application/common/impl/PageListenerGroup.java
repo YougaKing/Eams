@@ -12,10 +12,10 @@ class PageListenerGroup implements IPageListener, IListenerGroup<IPageListener> 
     PageListenerGroup() {
     }
 
-    public void onPageChanged(String str, int i, long j) {
-        final String str2 = str;
-        final int i2 = i;
-        final long j2 = j;
+    public void onPageChanged(String pageName, int pageStatus, long timeMillis) {
+        final String str2 = pageName;
+        final int i2 = pageStatus;
+        final long j2 = timeMillis;
         a((Runnable) new Runnable() {
             public void run() {
                 Iterator it = PageListenerGroup.this.a.iterator();

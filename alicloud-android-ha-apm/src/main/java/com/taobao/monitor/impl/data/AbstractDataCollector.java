@@ -22,9 +22,14 @@ import com.taobao.monitor.impl.trace.DispatcherManager;
 import com.taobao.monitor.impl.trace.UsableVisibleDispatcher;
 import com.taobao.monitor.impl.util.TimeUtils;
 
+import static com.taobao.application.common.IPageListener.DRAW_START;
+import static com.taobao.application.common.IPageListener.INIT_TIME;
+import static com.taobao.application.common.IPageListener.INTERACTIVE;
+import static com.taobao.application.common.IPageListener.VISIBLE;
+
 /* compiled from: AbstractDataCollector */
 public class AbstractDataCollector<T> implements PageLoadCalculate.PageLoadCalculateListener, SimplePageLoadCalculate.PageLoadCalculateListener, Runnable {
-    private float a = 0.0f;
+    private float mPercent = 0.0f;
 
     /* renamed from: a reason: collision with other field name */
     private IExecutor mPageLoadCalculate;
@@ -40,8 +45,8 @@ public class AbstractDataCollector<T> implements PageLoadCalculate.PageLoadCalcu
     };
 
     /* renamed from: a reason: collision with other field name */
-    private volatile boolean f23a = false;
-    private final IPageListener mPageListener = ApmImpl.instance().m4a();
+    private volatile boolean mResume = false;
+    private final IPageListener mPageListener = ApmImpl.instance().pageListener();
 
     /* renamed from: b reason: collision with other field name */
     private IExecutor mSimplePageLoadCalculate;
@@ -50,19 +55,19 @@ public class AbstractDataCollector<T> implements PageLoadCalculate.PageLoadCalcu
     private final T mT;
 
     /* renamed from: b reason: collision with other field name */
-    private boolean f26b = false;
+    private boolean mUsable = false;
     private boolean c = false;
     private int count = 0;
     private boolean d = false;
-    private final boolean e;
+    private final boolean mIsActivity;
     private final String pageName;
 
     protected AbstractDataCollector(T t) {
         if ((t instanceof Activity) || (t instanceof Fragment)) {
             this.mT = t;
-            this.e = t instanceof Activity;
+            this.mIsActivity = t instanceof Activity;
             this.pageName = t.getClass().getName();
-            this.mPageListener.onPageChanged(this.pageName, 0, TimeUtils.currentTimeMillis());
+            this.mPageListener.onPageChanged(this.pageName, INIT_TIME, TimeUtils.currentTimeMillis());
             Logger.i("AbstractDataCollector", "visibleStart", this.pageName);
             return;
         }
@@ -97,8 +102,8 @@ public class AbstractDataCollector<T> implements PageLoadCalculate.PageLoadCalcu
     /* access modifiers changed from: protected */
     public void onResume(View view) {
         this.d = false;
-        if (!this.f23a) {
-            if (!DispatcherManager.isEmpty((IDispatcher) this.mUsableVisibleDispatcher)) {
+        if (!this.mResume) {
+            if (!DispatcherManager.isEmpty(this.mUsableVisibleDispatcher)) {
                 this.mUsableVisibleDispatcher.onResume(this.mT, TimeUtils.currentTimeMillis());
             }
             this.mPageLoadCalculate = new PageLoadCalculate(view);
@@ -109,63 +114,65 @@ public class AbstractDataCollector<T> implements PageLoadCalculate.PageLoadCalcu
                 this.mSimplePageLoadCalculate.execute();
             }
             Global.instance().handler().postDelayed(this.mRunnable, 20000);
-            this.mPageListener.onPageChanged(this.pageName, 1, TimeUtils.currentTimeMillis());
-            this.f23a = true;
+            this.mPageListener.onPageChanged(this.pageName, DRAW_START, TimeUtils.currentTimeMillis());
+            this.mResume = true;
         }
     }
 
     /* access modifiers changed from: protected */
     public void onStop() {
         stop();
-        this.d = !this.e;
+        this.d = !this.mIsActivity;
     }
 
     /* access modifiers changed from: protected */
-    public void usable(int i, long j) {
-        if (!this.f26b && !this.d) {
+    public void usable(int i, long timeMillis) {
+        if (!this.mUsable && !this.d) {
             DataLoggerUtils.log("AbstractDataCollector", "usable", this.pageName);
-            Logger.i("AbstractDataCollector", this.pageName, " usable", Long.valueOf(j));
-            if (!DispatcherManager.isEmpty((IDispatcher) this.mUsableVisibleDispatcher)) {
-                this.mUsableVisibleDispatcher.usable(this.mT, 2, i, j);
+            Logger.i("AbstractDataCollector", this.pageName, " usable", timeMillis);
+            if (!DispatcherManager.isEmpty(this.mUsableVisibleDispatcher)) {
+                this.mUsableVisibleDispatcher.usable(this.mT, 2, i, timeMillis);
             }
             stop();
-            this.mPageListener.onPageChanged(this.pageName, 3, j);
-            this.f26b = true;
+            this.mPageListener.onPageChanged(this.pageName, INTERACTIVE, timeMillis);
+            this.mUsable = true;
         }
     }
 
     @Override
     public void visiblePercent(float percent) {
-        Logger.i("AbstractDataCollector", "visiblePercent", Float.valueOf(percent), this.pageName);
-        if (Math.abs(percent - this.a) > 0.05f || percent > 0.8f) {
-            if (!DispatcherManager.isEmpty((IDispatcher) this.mUsableVisibleDispatcher)) {
+        Logger.i("AbstractDataCollector", "visiblePercent", percent, this.pageName);
+        if (Math.abs(percent - this.mPercent) > 0.05f || percent > 0.8f) {
+            if (!DispatcherManager.isEmpty(this.mUsableVisibleDispatcher)) {
                 this.mUsableVisibleDispatcher.visiblePercent(this.mT, percent, TimeUtils.currentTimeMillis());
             }
-            DataLoggerUtils.log("AbstractDataCollector", "visiblePercent", Float.valueOf(percent), this.pageName);
+            DataLoggerUtils.log("AbstractDataCollector", "visiblePercent", percent, this.pageName);
             if (percent > 0.8f) {
                 display(TimeUtils.currentTimeMillis());
                 run();
             }
-            this.a = percent;
+            this.mPercent = percent;
         }
     }
 
+    @Override
     public void pageDisplay(long j) {
         display(j);
     }
 
     private void display(long j) {
         if (!this.c && !this.d) {
-            if (!DispatcherManager.isEmpty((IDispatcher) this.mUsableVisibleDispatcher)) {
-                Logger.i("AbstractDataCollector", this.pageName, " visible", Long.valueOf(j));
+            if (!DispatcherManager.isEmpty(this.mUsableVisibleDispatcher)) {
+                Logger.i("AbstractDataCollector", this.pageName, " visible", j);
                 this.mUsableVisibleDispatcher.display((Object) this.mT, 2, j);
             }
-            this.mPageListener.onPageChanged(this.pageName, 2, j);
+            this.mPageListener.onPageChanged(this.pageName, VISIBLE, j);
             stop();
             this.c = true;
         }
     }
 
+    @Override
     public void pageUsable(int i, long j) {
         usable(i, j);
     }

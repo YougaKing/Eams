@@ -341,18 +341,18 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
         }
     }
 
-    public void usable(Activity activity, int i2, int i3, long j) {
+    public void usable(Activity activity, int i2, int i3, long timeMillis) {
         if (this.f111s && activity == this.f101d && i2 == 2) {
-            this.mPageLoadProcedure.addProperty("interactiveDuration", Long.valueOf(j - this.f));
-            this.mPageLoadProcedure.addProperty("loadDuration", Long.valueOf(j - this.f));
+            this.mPageLoadProcedure.addProperty("interactiveDuration", Long.valueOf(timeMillis - this.f));
+            this.mPageLoadProcedure.addProperty("loadDuration", Long.valueOf(timeMillis - this.f));
             this.mPageLoadProcedure.addProperty("usableChangeType", Integer.valueOf(i3));
-            this.mPageLoadProcedure.stage("interactiveTime", j);
+            this.mPageLoadProcedure.stage("interactiveTime", timeMillis);
             this.mPageLoadProcedure.addProperty("errorCode", Integer.valueOf(0));
             this.mPageLoadProcedure.addStatistic("totalRx", Long.valueOf(this.f98b[0]));
             this.mPageLoadProcedure.addStatistic("totalTx", Long.valueOf(this.f98b[1]));
             this.f111s = false;
             UsableEvent usableEvent = new UsableEvent();
-            usableEvent.duration = (float) (j - this.f);
+            usableEvent.duration = (float) (timeMillis - this.f);
             DumpManager.getInstance().append(usableEvent);
             if (this.f97b != null && this.f97b.size() != 0) {
                 Integer valueOf = Integer.valueOf(0);

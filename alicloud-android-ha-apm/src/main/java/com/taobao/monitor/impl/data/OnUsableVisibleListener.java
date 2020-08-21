@@ -4,7 +4,7 @@ package com.taobao.monitor.impl.data;
 public interface OnUsableVisibleListener<T> {
     void visiblePercent(T t, float percent, long timeMillis);
 
-    void usable(T t, int i, int i2, long j);
+    void usable(T t, int i, int i2, long timeMillis);
 
     void display(T t, int i, long j);
 

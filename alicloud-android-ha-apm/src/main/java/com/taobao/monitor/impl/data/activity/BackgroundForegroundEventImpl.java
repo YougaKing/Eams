@@ -5,6 +5,10 @@ import com.taobao.application.common.data.AppLaunchHelper;
 import com.taobao.application.common.data.BackgroundForegroundHelper;
 import com.taobao.application.common.impl.ApmImpl;
 
+import static com.taobao.application.common.IApmEventListener.NOTIFY_BACKGROUND_2_FOREGROUND;
+import static com.taobao.application.common.IApmEventListener.NOTIFY_FOREGROUND_2_BACKGROUND;
+import static com.taobao.application.common.IApmEventListener.NOTIFY_FOR_IN_BACKGROUND;
+
 /* compiled from: BackgroundForegroundEventImpl */
 class BackgroundForegroundEventImpl {
     private final BackgroundForegroundHelper mBackgroundForegroundHelper = new BackgroundForegroundHelper();
@@ -19,7 +23,7 @@ class BackgroundForegroundEventImpl {
     private final Runnable e = new Runnable() {
         public void run() {
             if (l) {
-                mApmEventListener.onEvent(50);
+                mApmEventListener.onApmEvent(NOTIFY_FOR_IN_BACKGROUND);
             }
         }
     };
@@ -34,7 +38,7 @@ class BackgroundForegroundEventImpl {
         this.l = false;
         this.mBackgroundForegroundHelper.c(false);
         this.mBackgroundForegroundHelper.d(false);
-        this.mApmEventListener.onEvent(2);
+        this.mApmEventListener.onApmEvent(NOTIFY_BACKGROUND_2_FOREGROUND);
         ApmImpl.instance().getAsyncHandler().removeCallbacks(this.d);
         ApmImpl.instance().getAsyncHandler().removeCallbacks(this.e);
     }
@@ -43,7 +47,7 @@ class BackgroundForegroundEventImpl {
     public void j() {
         this.l = true;
         this.mBackgroundForegroundHelper.c(true);
-        this.mApmEventListener.onEvent(1);
+        this.mApmEventListener.onApmEvent(NOTIFY_FOREGROUND_2_BACKGROUND);
         ApmImpl.instance().getAsyncHandler().postDelayed(this.d, 300000);
         ApmImpl.instance().getAsyncHandler().postDelayed(this.e, 10000);
     }

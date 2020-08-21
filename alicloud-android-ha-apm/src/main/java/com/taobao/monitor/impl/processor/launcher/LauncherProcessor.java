@@ -342,19 +342,19 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     }
 
     @Override
-    public void usable(Activity activity, int i2, int i3, long j) {
+    public void usable(Activity activity, int i2, int i3, long timeMillis) {
         if (this.mUsable && activity == this.mLauncherActivity && i2 == 2) {
             this.mStartupProcedure.addProperty("errorCode", 0);
-            this.mStartupProcedure.addProperty("interactiveDuration", j - this.mLaunchTime);
-            this.mStartupProcedure.addProperty("launchDuration", j - this.mLaunchTime);
+            this.mStartupProcedure.addProperty("interactiveDuration", timeMillis - this.mLaunchTime);
+            this.mStartupProcedure.addProperty("launchDuration", timeMillis - this.mLaunchTime);
             this.mStartupProcedure.addProperty("deviceLevel", AliHAHardware.getInstance().getOutlineInfo().deviceLevel);
             this.mStartupProcedure.addProperty("runtimeLevel", AliHAHardware.getInstance().getOutlineInfo().runtimeLevel);
             this.mStartupProcedure.addProperty("cpuUsageOfDevcie", AliHAHardware.getInstance().getCpuInfo().cpuUsageOfDevcie);
             this.mStartupProcedure.addProperty("memoryRuntimeLevel", AliHAHardware.getInstance().getMemoryInfo().runtimeLevel);
             this.mStartupProcedure.addProperty("usableChangeType", i3);
-            this.mStartupProcedure.stage("interactiveTime", j);
+            this.mStartupProcedure.stage("interactiveTime", timeMillis);
             LauncherUsableEvent launcherUsableEvent = new LauncherUsableEvent();
-            launcherUsableEvent.duration = (float) (j - this.mLaunchTime);
+            launcherUsableEvent.duration = (float) (timeMillis - this.mLaunchTime);
             DumpManager.getInstance().append(launcherUsableEvent);
             this.mAppLaunchListener.onLaunchChanged(getLaunchType(), LAUNCH_INTERACTIVE);
             onLaunchCompleted();

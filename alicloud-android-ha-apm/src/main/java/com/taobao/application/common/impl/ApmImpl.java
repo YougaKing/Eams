@@ -26,7 +26,7 @@ public class ApmImpl implements Apm, IApplicationMonitor {
     private final ICallbackGroup<ActivityLifecycleCallbacks> mMainApplicationCallbackGroup;
 
     /* renamed from: a reason: collision with other field name */
-    private final IListenerGroup<IPageListener> f5a;
+    private final IListenerGroup<IPageListener> mPageListenerGroup;
 
     /* renamed from: a reason: collision with other field name */
     private ConcurrentHashMap<ActivityLifecycleCallbacks, Boolean> f6a;
@@ -44,7 +44,7 @@ public class ApmImpl implements Apm, IApplicationMonitor {
     private ApmImpl() {
         this.mMainApplicationCallbackGroup = new MainApplicationCallbackGroup();
         this.mApplicationCallbackGroup = new ApplicationCallbackGroup();
-        this.f5a = new PageListenerGroup();
+        this.mPageListenerGroup = new PageListenerGroup();
         this.mAppLaunchListenerGroup = new AppLaunchListenerGroup();
         this.mApmEventListenerGroup = new ApmEventListenerGroup();
         this.f6a = new ConcurrentHashMap<>();
@@ -90,11 +90,11 @@ public class ApmImpl implements Apm, IApplicationMonitor {
     }
 
     public void addPageListener(IPageListener iPageListener) {
-        this.f5a.addListener(iPageListener);
+        this.mPageListenerGroup.addListener(iPageListener);
     }
 
     public void removePageListener(IPageListener iPageListener) {
-        this.f5a.removeListener(iPageListener);
+        this.mPageListenerGroup.removeListener(iPageListener);
     }
 
     public void addAppLaunchListener(IAppLaunchListener iAppLaunchListener) {
@@ -142,8 +142,8 @@ public class ApmImpl implements Apm, IApplicationMonitor {
     }
 
     /* renamed from: a reason: collision with other method in class */
-    public IPageListener m4a() {
-        return (IPageListener) a((Object) this.f5a);
+    public IPageListener pageListener() {
+        return (IPageListener) a((Object) this.mPageListenerGroup);
     }
 
     /* renamed from: a reason: collision with other method in class */

@@ -22,6 +22,8 @@ import com.taobao.monitor.impl.util.TimeUtils;
 
 import java.lang.reflect.Proxy;
 
+import static android.view.MotionEvent.ACTION_MOVE;
+
 /* compiled from: ActivityDataCollector */
 class ActivityDataCollector extends AbstractDataCollector<Activity> implements ActivityLifecycle.LifecycleListener,
         WindowCallbackProxy.CallbackListener {
@@ -34,7 +36,7 @@ class ActivityDataCollector extends AbstractDataCollector<Activity> implements A
     private ActivityLifeCycleDispatcher mActivityLifeCycleDispatcher = null;
 
     /* renamed from: a reason: collision with other field name */
-    private boolean f29a = false;
+    private boolean mResumed = false;
     private final Activity mActivity;
 
     ActivityDataCollector(Activity activity) {
@@ -86,7 +88,7 @@ class ActivityDataCollector extends AbstractDataCollector<Activity> implements A
                 if (!PageList.inBlackList(ActivityUtils.getName(activity))) {
                     onResume(decorView);
                 }
-                if (!this.f29a) {
+                if (!this.mResumed) {
                     Callback callback = window.getCallback();
                     if (callback != null) {
                         try {
@@ -95,7 +97,7 @@ class ActivityDataCollector extends AbstractDataCollector<Activity> implements A
                             e.printStackTrace();
                         }
                     }
-                    this.f29a = true;
+                    this.mResumed = true;
                 }
                 if (VERSION.SDK_INT >= 16) {
                     decorView.getViewTreeObserver().addOnDrawListener(this.mDrawTimeCollector);
@@ -140,7 +142,7 @@ class ActivityDataCollector extends AbstractDataCollector<Activity> implements A
             this.mActivityEventDispatcher.onMotionEvent(this.mActivity, motionEvent, TimeUtils.currentTimeMillis());
         }
         usable(3, TimeUtils.currentTimeMillis());
-        if (motionEvent.getAction() == 2 && VERSION.SDK_INT >= 16) {
+        if (motionEvent.getAction() == ACTION_MOVE && VERSION.SDK_INT >= 16) {
             this.mDrawTimeCollector.mOnTouchEvent();
         }
     }

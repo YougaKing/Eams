@@ -16,11 +16,11 @@ public class UsableVisibleDispatcher<T> extends AbsDispatcher<OnUsableVisibleLis
         });
     }
 
-    public void usable(Object obj, int i, int i2, long j) {
+    public void usable(Object obj, int i, int i2, long timeMillis) {
         final Object obj2 = obj;
         final int i3 = i;
         final int i4 = i2;
-        final long j2 = j;
+        final long j2 = timeMillis;
         dispatchRunnable(new DispatcherRunnable<OnUsableVisibleListener>() {
             /* renamed from: a */
             public void run(OnUsableVisibleListener hVar) {

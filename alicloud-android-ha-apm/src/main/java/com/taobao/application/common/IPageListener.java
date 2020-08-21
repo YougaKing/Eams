@@ -7,11 +7,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 public interface IPageListener {
-    public static final int DRAW_START = 1;
-    public static final int INIT_TIME = 0;
-    public static final int INTERACTIVE = 3;
+    int DRAW_START = 1;
+    int INIT_TIME = 0;
+    int INTERACTIVE = 3;
     public static final int SKI_INTERACTIVE = 4;
-    public static final int VISIBLE = 2;
+    int VISIBLE = 2;
 
     @Documented
     @Target({ElementType.PARAMETER})
@@ -19,5 +19,5 @@ public interface IPageListener {
     public @interface PageStatus {
     }
 
-    void onPageChanged(String str, int i, long j);
+    void onPageChanged(String pageName, int pageStatus, long timeMillis);
 }

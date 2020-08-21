@@ -9,12 +9,12 @@ public class ApmEventListenerGroup implements IApmEventListener, IListenerGroup<
     /* access modifiers changed from: private */
     public final ArrayList<IApmEventListener> a = new ArrayList<>();
 
-    public void onEvent(final int i) {
+    public void onApmEvent(final int apmEventType) {
         a((Runnable) new Runnable() {
             public void run() {
                 Iterator it = ApmEventListenerGroup.this.a.iterator();
                 while (it.hasNext()) {
-                    ((IApmEventListener) it.next()).onEvent(i);
+                    ((IApmEventListener) it.next()).onApmEvent(apmEventType);
                 }
             }
         });

@@ -21,14 +21,11 @@ public class ActivityLifeCycleDispatcher extends AbsDispatcher<ActivityLifeCycle
         void onActivityDestroyed(Activity activity, long timeMillis);
     }
 
-    public void onActivityCreated(Activity activity, Bundle bundle, long j) {
-        final Activity activity2 = activity;
-        final Bundle bundle2 = bundle;
-        final long j2 = j;
+    public void onActivityCreated(final Activity activity, final Bundle bundle, final long timeMillis) {
         dispatchRunnable(new DispatcherRunnable<LifeCycleListener>() {
             /* renamed from: a */
             public void run(LifeCycleListener aVar) {
-                aVar.onActivityCreated(activity2, bundle2, j2);
+                aVar.onActivityCreated(activity, bundle, timeMillis);
             }
         });
     }

@@ -35,8 +35,8 @@ public class SimplePageLoadCalculate implements OnDrawListener, IExecutor {
     private final Runnable mUiRunnable = new Runnable() {
         @UiThread
         public void run() {
-            f++;
-            if (f > 2) {
+            mDrawCount++;
+            if (mDrawCount > 2) {
                 e = TimeUtils.currentTimeMillis();
                 return;
             }
@@ -50,12 +50,12 @@ public class SimplePageLoadCalculate implements OnDrawListener, IExecutor {
     private volatile boolean f37d = false;
     /* access modifiers changed from: private */
     public long e;
-    private int f = 0;
+    private int mDrawCount = 0;
     private volatile boolean j = false;
 
     /* compiled from: SimplePageLoadCalculate */
     public interface PageLoadCalculateListener {
-        void pageUsable(int usableChangeType, long j);
+        void pageUsable(int usableChangeType, long timeMillis);
 
         void pageDisplay(long j);
     }
@@ -116,7 +116,7 @@ public class SimplePageLoadCalculate implements OnDrawListener, IExecutor {
     @Override
     public void onDraw() {
         this.b = TimeUtils.currentTimeMillis();
-        this.f = 0;
+        this.mDrawCount = 0;
         Global.instance().handler().removeCallbacks(this.mRunnable);
         Global.instance().handler().postDelayed(this.mRunnable, 3000);
         this.mHandler.removeCallbacks(this.mUiRunnable);

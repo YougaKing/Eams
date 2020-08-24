@@ -173,8 +173,8 @@ public class AbstractDataCollector<T> implements PageLoadCalculate.PageLoadCalcu
     }
 
     @Override
-    public void pageUsable(int usableChangeType, long j) {
-        usable(usableChangeType, j);
+    public void pageUsable(int usableChangeType, long timeMillis) {
+        usable(usableChangeType, timeMillis);
     }
 
     /* access modifiers changed from: private */

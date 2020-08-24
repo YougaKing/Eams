@@ -16,7 +16,7 @@ import com.taobao.monitor.impl.util.TimeUtils;
 /* compiled from: SimplePageLoadCalculate */
 public class SimplePageLoadCalculate implements OnDrawListener, IExecutor {
     private final PageLoadCalculateListener mPageLoadCalculateListener;
-    private long b;
+    private long mDrawTime;
 
     /* renamed from: b reason: collision with other field name */
     private final Handler mHandler = new Handler(Looper.getMainLooper());
@@ -24,10 +24,10 @@ public class SimplePageLoadCalculate implements OnDrawListener, IExecutor {
     /* renamed from: b reason: collision with other field name */
     private final Runnable mRunnable = new Runnable() {
         public void run() {
-            h();
-            mPageLoadCalculateListener.pageDisplay(b);
-            if (e > b) {
-                mPageLoadCalculateListener.pageUsable(2, e);
+            removeOnDrawListener();
+            mPageLoadCalculateListener.pageDisplay(mDrawTime);
+            if (mDrawTwiceTime > mDrawTime) {
+                mPageLoadCalculateListener.pageUsable(2, mDrawTwiceTime);
                 stop();
             }
         }
@@ -37,7 +37,7 @@ public class SimplePageLoadCalculate implements OnDrawListener, IExecutor {
         public void run() {
             mDrawCount++;
             if (mDrawCount > 2) {
-                e = TimeUtils.currentTimeMillis();
+                mDrawTwiceTime = TimeUtils.currentTimeMillis();
                 return;
             }
             mHandler.removeCallbacks(this);
@@ -47,17 +47,17 @@ public class SimplePageLoadCalculate implements OnDrawListener, IExecutor {
     private final View mView;
 
     /* renamed from: d reason: collision with other field name */
-    private volatile boolean f37d = false;
+    private volatile boolean mStop = false;
     /* access modifiers changed from: private */
-    public long e;
+    public long mDrawTwiceTime;
     private int mDrawCount = 0;
-    private volatile boolean j = false;
+    private volatile boolean mRemoveDraw = false;
 
     /* compiled from: SimplePageLoadCalculate */
     public interface PageLoadCalculateListener {
         void pageUsable(int usableChangeType, long timeMillis);
 
-        void pageDisplay(long j);
+        void pageDisplay(long timeMillis);
     }
 
     public SimplePageLoadCalculate(View view, PageLoadCalculateListener aVar) {
@@ -83,24 +83,24 @@ public class SimplePageLoadCalculate implements OnDrawListener, IExecutor {
 
     @Override
     public void stop() {
-        if (!this.f37d) {
-            this.f37d = true;
-            h();
+        if (!this.mStop) {
+            this.mStop = true;
+            removeOnDrawListener();
             this.mHandler.removeCallbacks(this.mUiRunnable);
         }
     }
 
-    public void e() {
-        this.mPageLoadCalculateListener.pageDisplay(this.b);
-        if (this.e > this.b) {
-            this.mPageLoadCalculateListener.pageUsable(4, this.e);
+    public void onActivityStopped() {
+        this.mPageLoadCalculateListener.pageDisplay(this.mDrawTime);
+        if (this.mDrawTwiceTime > this.mDrawTime) {
+            this.mPageLoadCalculateListener.pageUsable(4, this.mDrawTwiceTime);
             stop();
         }
     }
 
-    private void h() {
-        if (!this.j) {
-            this.j = true;
+    private void removeOnDrawListener() {
+        if (!this.mRemoveDraw) {
+            this.mRemoveDraw = true;
             this.mHandler.post(new Runnable() {
                 public void run() {
                     ViewTreeObserver viewTreeObserver = mView.getViewTreeObserver();
@@ -115,7 +115,7 @@ public class SimplePageLoadCalculate implements OnDrawListener, IExecutor {
 
     @Override
     public void onDraw() {
-        this.b = TimeUtils.currentTimeMillis();
+        this.mDrawTime = TimeUtils.currentTimeMillis();
         this.mDrawCount = 0;
         Global.instance().handler().removeCallbacks(this.mRunnable);
         Global.instance().handler().postDelayed(this.mRunnable, 3000);

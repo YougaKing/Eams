@@ -156,17 +156,17 @@ public class AbstractDataCollector<T> implements PageLoadCalculate.PageLoadCalcu
     }
 
     @Override
-    public void pageDisplay(long j) {
-        display(j);
+    public void pageDisplay(long timeMillis) {
+        display(timeMillis);
     }
 
-    private void display(long j) {
+    private void display(long timeMillis) {
         if (!this.c && !this.d) {
             if (!DispatcherManager.isEmpty(this.mUsableVisibleDispatcher)) {
-                Logger.i("AbstractDataCollector", this.pageName, " visible", j);
-                this.mUsableVisibleDispatcher.display((Object) this.mT, 2, j);
+                Logger.i("AbstractDataCollector", this.pageName, " visible", timeMillis);
+                this.mUsableVisibleDispatcher.display((Object) this.mT, 2, timeMillis);
             }
-            this.mPageListener.onPageChanged(this.pageName, VISIBLE, j);
+            this.mPageListener.onPageChanged(this.pageName, VISIBLE, timeMillis);
             stop();
             this.c = true;
         }
@@ -214,9 +214,9 @@ public class AbstractDataCollector<T> implements PageLoadCalculate.PageLoadCalcu
     }
 
     /* access modifiers changed from: protected */
-    public void e() {
+    public void onActivityStopped() {
         if (this.mSimplePageLoadCalculate instanceof SimplePageLoadCalculate) {
-            ((SimplePageLoadCalculate) this.mSimplePageLoadCalculate).e();
+            ((SimplePageLoadCalculate) this.mSimplePageLoadCalculate).onActivityStopped();
         }
     }
 }

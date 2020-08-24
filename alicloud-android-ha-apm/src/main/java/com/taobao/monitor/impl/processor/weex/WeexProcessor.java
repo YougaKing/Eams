@@ -252,21 +252,21 @@ public class WeexProcessor extends AbsProcessor implements OnUsableVisibleListen
         }
     }
 
-    public void usable(Activity activity, int i2, int i3, long timeMillis) {
+    public void usable(Activity activity, int i2, int usableChangeType, long timeMillis) {
         if (this.f46s && this.f44q && i2 == 2) {
             this.mTypeProcedure.addProperty("interactiveDuration", Long.valueOf(timeMillis - this.f));
             this.mTypeProcedure.addProperty("loadDuration", Long.valueOf(timeMillis - this.f));
-            this.mTypeProcedure.addProperty("usableChangeType", Integer.valueOf(i3));
+            this.mTypeProcedure.addProperty("usableChangeType", Integer.valueOf(usableChangeType));
             this.mTypeProcedure.stage("interactiveTime", timeMillis);
             this.f46s = false;
         }
     }
 
     /* renamed from: f */
-    public void onResume(Activity activity, long j) {
+    public void onResume(Activity activity, long timeMillis) {
         if (this.f45r && this.f44q) {
-            this.mTypeProcedure.addProperty("pageInitDuration", Long.valueOf(j - this.f));
-            this.mTypeProcedure.stage("renderStartTime", j);
+            this.mTypeProcedure.addProperty("pageInitDuration", Long.valueOf(timeMillis - this.f));
+            this.mTypeProcedure.stage("renderStartTime", timeMillis);
             this.f45r = false;
         }
     }

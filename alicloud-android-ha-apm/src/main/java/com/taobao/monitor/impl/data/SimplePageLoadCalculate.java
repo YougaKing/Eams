@@ -55,7 +55,7 @@ public class SimplePageLoadCalculate implements OnDrawListener, IExecutor {
 
     /* compiled from: SimplePageLoadCalculate */
     public interface PageLoadCalculateListener {
-        void pageUsable(int i, long j);
+        void pageUsable(int usableChangeType, long j);
 
         void pageDisplay(long j);
     }

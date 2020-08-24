@@ -248,9 +248,9 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     }
 
     @Override
-    public void onResume(Activity activity, long j) {
+    public void onResume(Activity activity, long timeMillis) {
         Map<String, Object> hashMap = new HashMap<>(2);
-        hashMap.put("timestamp", j);
+        hashMap.put("timestamp", timeMillis);
         hashMap.put("pageName", ActivityUtils.getSimpleName(activity));
         this.mStartupProcedure.event("onActivityStarted", hashMap);
     }
@@ -342,7 +342,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     }
 
     @Override
-    public void usable(Activity activity, int i2, int i3, long timeMillis) {
+    public void usable(Activity activity, int i2, int usableChangeType, long timeMillis) {
         if (this.mUsable && activity == this.mLauncherActivity && i2 == 2) {
             this.mStartupProcedure.addProperty("errorCode", 0);
             this.mStartupProcedure.addProperty("interactiveDuration", timeMillis - this.mLaunchTime);
@@ -351,7 +351,7 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
             this.mStartupProcedure.addProperty("runtimeLevel", AliHAHardware.getInstance().getOutlineInfo().runtimeLevel);
             this.mStartupProcedure.addProperty("cpuUsageOfDevcie", AliHAHardware.getInstance().getCpuInfo().cpuUsageOfDevcie);
             this.mStartupProcedure.addProperty("memoryRuntimeLevel", AliHAHardware.getInstance().getMemoryInfo().runtimeLevel);
-            this.mStartupProcedure.addProperty("usableChangeType", i3);
+            this.mStartupProcedure.addProperty("usableChangeType", usableChangeType);
             this.mStartupProcedure.stage("interactiveTime", timeMillis);
             LauncherUsableEvent launcherUsableEvent = new LauncherUsableEvent();
             launcherUsableEvent.duration = (float) (timeMillis - this.mLaunchTime);

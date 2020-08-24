@@ -126,12 +126,12 @@ public class AbstractDataCollector<T> implements PageLoadCalculate.PageLoadCalcu
     }
 
     /* access modifiers changed from: protected */
-    public void usable(int i, long timeMillis) {
+    public void usable(int usableChangeType, long timeMillis) {
         if (!this.mUsable && !this.d) {
             DataLoggerUtils.log("AbstractDataCollector", "usable", this.pageName);
             Logger.i("AbstractDataCollector", this.pageName, " usable", timeMillis);
             if (!DispatcherManager.isEmpty(this.mUsableVisibleDispatcher)) {
-                this.mUsableVisibleDispatcher.usable(this.mT, 2, i, timeMillis);
+                this.mUsableVisibleDispatcher.usable(this.mT, 2, usableChangeType, timeMillis);
             }
             stop();
             this.mPageListener.onPageChanged(this.pageName, INTERACTIVE, timeMillis);
@@ -173,8 +173,8 @@ public class AbstractDataCollector<T> implements PageLoadCalculate.PageLoadCalcu
     }
 
     @Override
-    public void pageUsable(int i, long j) {
-        usable(i, j);
+    public void pageUsable(int usableChangeType, long j) {
+        usable(usableChangeType, j);
     }
 
     /* access modifiers changed from: private */

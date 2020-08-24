@@ -208,10 +208,10 @@ class FragmentProcessor extends AbsProcessor implements OnUsableVisibleListener<
     }
 
     /* renamed from: o */
-    public void onResume(Fragment fragment, long j) {
+    public void onResume(Fragment fragment, long timeMillis) {
         if (this.f68r && fragment == this.b) {
-            this.mPageLoadProcedure.addProperty("pageInitDuration", Long.valueOf(j - this.f));
-            this.mPageLoadProcedure.stage("renderStartTime", j);
+            this.mPageLoadProcedure.addProperty("pageInitDuration", Long.valueOf(timeMillis - this.f));
+            this.mPageLoadProcedure.stage("renderStartTime", timeMillis);
             this.f68r = false;
         }
     }
@@ -223,11 +223,11 @@ class FragmentProcessor extends AbsProcessor implements OnUsableVisibleListener<
         }
     }
 
-    public void usable(Fragment fragment, int i2, int i3, long timeMillis) {
+    public void usable(Fragment fragment, int i2, int usableChangeType, long timeMillis) {
         if (this.f69s && fragment == this.b && i2 == 2) {
             this.mPageLoadProcedure.addProperty("interactiveDuration", Long.valueOf(timeMillis - this.f));
             this.mPageLoadProcedure.addProperty("loadDuration", Long.valueOf(timeMillis - this.f));
-            this.mPageLoadProcedure.addProperty("usableChangeType", Integer.valueOf(i3));
+            this.mPageLoadProcedure.addProperty("usableChangeType", Integer.valueOf(usableChangeType));
             this.mPageLoadProcedure.stage("interactiveTime", timeMillis);
             this.mPageLoadProcedure.addProperty("errorCode", Integer.valueOf(0));
             this.mPageLoadProcedure.addStatistic("totalRx", Long.valueOf(this.f59b[0]));

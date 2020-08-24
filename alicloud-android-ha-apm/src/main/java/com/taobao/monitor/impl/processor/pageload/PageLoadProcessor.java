@@ -223,11 +223,11 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
         this.mPageLoadProcedure.addProperty("loadType", "push");
     }
 
-    public void onResume(Activity activity, long j) {
+    public void onResume(Activity activity, long timeMillis) {
         this.f109q = true;
-        this.f104g = j;
+        this.f104g = timeMillis;
         HashMap hashMap = new HashMap(1);
-        hashMap.put("timestamp", Long.valueOf(j));
+        hashMap.put("timestamp", Long.valueOf(timeMillis));
         this.mPageLoadProcedure.event("onActivityStarted", hashMap);
         ProcedureManagerSetter.instance().setCurrentActivityProcedure(this.mPageLoadProcedure);
         g = this.pageName;
@@ -241,7 +241,7 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
         }
         this.f100c = TrafficTracker.traffics();
         GlobalStats.lastValidPage = this.pageName;
-        GlobalStats.lastValidTime = j;
+        GlobalStats.lastValidTime = timeMillis;
     }
 
     public void onActivityResumed(Activity activity, long j) {
@@ -341,11 +341,11 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
         }
     }
 
-    public void usable(Activity activity, int i2, int i3, long timeMillis) {
+    public void usable(Activity activity, int i2, int usableChangeType, long timeMillis) {
         if (this.f111s && activity == this.f101d && i2 == 2) {
             this.mPageLoadProcedure.addProperty("interactiveDuration", Long.valueOf(timeMillis - this.f));
             this.mPageLoadProcedure.addProperty("loadDuration", Long.valueOf(timeMillis - this.f));
-            this.mPageLoadProcedure.addProperty("usableChangeType", Integer.valueOf(i3));
+            this.mPageLoadProcedure.addProperty("usableChangeType", Integer.valueOf(usableChangeType));
             this.mPageLoadProcedure.stage("interactiveTime", timeMillis);
             this.mPageLoadProcedure.addProperty("errorCode", Integer.valueOf(0));
             this.mPageLoadProcedure.addStatistic("totalRx", Long.valueOf(this.f98b[0]));

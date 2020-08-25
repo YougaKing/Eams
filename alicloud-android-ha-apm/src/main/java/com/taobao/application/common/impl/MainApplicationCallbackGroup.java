@@ -10,14 +10,14 @@ import java.util.Iterator;
 @TargetApi(14)
 /* compiled from: MainApplicationCallbackGroup */
 class MainApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallbackGroup<ActivityLifecycleCallbacks> {
-    private final ArrayList<ActivityLifecycleCallbacks> b = new ArrayList<>();
+    private final ArrayList<ActivityLifecycleCallbacks> mActivityLifecycleCallbacks = new ArrayList<>();
 
     MainApplicationCallbackGroup() {
     }
 
     public void onActivityCreated(Activity activity, Bundle bundle) {
-        synchronized (this.b) {
-            Iterator it = this.b.iterator();
+        synchronized (this.mActivityLifecycleCallbacks) {
+            Iterator it = this.mActivityLifecycleCallbacks.iterator();
             while (it.hasNext()) {
                 ((ActivityLifecycleCallbacks) it.next()).onActivityCreated(activity, bundle);
             }
@@ -25,8 +25,8 @@ class MainApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallb
     }
 
     public void onActivityStarted(Activity activity) {
-        synchronized (this.b) {
-            Iterator it = this.b.iterator();
+        synchronized (this.mActivityLifecycleCallbacks) {
+            Iterator it = this.mActivityLifecycleCallbacks.iterator();
             while (it.hasNext()) {
                 ((ActivityLifecycleCallbacks) it.next()).onActivityStarted(activity);
             }
@@ -34,8 +34,8 @@ class MainApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallb
     }
 
     public void onActivityResumed(Activity activity) {
-        synchronized (this.b) {
-            Iterator it = this.b.iterator();
+        synchronized (this.mActivityLifecycleCallbacks) {
+            Iterator it = this.mActivityLifecycleCallbacks.iterator();
             while (it.hasNext()) {
                 ((ActivityLifecycleCallbacks) it.next()).onActivityResumed(activity);
             }
@@ -43,8 +43,8 @@ class MainApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallb
     }
 
     public void onActivityPaused(Activity activity) {
-        synchronized (this.b) {
-            Iterator it = this.b.iterator();
+        synchronized (this.mActivityLifecycleCallbacks) {
+            Iterator it = this.mActivityLifecycleCallbacks.iterator();
             while (it.hasNext()) {
                 ((ActivityLifecycleCallbacks) it.next()).onActivityPaused(activity);
             }
@@ -52,8 +52,8 @@ class MainApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallb
     }
 
     public void onActivityStopped(Activity activity) {
-        synchronized (this.b) {
-            Iterator it = this.b.iterator();
+        synchronized (this.mActivityLifecycleCallbacks) {
+            Iterator it = this.mActivityLifecycleCallbacks.iterator();
             while (it.hasNext()) {
                 ((ActivityLifecycleCallbacks) it.next()).onActivityStopped(activity);
             }
@@ -61,8 +61,8 @@ class MainApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallb
     }
 
     public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
-        synchronized (this.b) {
-            Iterator it = this.b.iterator();
+        synchronized (this.mActivityLifecycleCallbacks) {
+            Iterator it = this.mActivityLifecycleCallbacks.iterator();
             while (it.hasNext()) {
                 ((ActivityLifecycleCallbacks) it.next()).onActivitySaveInstanceState(activity, bundle);
             }
@@ -70,8 +70,8 @@ class MainApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallb
     }
 
     public void onActivityDestroyed(Activity activity) {
-        synchronized (this.b) {
-            Iterator it = this.b.iterator();
+        synchronized (this.mActivityLifecycleCallbacks) {
+            Iterator it = this.mActivityLifecycleCallbacks.iterator();
             while (it.hasNext()) {
                 ((ActivityLifecycleCallbacks) it.next()).onActivityDestroyed(activity);
             }
@@ -83,9 +83,9 @@ class MainApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallb
         if (activityLifecycleCallbacks == null) {
             throw new IllegalArgumentException();
         }
-        synchronized (this.b) {
-            if (!this.b.contains(activityLifecycleCallbacks)) {
-                this.b.add(activityLifecycleCallbacks);
+        synchronized (this.mActivityLifecycleCallbacks) {
+            if (!this.mActivityLifecycleCallbacks.contains(activityLifecycleCallbacks)) {
+                this.mActivityLifecycleCallbacks.add(activityLifecycleCallbacks);
             }
         }
     }
@@ -95,8 +95,8 @@ class MainApplicationCallbackGroup implements ActivityLifecycleCallbacks, ICallb
         if (activityLifecycleCallbacks == null) {
             throw new IllegalArgumentException();
         }
-        synchronized (this.b) {
-            this.b.remove(activityLifecycleCallbacks);
+        synchronized (this.mActivityLifecycleCallbacks) {
+            this.mActivityLifecycleCallbacks.remove(activityLifecycleCallbacks);
         }
     }
 }

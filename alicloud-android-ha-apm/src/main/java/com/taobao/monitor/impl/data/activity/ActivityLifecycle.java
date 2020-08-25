@@ -93,7 +93,7 @@ public class ActivityLifecycle implements ActivityLifecycleCallbacks {
                 ((ApplicationBackgroundChangedDispatcher) a2).backgroundChanged(0, TimeUtils.currentTimeMillis());
             }
             DataLoggerUtils.log("ActivityLifeCycle", "background2Foreground");
-            this.mBackgroundForegroundEvent.i();
+            this.mBackgroundForegroundEvent.background2Foreground();
             DumpManager.getInstance().append(new ForegroundEvent());
         }
         GlobalStats.isBackground = false;
@@ -148,7 +148,7 @@ public class ActivityLifecycle implements ActivityLifecycleCallbacks {
             DumpManager.getInstance().append(new BackgroundEvent());
             GlobalStats.lastValidPage = "background";
             GlobalStats.lastValidTime = -1;
-            this.mBackgroundForegroundEvent.j();
+            this.mBackgroundForegroundEvent.foreground2Background();
             c(ActivityUtils.getName(activity));
         }
         this.mMainApplicationLifecycleCallbacks.onActivityStopped(activity);

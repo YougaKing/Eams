@@ -5,34 +5,36 @@ import com.taobao.monitor.impl.trace.ApplicationGcDispatcher;
 
 /* compiled from: GCSwitcher */
 public class GCSwitcher implements BackgroundChangedListener, ApplicationGcDispatcher.GcListener {
-    private volatile boolean m = false;
+    private volatile boolean mGcOpen = false;
 
+    @Override
     public void gc() {
-        if (this.m) {
-            l();
+        if (this.mGcOpen) {
+            createDetector();
         }
     }
 
-    public void open() {
-        if (!this.m) {
-            this.m = true;
-            l();
+    private void open() {
+        if (!this.mGcOpen) {
+            this.mGcOpen = true;
+            createDetector();
         }
     }
 
-    public void close() {
-        this.m = false;
+    private void close() {
+        this.mGcOpen = false;
     }
 
-    public void backgroundChanged(int i, long j) {
-        if (i == 0) {
+    @Override
+    public void backgroundChanged(int backgroundType, long timeMillis) {
+        if (backgroundType == 0) {
             open();
         } else {
             close();
         }
     }
 
-    private void l() {
-        new GCDetector();
+    private void createDetector() {
+        new GcDetector();
     }
 }

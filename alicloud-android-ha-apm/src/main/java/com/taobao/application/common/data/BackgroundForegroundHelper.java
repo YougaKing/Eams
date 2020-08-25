@@ -2,11 +2,11 @@ package com.taobao.application.common.data;
 
 /* compiled from: BackgroundForegroundHelper */
 public class BackgroundForegroundHelper extends AbstractHelper {
-    public void c(boolean z) {
-        this.preferences.putBoolean("isInBackground", z);
+    public void isInBackground(boolean isInBackground) {
+        this.preferences.putBoolean("isInBackground", isInBackground);
     }
 
-    public void d(boolean z) {
-        this.preferences.putBoolean("isFullInBackground", z);
+    public void isFullInBackground(boolean isFullInBackground) {
+        this.preferences.putBoolean("isFullInBackground", isFullInBackground);
     }
 }

@@ -197,10 +197,10 @@ public class WeexProcessor extends AbsProcessor implements OnUsableVisibleListen
         this.l++;
     }
 
-    public void backgroundChanged(int i2, long j) {
-        if (i2 == 1) {
+    public void backgroundChanged(int backgroundType, long timeMillis) {
+        if (backgroundType == 1) {
             HashMap hashMap = new HashMap(1);
-            hashMap.put("timestamp", Long.valueOf(j));
+            hashMap.put("timestamp", Long.valueOf(timeMillis));
             this.mTypeProcedure.event("foreground2Background", hashMap);
             Global.instance().handler().post(new Runnable() {
                 public void run() {
@@ -210,7 +210,7 @@ public class WeexProcessor extends AbsProcessor implements OnUsableVisibleListen
             return;
         }
         HashMap hashMap2 = new HashMap(1);
-        hashMap2.put("timestamp", Long.valueOf(j));
+        hashMap2.put("timestamp", Long.valueOf(timeMillis));
         this.mTypeProcedure.event("background2Foreground", hashMap2);
     }
 

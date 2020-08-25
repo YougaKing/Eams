@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.taobao.application.common.IApmEventListener.NOTIFY_FOREGROUND_2_BACKGROUND;
 import static com.taobao.application.common.IAppLaunchListener.COLD;
 import static com.taobao.application.common.IAppLaunchListener.HOT;
 import static com.taobao.application.common.IAppLaunchListener.LAUNCH_COMPLETED;
@@ -441,10 +442,10 @@ public class LauncherProcessor extends AbsProcessor implements OnUsableVisibleLi
     }
 
     @Override
-    public void backgroundChanged(int i2, long j) {
-        if (i2 == 1) {
+    public void backgroundChanged(int backgroundType, long timeMillis) {
+        if (backgroundType == 1) {
             Map<String, Object> hashMap = new HashMap<>(1);
-            hashMap.put("timestamp", j);
+            hashMap.put("timestamp", timeMillis);
             this.mStartupProcedure.event("foreground2Background", hashMap);
             procedureEnd();
         }

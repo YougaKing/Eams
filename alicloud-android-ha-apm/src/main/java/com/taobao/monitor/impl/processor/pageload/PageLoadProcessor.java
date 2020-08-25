@@ -438,16 +438,16 @@ public class PageLoadProcessor extends AbsProcessor implements OnUsableVisibleLi
         }
     }
 
-    public void backgroundChanged(int i2, long j) {
-        if (i2 == 1) {
+    public void backgroundChanged(int backgroundType, long timeMillis) {
+        if (backgroundType == 1) {
             HashMap hashMap = new HashMap(1);
-            hashMap.put("timestamp", Long.valueOf(j));
+            hashMap.put("timestamp", Long.valueOf(timeMillis));
             this.mPageLoadProcedure.event("foreground2Background", hashMap);
             procedureEnd();
             return;
         }
         HashMap hashMap2 = new HashMap(1);
-        hashMap2.put("timestamp", Long.valueOf(j));
+        hashMap2.put("timestamp", Long.valueOf(timeMillis));
         this.mPageLoadProcedure.event("background2Foreground", hashMap2);
     }
 

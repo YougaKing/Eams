@@ -5,14 +5,14 @@ public class ApplicationBackgroundChangedDispatcher extends AbsDispatcher<Applic
 
     /* compiled from: ApplicationBackgroundChangedDispatcher */
     public interface BackgroundChangedListener {
-        void backgroundChanged(int i, long j);
+        void backgroundChanged(int backgroundType, long timeMillis);
     }
 
-    public void backgroundChanged(final int i, final long j) {
+    public void backgroundChanged(final int backgroundType, final long timeMillis) {
         dispatchRunnable(new DispatcherRunnable<BackgroundChangedListener>() {
             /* renamed from: a */
             public void run(BackgroundChangedListener aVar) {
-                aVar.backgroundChanged(i, j);
+                aVar.backgroundChanged(backgroundType, timeMillis);
             }
         });
     }

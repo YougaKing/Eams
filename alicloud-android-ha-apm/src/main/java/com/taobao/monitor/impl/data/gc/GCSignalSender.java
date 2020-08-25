@@ -16,6 +16,7 @@ class GCSignalSender {
         private SenderRunnable() {
         }
 
+        @Override
         public void run() {
             Global.instance().handler().removeCallbacks(GCSignalSender.runnable);
             IDispatcher a = APMContext.getDispatcher("APPLICATION_GC_DISPATCHER");
@@ -26,7 +27,7 @@ class GCSignalSender {
         }
     }
 
-    static void k() {
+    static void runGcRunnable() {
         Global.instance().handler().post(runnable);
     }
 }

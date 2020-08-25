@@ -58,7 +58,7 @@ public class AbstractDataCollector<T> implements PageLoadCalculate.PageLoadCalcu
     private boolean mUsable = false;
     private boolean c = false;
     private int count = 0;
-    private boolean d = false;
+    private boolean mStop = false;
     private final boolean mIsActivity;
     private final String pageName;
 
@@ -101,7 +101,7 @@ public class AbstractDataCollector<T> implements PageLoadCalculate.PageLoadCalcu
 
     /* access modifiers changed from: protected */
     public void onResume(View view) {
-        this.d = false;
+        this.mStop = false;
         if (!this.mResume) {
             if (!DispatcherManager.isEmpty(this.mUsableVisibleDispatcher)) {
                 this.mUsableVisibleDispatcher.onResume(this.mT, TimeUtils.currentTimeMillis());
@@ -120,14 +120,14 @@ public class AbstractDataCollector<T> implements PageLoadCalculate.PageLoadCalcu
     }
 
     /* access modifiers changed from: protected */
-    public void onStop() {
+    public void onActivityStopped() {
         stop();
-        this.d = !this.mIsActivity;
+        this.mStop = !this.mIsActivity;
     }
 
     /* access modifiers changed from: protected */
     public void usable(int usableChangeType, long timeMillis) {
-        if (!this.mUsable && !this.d) {
+        if (!this.mUsable && !this.mStop) {
             DataLoggerUtils.log("AbstractDataCollector", "usable", this.pageName);
             Logger.i("AbstractDataCollector", this.pageName, " usable", timeMillis);
             if (!DispatcherManager.isEmpty(this.mUsableVisibleDispatcher)) {
@@ -161,7 +161,7 @@ public class AbstractDataCollector<T> implements PageLoadCalculate.PageLoadCalcu
     }
 
     private void display(long timeMillis) {
-        if (!this.c && !this.d) {
+        if (!this.c && !this.mStop) {
             if (!DispatcherManager.isEmpty(this.mUsableVisibleDispatcher)) {
                 Logger.i("AbstractDataCollector", this.pageName, " visible", timeMillis);
                 this.mUsableVisibleDispatcher.display((Object) this.mT, 2, timeMillis);
@@ -214,7 +214,7 @@ public class AbstractDataCollector<T> implements PageLoadCalculate.PageLoadCalcu
     }
 
     /* access modifiers changed from: protected */
-    public void onActivityStopped() {
+    public void onPageLoadCalculateStopped() {
         if (this.mSimplePageLoadCalculate instanceof SimplePageLoadCalculate) {
             ((SimplePageLoadCalculate) this.mSimplePageLoadCalculate).onActivityStopped();
         }

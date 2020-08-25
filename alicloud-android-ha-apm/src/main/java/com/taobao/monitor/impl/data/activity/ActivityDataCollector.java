@@ -120,12 +120,12 @@ class ActivityDataCollector extends AbstractDataCollector<Activity> implements A
     public void onActivityStopped(Activity activity) {
         if (!DispatcherManager.isEmpty((IDispatcher) this.mActivityLifeCycleDispatcher)) {
             if (!PageList.inBlackList(ActivityUtils.getName(activity))) {
-                onActivityStopped();
+                onPageLoadCalculateStopped();
             }
             this.mActivityLifeCycleDispatcher.onActivityStopped(activity, TimeUtils.currentTimeMillis());
         }
         if (!PageList.inBlackList(ActivityUtils.getName(activity))) {
-            onStop();
+            onActivityStopped();
         }
     }
 

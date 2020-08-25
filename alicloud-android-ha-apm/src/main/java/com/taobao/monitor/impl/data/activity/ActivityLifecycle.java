@@ -39,7 +39,7 @@ public class ActivityLifecycle implements ActivityLifecycleCallbacks {
     private final ActivityLifecycleCallbacks mApplicationLifecycleCallbacks = ApmImpl.instance().applicationLifecycleCallbacks();
     private int count;
     private int mAliveActivityCount = 0;
-    protected Map<Activity, LifecycleListener> mLifecycleListenerMap = new HashMap<>();
+    protected Map<Activity, ActivityDataCollector> mLifecycleListenerMap = new HashMap<>();
 
     /* compiled from: ActivityLifecycle */
     interface LifecycleListener {
@@ -69,7 +69,7 @@ public class ActivityLifecycle implements ActivityLifecycleCallbacks {
         if (this.mLifecycleListenerMap.get(activity) == null) {
             GlobalStats.createdPageCount++;
             GlobalStats.activityStatusManager.put(ActivityUtils.getName(activity));
-            LifecycleListener aVar = new ActivityDataCollector(activity);
+            ActivityDataCollector aVar = new ActivityDataCollector(activity);
             this.mLifecycleListenerMap.put(activity, aVar);
             aVar.onActivityCreated(activity, bundle);
             if ((activity instanceof FragmentActivity) && DynamicConstants.needFragment) {

@@ -28,12 +28,12 @@ class ViewInfo {
         if (kVar == null) {
             kVar = new ViewInfo();
         }
-        int[] a2 = ViewUtils.point(view, view2);
+        int[] a2 = ViewUtils.topAndLeft(view, view2);
         boolean z = view instanceof TextView;
         int max = Math.max(0, a2[0]);
-        int min = Math.min(ViewUtils.g, a2[0] + view.getWidth());
+        int min = Math.min(ViewUtils.mWidth, a2[0] + view.getWidth());
         int max2 = Math.max(0, a2[1]);
-        int min2 = Math.min(ViewUtils.h, a2[1] + view.getHeight());
+        int min2 = Math.min(ViewUtils.mHeight, a2[1] + view.getHeight());
         kVar.k = z;
         kVar.left = max;
         kVar.right = min;

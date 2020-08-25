@@ -26,27 +26,27 @@ import java.util.List;
 
 /* compiled from: CanvasCalculator */
 public class CanvasCalculator implements ICalculator {
-    private HashSet<Drawable> a = new HashSet<>();
-    private final View b;
-    private final View c;
+    private HashSet<Drawable> mDrawableSet = new HashSet<>();
+    private final View mContentView;
+    private final View mDecorView;
     private boolean f = false;
 
-    public CanvasCalculator(View view, View view2) {
-        this.b = view;
-        this.c = view2;
+    public CanvasCalculator(View contentView, View decorView) {
+        this.mContentView = contentView;
+        this.mDecorView = decorView;
     }
 
-    private float a(View view, List<ViewInfo> list) {
+    private float calculateViewPercent(View view, List<ViewInfo> list) {
         Drawable drawable;
         byte b2;
         byte b3 = 0;
-        if (!ViewUtils.a(view, this.c)) {
+        if (!ViewUtils.isAvailable(view, this.mDecorView)) {
             return 0.0f;
         }
-        if (view.getHeight() < ViewUtils.h / 20) {
+        if (view.getHeight() < ViewUtils.mHeight / 20) {
             return 1.0f;
         }
-        if (view.getVisibility() != 0) {
+        if (view.getVisibility() != View.VISIBLE) {
             return 0.0f;
         }
         if (view instanceof ViewStub) {
@@ -55,26 +55,26 @@ public class CanvasCalculator implements ICalculator {
         if (view instanceof ViewGroup) {
             ViewGroup viewGroup = (ViewGroup) view;
             if (viewGroup instanceof WebView) {
-                if (DefaultWebView.DEFAULT_WEB_VIEW.isWebViewLoadFinished((WebView) viewGroup)) {
+                if (DefaultWebView.DEFAULT_WEB_VIEW.isWebViewLoadFinished(viewGroup)) {
                     return 1.0f;
                 }
                 return 0.0f;
             } else if (!WebViewProxy.INSTANCE.isWebView(viewGroup)) {
-                View[] a2 = ViewUtils.a(viewGroup);
-                if (a2 == null) {
+                View[] childrenView = ViewUtils.getChildrenView(viewGroup);
+                if (childrenView == null) {
                     return 0.0f;
                 }
                 int i = 0;
                 int i2 = 0;
-                for (View view2 : a2) {
-                    if (view2 == null) {
+                for (View childView : childrenView) {
+                    if (childView == null) {
                         break;
                     }
                     i++;
-                    ArrayList arrayList = new ArrayList();
-                    if (a(view2, arrayList) > 0.8f) {
+                    ArrayList<ViewInfo> arrayList = new ArrayList<>();
+                    if (calculateViewPercent(childView, arrayList) > 0.8f) {
                         int i3 = i2 + 1;
-                        list.add(ViewInfo.a(view2, this.c));
+                        list.add(ViewInfo.a(childView, this.mDecorView));
                         Iterator it = arrayList.iterator();
                         while (it.hasNext()) {
                             ((ViewInfo) it.next()).recycle();
@@ -84,15 +84,15 @@ public class CanvasCalculator implements ICalculator {
                         list.addAll(arrayList);
                     }
                 }
-                if (view.getHeight() < ViewUtils.h / 8 && (((viewGroup instanceof LinearLayout) || (viewGroup instanceof RelativeLayout)) && i == i2 && i != 0)) {
+                if (view.getHeight() < ViewUtils.mHeight / 8 && (((viewGroup instanceof LinearLayout) || (viewGroup instanceof RelativeLayout)) && i == i2 && i != 0)) {
                     return 1.0f;
                 }
-                float a3 = new LineTreeCalculator(com.taobao.monitor.impl.util.b.a(30)).a((View) viewGroup, list, this.c);
+                float a3 = new LineTreeCalculator(com.taobao.monitor.impl.util.b.a(30)).a((View) viewGroup, list, this.mDecorView);
                 if (a3 > 0.8f) {
                     return 1.0f;
                 }
-                if (view.getWidth() * view.getHeight() <= ((ViewUtils.g / 3) * ViewUtils.h) / 4 && (view.getWidth() < ViewUtils.g / 3 || view.getHeight() < ViewUtils.h / 4)) {
-                    ViewInfo a4 = ViewInfo.a(viewGroup, this.c);
+                if (view.getWidth() * view.getHeight() <= ((ViewUtils.mWidth / 3) * ViewUtils.mHeight) / 4 && (view.getWidth() < ViewUtils.mWidth / 3 || view.getHeight() < ViewUtils.mHeight / 4)) {
+                    ViewInfo a4 = ViewInfo.a(viewGroup, this.mDecorView);
                     int i4 = (a4.top + a4.bottom) / 2;
                     int i5 = (a4.right + a4.left) / 2;
                     Iterator it2 = list.iterator();
@@ -141,20 +141,20 @@ public class CanvasCalculator implements ICalculator {
             if (VERSION.SDK_INT >= 23 && (drawable2 instanceof DrawableWrapper)) {
                 drawable2 = ((DrawableWrapper) drawable2).getDrawable();
             }
-            if (!a(drawable2) || this.a.contains(drawable2)) {
+            if (!isDrawable(drawable2) || this.mDrawableSet.contains(drawable2)) {
                 Drawable background = view.getBackground();
                 if (VERSION.SDK_INT < 23 || !(background instanceof DrawableWrapper)) {
                     drawable = background;
                 } else {
                     drawable = ((DrawableWrapper) drawable2).getDrawable();
                 }
-                if (!a(drawable) || this.a.contains(drawable)) {
+                if (!isDrawable(drawable) || this.mDrawableSet.contains(drawable)) {
                     return 0.0f;
                 }
-                this.a.add(drawable);
+                this.mDrawableSet.add(drawable);
                 return 1.0f;
             }
-            this.a.add(drawable2);
+            this.mDrawableSet.add(drawable2);
             return 1.0f;
         } else if (!(view instanceof TextView)) {
             return 1.0f;
@@ -170,21 +170,22 @@ public class CanvasCalculator implements ICalculator {
         }
     }
 
-    private boolean a(Drawable drawable) {
+    private boolean isDrawable(Drawable drawable) {
         return (drawable instanceof BitmapDrawable) || (drawable instanceof NinePatchDrawable) || (drawable instanceof AnimationDrawable) || (drawable instanceof ShapeDrawable) || (drawable instanceof PictureDrawable);
     }
 
-    public float a() {
+    @Override
+    public float calculateViewPercent() {
         ArrayList<ViewInfo> arrayList = new ArrayList<>();
-        float a2 = a(this.b, arrayList);
+        float percent = calculateViewPercent(this.mContentView, arrayList);
         Iterator it = arrayList.iterator();
         while (it.hasNext()) {
             ((ViewInfo) it.next()).recycle();
         }
-        this.a.clear();
+        this.mDrawableSet.clear();
         if (this.f) {
             return 1.0f;
         }
-        return a2;
+        return percent;
     }
 }

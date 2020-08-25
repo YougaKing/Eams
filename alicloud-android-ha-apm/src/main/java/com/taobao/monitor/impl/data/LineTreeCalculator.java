@@ -96,11 +96,11 @@ public class LineTreeCalculator {
         if (list == null || list.size() == 0) {
             return 0.0f;
         }
-        int[] a2 = ViewUtils.point(view, view2);
+        int[] a2 = ViewUtils.topAndLeft(view, view2);
         int max = Math.max(0, a2[1]);
-        int min = Math.min(ViewUtils.h, a2[1] + view.getHeight());
+        int min = Math.min(ViewUtils.mHeight, a2[1] + view.getHeight());
         int max2 = Math.max(0, a2[0]);
-        int min2 = Math.min(ViewUtils.g, a2[0] + view.getWidth());
+        int min2 = Math.min(ViewUtils.mWidth, a2[0] + view.getWidth());
         int i2 = min2 - max2 > 0 ? min2 - max2 : 0;
         if (min - max > 0) {
             i = min - max;

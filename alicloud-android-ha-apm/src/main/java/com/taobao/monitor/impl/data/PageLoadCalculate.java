@@ -14,7 +14,7 @@ public class PageLoadCalculate implements IExecutor, Runnable {
 
     /* renamed from: a reason: collision with other field name */
     private final WeakReference<View> mViewWeakReference;
-    private volatile boolean i = false;
+    private volatile boolean mStop = false;
 
     /* compiled from: PageLoadCalculate */
     public interface PageLoadCalculateListener {
@@ -37,7 +37,7 @@ public class PageLoadCalculate implements IExecutor, Runnable {
 
     @Override
     public void stop() {
-        this.i = true;
+        this.mStop = true;
         Global.instance().getAsyncUiHandler().removeCallbacks(this);
         Global.instance().handler().post(new Runnable() {
             public void run() {
@@ -48,39 +48,39 @@ public class PageLoadCalculate implements IExecutor, Runnable {
 
     @Override
     public void run() {
-        if (!this.i) {
-            g();
+        if (!this.mStop) {
+            visiblePercent();
             Global.instance().getAsyncUiHandler().postDelayed(this, 75);
         }
     }
 
-    private void g() {
-        View view = (View) this.mViewWeakReference.get();
-        if (view == null) {
+    private void visiblePercent() {
+        View decorView = this.mViewWeakReference.get();
+        if (decorView == null) {
             stop();
-            Logger.d("PageLoadCalculate", "check root view null, stop");
+            Logger.d("PageLoadCalculate", "check root decorView null, stop");
             return;
         }
         try {
-            View findViewById = view.findViewById(view.getResources().getIdentifier("content", "id", "android"));
-            if (findViewById == null) {
-                findViewById = view;
+            View contentView = decorView.findViewById(decorView.getResources().getIdentifier("content", "id", "android"));
+            if (contentView == null) {
+                contentView = decorView;
             }
-            if (findViewById.getHeight() * findViewById.getWidth() == 0) {
+            if (contentView.getHeight() * contentView.getWidth() == 0) {
                 Logger.d("PageLoadCalculate", "check not draw");
                 return;
             }
-            a(findViewById, view);
+            visiblePercent(contentView, decorView);
         } catch (NullPointerException e) {
             Logger.w("PageLoadCalculate", "check exception: " + e.getMessage());
         }
     }
 
-    private void a(View view, View view2) {
+    private void visiblePercent(View contentView, View decorView) {
         if (this.mPageLoadCalculateListener != null) {
-            float a2 = new CanvasCalculator(view, view2).a();
-            Logger.d("PageLoadCalculate", "calculateDraw percent: " + a2);
-            this.mPageLoadCalculateListener.visiblePercent(a2);
+            float percent = new CanvasCalculator(contentView, decorView).calculateViewPercent();
+            Logger.d("PageLoadCalculate", "calculateDraw percent: " + percent);
+            this.mPageLoadCalculateListener.visiblePercent(percent);
         }
     }
 }

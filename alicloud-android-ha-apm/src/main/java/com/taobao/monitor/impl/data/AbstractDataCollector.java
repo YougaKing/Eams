@@ -120,7 +120,7 @@ public class AbstractDataCollector<T> implements PageLoadCalculate.PageLoadCalcu
     }
 
     /* access modifiers changed from: protected */
-    public void onActivityStopped() {
+    protected void onStopped() {
         stop();
         this.mStop = !this.mIsActivity;
     }

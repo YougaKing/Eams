@@ -4,7 +4,7 @@ import com.taobao.monitor.impl.trace.ApplicationBackgroundChangedDispatcher.Back
 import com.taobao.monitor.impl.trace.ApplicationGcDispatcher;
 
 /* compiled from: GCSwitcher */
-public class GCSwitcher implements BackgroundChangedListener, ApplicationGcDispatcher.GcListener {
+public class GcSwitcher implements BackgroundChangedListener, ApplicationGcDispatcher.GcListener {
     private volatile boolean mGcOpen = false;
 
     @Override
@@ -14,7 +14,7 @@ public class GCSwitcher implements BackgroundChangedListener, ApplicationGcDispa
         }
     }
 
-    private void open() {
+    public void open() {
         if (!this.mGcOpen) {
             this.mGcOpen = true;
             createDetector();

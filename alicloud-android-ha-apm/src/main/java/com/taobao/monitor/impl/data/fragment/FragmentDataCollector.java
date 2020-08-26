@@ -33,48 +33,56 @@ public class FragmentDataCollector extends AbstractDataCollector<Fragment> imple
         }
     }
 
+    @Override
     public void onFragmentPreAttached(Fragment fragment) {
         if (!DispatcherManager.isEmpty((IDispatcher) this.mFragmentLifecycleDispatcher)) {
             this.mFragmentLifecycleDispatcher.onFragmentPreAttached(fragment, TimeUtils.currentTimeMillis());
         }
     }
 
+    @Override
     public void onFragmentAttached(Fragment fragment) {
         if (!DispatcherManager.isEmpty((IDispatcher) this.mFragmentLifecycleDispatcher)) {
             this.mFragmentLifecycleDispatcher.onFragmentAttached(fragment, TimeUtils.currentTimeMillis());
         }
     }
 
+    @Override
     public void onFragmentPreCreated(Fragment fragment) {
         if (!DispatcherManager.isEmpty((IDispatcher) this.mFragmentLifecycleDispatcher)) {
             this.mFragmentLifecycleDispatcher.onFragmentPreCreated(fragment, TimeUtils.currentTimeMillis());
         }
     }
 
+    @Override
     public void onFragmentCreated(Fragment fragment) {
         if (!DispatcherManager.isEmpty((IDispatcher) this.mFragmentLifecycleDispatcher)) {
             this.mFragmentLifecycleDispatcher.onFragmentCreated(fragment, TimeUtils.currentTimeMillis());
         }
     }
 
+    @Override
     public void onFragmentActivityCreated(Fragment fragment) {
         if (!DispatcherManager.isEmpty((IDispatcher) this.mFragmentLifecycleDispatcher)) {
             this.mFragmentLifecycleDispatcher.onFragmentActivityCreated(fragment, TimeUtils.currentTimeMillis());
         }
     }
 
+    @Override
     public void onFragmentViewCreated(Fragment fragment) {
         if (!DispatcherManager.isEmpty((IDispatcher) this.mFragmentLifecycleDispatcher)) {
             this.mFragmentLifecycleDispatcher.onFragmentViewCreated(fragment, TimeUtils.currentTimeMillis());
         }
     }
 
+    @Override
     public void onFragmentStarted(Fragment fragment) {
         if (!DispatcherManager.isEmpty((IDispatcher) this.mFragmentLifecycleDispatcher)) {
             this.mFragmentLifecycleDispatcher.onFragmentStarted(fragment, TimeUtils.currentTimeMillis());
         }
     }
 
+    @Override
     public void onFragmentResumed(Fragment fragment) {
         if (!DispatcherManager.isEmpty((IDispatcher) this.mFragmentLifecycleDispatcher)) {
             this.mFragmentLifecycleDispatcher.onFragmentResumed(fragment, TimeUtils.currentTimeMillis());
@@ -90,37 +98,43 @@ public class FragmentDataCollector extends AbstractDataCollector<Fragment> imple
         }
     }
 
+    @Override
     public void onFragmentPaused(Fragment fragment) {
         if (!DispatcherManager.isEmpty((IDispatcher) this.mFragmentLifecycleDispatcher)) {
             this.mFragmentLifecycleDispatcher.onFragmentPaused(fragment, TimeUtils.currentTimeMillis());
         }
     }
 
+    @Override
     public void onFragmentStopped(Fragment fragment) {
         if (!DispatcherManager.isEmpty((IDispatcher) this.mFragmentLifecycleDispatcher)) {
             this.mFragmentLifecycleDispatcher.onFragmentStopped(fragment, TimeUtils.currentTimeMillis());
         }
-        onStop();
+        onStopped();
     }
 
+    @Override
     public void onFragmentSaveInstanceState(Fragment fragment) {
         if (!DispatcherManager.isEmpty((IDispatcher) this.mFragmentLifecycleDispatcher)) {
             this.mFragmentLifecycleDispatcher.onFragmentSaveInstanceState(fragment, TimeUtils.currentTimeMillis());
         }
     }
 
+    @Override
     public void onFragmentViewDestroyed(Fragment fragment) {
         if (!DispatcherManager.isEmpty((IDispatcher) this.mFragmentLifecycleDispatcher)) {
             this.mFragmentLifecycleDispatcher.onFragmentViewDestroyed(fragment, TimeUtils.currentTimeMillis());
         }
     }
 
+    @Override
     public void onFragmentDestroyed(Fragment fragment) {
         if (!DispatcherManager.isEmpty((IDispatcher) this.mFragmentLifecycleDispatcher)) {
             this.mFragmentLifecycleDispatcher.onFragmentDestroyed(fragment, TimeUtils.currentTimeMillis());
         }
     }
 
+    @Override
     public void onFragmentDetached(Fragment fragment) {
         if (!DispatcherManager.isEmpty((IDispatcher) this.mFragmentLifecycleDispatcher)) {
             this.mFragmentLifecycleDispatcher.onFragmentDetached(fragment, TimeUtils.currentTimeMillis());

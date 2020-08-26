@@ -27,7 +27,7 @@ import com.taobao.monitor.impl.common.DynamicConstants;
 import com.taobao.monitor.impl.common.Global;
 import com.taobao.monitor.impl.data.GlobalStats;
 import com.taobao.monitor.impl.data.activity.ActivityLifecycle;
-import com.taobao.monitor.impl.data.gc.GCCollector;
+import com.taobao.monitor.impl.data.gc.GcCollector;
 import com.taobao.monitor.impl.data.network.NetworkLifecycleImpl;
 import com.taobao.monitor.impl.data.phenix.PhenixLifeCycleImpl;
 import com.taobao.monitor.impl.processor.fragmentload.FragmentModelLifecycle;
@@ -259,8 +259,8 @@ public class APMLauncher {
     }
 
     private static void initExecutor() {
-        GCCollector var0 = new GCCollector();
-        var0.execute();
+        GcCollector gcCollector = new GcCollector();
+        gcCollector.execute();
     }
 
     private static void initApmImpl() {

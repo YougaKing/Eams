@@ -7,7 +7,7 @@ import com.taobao.monitor.impl.trace.IDispatcher;
 import com.taobao.monitor.impl.trace.ApplicationGcDispatcher;
 
 /* compiled from: GCSignalSender */
-class GCSignalSender {
+class GcSignalSender {
     /* access modifiers changed from: private */
     public static SenderRunnable runnable = new SenderRunnable();
 
@@ -18,7 +18,7 @@ class GCSignalSender {
 
         @Override
         public void run() {
-            Global.instance().handler().removeCallbacks(GCSignalSender.runnable);
+            Global.instance().handler().removeCallbacks(GcSignalSender.runnable);
             IDispatcher a = APMContext.getDispatcher("APPLICATION_GC_DISPATCHER");
             if (a instanceof ApplicationGcDispatcher) {
                 ((ApplicationGcDispatcher) a).gc();

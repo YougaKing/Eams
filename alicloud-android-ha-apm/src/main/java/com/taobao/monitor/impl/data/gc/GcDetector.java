@@ -5,6 +5,6 @@ public class GcDetector {
     /* access modifiers changed from: protected */
     public void finalize() throws Throwable {
         super.finalize();
-        GCSignalSender.runGcRunnable();
+        GcSignalSender.runGcRunnable();
     }
 }

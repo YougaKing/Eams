@@ -17,8 +17,8 @@ import com.taobao.monitor.impl.common.Global;
 import com.taobao.monitor.impl.logger.DataLoggerUtils;
 import com.taobao.monitor.impl.logger.Logger;
 import com.taobao.monitor.impl.processor.launcher.PageList;
-import com.taobao.monitor.impl.trace.IDispatcher;
 import com.taobao.monitor.impl.trace.DispatcherManager;
+import com.taobao.monitor.impl.trace.IDispatcher;
 import com.taobao.monitor.impl.trace.UsableVisibleDispatcher;
 import com.taobao.monitor.impl.util.TimeUtils;
 
@@ -78,7 +78,7 @@ public class AbstractDataCollector<T> implements PageLoadCalculate.PageLoadCalcu
     public void run() {
         this.count++;
         if (this.count > 2) {
-            usable(1, TimeUtils.currentTimeMillis());
+            usable(PAGE_VISIBLE_P80, TimeUtils.currentTimeMillis());
             return;
         }
         Handler handler = new Handler(Looper.getMainLooper());
@@ -129,7 +129,7 @@ public class AbstractDataCollector<T> implements PageLoadCalculate.PageLoadCalcu
     public void usable(int usableChangeType, long timeMillis) {
         if (!this.mUsable && !this.mStop) {
             DataLoggerUtils.log("AbstractDataCollector", "usable", this.pageName);
-            Logger.i("AbstractDataCollector", this.pageName, " usable", timeMillis);
+            Logger.i("AbstractDataCollector", this.pageName, "usable", usableChangeType, timeMillis);
             if (!DispatcherManager.isEmpty(this.mUsableVisibleDispatcher)) {
                 this.mUsableVisibleDispatcher.usable(this.mT, 2, usableChangeType, timeMillis);
             }

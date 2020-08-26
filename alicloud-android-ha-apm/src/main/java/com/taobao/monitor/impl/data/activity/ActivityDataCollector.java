@@ -141,7 +141,7 @@ class ActivityDataCollector extends AbstractDataCollector<Activity> implements A
         if (!DispatcherManager.isEmpty((IDispatcher) this.mActivityEventDispatcher)) {
             this.mActivityEventDispatcher.onMotionEvent(this.mActivity, motionEvent, TimeUtils.currentTimeMillis());
         }
-        usable(3, TimeUtils.currentTimeMillis());
+        usable(PAGE_TOUCH, TimeUtils.currentTimeMillis());
         if (motionEvent.getAction() == ACTION_MOVE && VERSION.SDK_INT >= 16) {
             this.mDrawTimeCollector.mOnTouchEvent();
         }

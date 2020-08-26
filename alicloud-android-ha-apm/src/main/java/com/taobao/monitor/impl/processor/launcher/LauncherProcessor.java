@@ -50,7 +50,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.taobao.application.common.IApmEventListener.NOTIFY_FOREGROUND_2_BACKGROUND;
 import static com.taobao.application.common.IAppLaunchListener.COLD;
 import static com.taobao.application.common.IAppLaunchListener.HOT;
 import static com.taobao.application.common.IAppLaunchListener.LAUNCH_COMPLETED;

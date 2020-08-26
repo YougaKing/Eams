@@ -2,7 +2,7 @@
   "version": "0.0.1",
   "topic": "ALI_APM\/UTDevice.getUtdid%28application.getApplicationContext%28%29%29\/monitor\/procedure\/startup",
   "headers": {
-    "X-timestamp": 233218484,
+    "X-timestamp": 81313616,
     "X-appId": "com.example.eams",
     "X-appKey": "28125247",
     "X-appBuild": "",
@@ -10,40 +10,40 @@
     "X-channel": "",
     "X-utdid": "UTDevice.getUtdid(application.getApplicationContext())",
     "X-brand": "Xiaomi",
-    "X-deviceModel": "MI CC 9",
+    "X-deviceModel": "MIX 3",
     "X-os": "android",
-    "X-osVersion": "10",
+    "X-osVersion": "9",
     "X-userId": "",
     "X-userNick": "",
-    "X-session": "1597913525151",
+    "X-session": "1598405310861",
     "X-processName": "com.example.eams",
     "X-appVersion": "1.0_debug",
     "X-launcherMode": "normal"
   },
   "value": {
     "properties": {
-      "isFirstInstall": false,
+      "isFirstInstall": true,
       "runtimeLevel": 0,
-      "session": "1597913525179",
+      "session": "1598405310891",
       "oppoCPUResource": "false",
       "memoryRuntimeLevel": 1,
       "errorCode": 0,
       "fullPageName": "com.example.eams.MainActivity",
-      "interactiveDuration": 561,
-      "leaveType": "back",
-      "launchDuration": 561,
-      "lastProcessStartTime": 1597895870728,
+      "interactiveDuration": 470,
+      "leaveType": "other",
+      "launchDuration": 470,
+      "lastProcessStartTime": -1,
       "currentPageName": "MainActivity",
-      "isFirstLaunch": false,
+      "isFirstLaunch": true,
       "launchType": "COLD",
       "hasSplash": false,
       "linkPageName": "[MainActivity]",
-      "appInitDuration": 348,
-      "systemInitDuration": 380,
+      "appInitDuration": 311,
+      "systemInitDuration": 163,
       "firstPageName": "MainActivity",
-      "displayDuration": 512,
+      "displayDuration": 401,
       "cpuUsageOfDevcie": -1,
-      "installType": "UPDATE",
+      "installType": "NEW",
       "systemRecovery": false,
       "deviceLevel": -1,
       "usableChangeType": 2
@@ -68,60 +68,55 @@
     },
     "events": [
       {
-        "timestamp": 233218576,
+        "timestamp": 81313698,
         "name": "onActivityCreated",
         "pageName": "MainActivity"
       },
       {
-        "timestamp": 233218811,
+        "timestamp": 81313901,
         "name": "onActivityResumed",
         "pageName": "MainActivity"
       },
       {
-        "timestamp": 233218812,
+        "timestamp": 81313901,
         "name": "onActivityStarted",
         "pageName": "MainActivity"
       },
       {
-        "timestamp": 233227669,
-        "name": "keyEvent",
-        "key": 4
-      },
-      {
-        "timestamp": 233227748,
+        "timestamp": 81324828,
         "name": "onActivityPaused",
         "pageName": "MainActivity"
       },
       {
-        "timestamp": 233228161,
+        "timestamp": 81324851,
         "name": "onActivityStopped",
         "pageName": "MainActivity"
       }
     ],
     "stages": {
-      "procedureStartTime": 233218594,
-      "processStartTime": 233218079,
-      "launchStartTime": 233218459,
-      "firstPageCreateTime": 233218576,
-      "renderStartTime": 233218807,
-      "displayedTime": 233218971,
-      "interactiveTime": 233219020,
-      "procedureEndTime": 233228166
+      "procedureStartTime": 81313725,
+      "processStartTime": 81313424,
+      "launchStartTime": 81313587,
+      "firstPageCreateTime": 81313698,
+      "renderStartTime": 81313898,
+      "displayedTime": 81313988,
+      "interactiveTime": 81314057,
+      "procedureEndTime": 81324854
     },
     "subProcedures": [
       {
         "APMSelf": {
           "properties": {
-            "parentSession": "1597913525179",
+            "parentSession": "1598405310891",
             "isMainThread": true,
-            "session": "1597913525180",
+            "session": "1598405310892",
             "threadName": "main"
           },
           "stages": {
-            "taskStart": 233218454,
-            "cpuStartTime": 338,
-            "taskEnd": 233218485,
-            "cpuEndTime": 364
+            "taskStart": 81313581,
+            "cpuStartTime": 144,
+            "taskEnd": 81313620,
+            "cpuEndTime": 176
           }
         }
       }

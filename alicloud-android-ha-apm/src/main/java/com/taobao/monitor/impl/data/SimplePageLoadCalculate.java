@@ -12,6 +12,9 @@ import androidx.annotation.UiThread;
 import com.taobao.monitor.impl.common.Global;
 import com.taobao.monitor.impl.util.TimeUtils;
 
+import static com.taobao.monitor.impl.data.SimplePageLoadCalculate.PageLoadCalculateListener.PAGE_DRAW;
+import static com.taobao.monitor.impl.data.SimplePageLoadCalculate.PageLoadCalculateListener.PAGE_STOPPED;
+
 @TargetApi(16)
 /* compiled from: SimplePageLoadCalculate */
 public class SimplePageLoadCalculate implements OnDrawListener, IExecutor {
@@ -27,7 +30,7 @@ public class SimplePageLoadCalculate implements OnDrawListener, IExecutor {
             removeOnDrawListener();
             mPageLoadCalculateListener.pageDisplay(mDrawTime);
             if (mDrawTwiceTime > mDrawTime) {
-                mPageLoadCalculateListener.pageUsable(2, mDrawTwiceTime);
+                mPageLoadCalculateListener.pageUsable(PAGE_DRAW, mDrawTwiceTime);
                 stop();
             }
         }
@@ -55,6 +58,11 @@ public class SimplePageLoadCalculate implements OnDrawListener, IExecutor {
 
     /* compiled from: SimplePageLoadCalculate */
     public interface PageLoadCalculateListener {
+        int PAGE_VISIBLE_P80 = 1;
+        int PAGE_DRAW = 2;
+        int PAGE_TOUCH = 3;
+        int PAGE_STOPPED = 4;
+
         void pageUsable(int usableChangeType, long timeMillis);
 
         void pageDisplay(long timeMillis);
@@ -93,7 +101,7 @@ public class SimplePageLoadCalculate implements OnDrawListener, IExecutor {
     public void onActivityStopped() {
         this.mPageLoadCalculateListener.pageDisplay(this.mDrawTime);
         if (this.mDrawTwiceTime > this.mDrawTime) {
-            this.mPageLoadCalculateListener.pageUsable(4, this.mDrawTwiceTime);
+            this.mPageLoadCalculateListener.pageUsable(PAGE_STOPPED, this.mDrawTwiceTime);
             stop();
         }
     }
